@@ -1,10 +1,10 @@
-package com.notifyrapp.www.notifyr;
+package com.notifyrapp.www.notifyr.Data;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import com.notifyrapp.www.notifyr.Model.Article
+import com.notifyrapp.www.notifyr.Model.Article;
 /**
  * Created by K on 11/4/2016.
  */

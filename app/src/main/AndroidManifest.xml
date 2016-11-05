@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.notifyrapp.www.notifyr" >
+    package="com.notifyrapp.www.notifyr">
 
     <application
         android:allowBackup="true"
@@ -8,15 +8,28 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoTitleBar">
-      <!--  android:theme="@style/AppTheme" > -->
+
+        <!-- android:theme="@style/AppTheme" >-->
+
         <activity
-            android:name=".ArticleActivity"
+            android:name=".AppStartActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ArticleActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <!--<category android:name="android.intent.category." />-->
             </intent-filter>
         </activity>
     </application>

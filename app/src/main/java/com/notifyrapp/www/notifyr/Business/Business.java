@@ -1,7 +1,8 @@
-package com.notifyrapp.www.notifyr;
+package com.notifyrapp.www.notifyr.Business;
 
 import com.notifyrapp.www.notifyr.Model.Article;
-
+import com.notifyrapp.www.notifyr.Data.WebApi;
+import com.notifyrapp.www.notifyr.Data.Repository;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public class Business {
     WebApi webApi = new WebApi();
 
     /* Data comes from local SQL Lite */
-    Data data = new Data();
+    Repository repo = new Repository();
 
     //region Article
 
