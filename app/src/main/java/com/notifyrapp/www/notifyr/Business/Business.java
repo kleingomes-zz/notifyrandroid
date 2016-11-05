@@ -30,4 +30,13 @@ public class Business {
     //region Item
 
     //endregion
+
+    //region Data Access
+    public Boolean CheckIfDatabaseExists()
+    {
+        return repo.CheckIfDatabaseExistsi();
+    }
+
+
+    //endregion
 }

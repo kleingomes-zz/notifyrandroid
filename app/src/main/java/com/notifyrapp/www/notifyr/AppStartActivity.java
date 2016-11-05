@@ -66,7 +66,7 @@ public class AppStartActivity extends Activity {
             try {
                 /******* CHECK/CREATE LOCAL DB HERE *******/
                 Boolean localDbExists = false;
-
+                Database
 
                 if(localDbExists) {
                     // Use it
@@ -107,6 +107,5 @@ public class AppStartActivity extends Activity {
         super.onPostCreate(savedInstanceState);
 
     }
-
 
 }
