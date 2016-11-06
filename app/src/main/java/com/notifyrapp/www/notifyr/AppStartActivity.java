@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +35,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Model.UserProfile;
 
 import static java.lang.Thread.sleep;
 
@@ -47,21 +49,35 @@ public class AppStartActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_app_start);
+        Business biz = new Business(this);
+        String userId = "";
 
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
+        /* CHECK IF USER EXISTS  */
+        userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userId", "");
+        if(userId.equals(""))
+        {
+            /* CREATE ACCOUNT */
+            biz.RegisterAccount("","",new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    // Running callback
+                }
+            });
+            Log.d("ACCOUNT_CHECK","No Account Found" + userId);
+        }
+        else
+        {
+            /* ACCOUNT EXISTS */
+            Log.d("ACCOUNT_CHECK","Account Exists" + userId);
+        }
 
-    }
-
-    @Override
-    protected void onResume() {
+        /* REGISTER FOR REMOTE NOTIFICATIONS */
 
         if(xTask.getStatus().equals(AsyncTask.Status.PENDING)) xTask.execute(this);
-        super.onResume();
+
     }
 
     private AsyncTask<Context, Void, String> xTask = new AsyncTask<Context, Void, String>() {
@@ -70,19 +86,20 @@ public class AppStartActivity extends Activity {
             try {
                 /******* CHECK/CREATE LOCAL DB HERE *******/
                 Boolean localDbExists = false;
-                Context context = params[0];
-                Business business = new Business(context);
-
-                business.CreateNotifyrDatabase("91315557-b9fa-4884-8ec4-cd372065c456");
 
                 if(localDbExists) {
+
+                    Context context = params[0];
+                    Business business = new Business(context);
+
+                    business.CreateNotifyrDatabase("91315557-b9fa-4884-8ec4-cd372065c456");
 
                     // Use it
                     SharedPreferences prefs =
                             context.getSharedPreferences("UserSettings",
                                     Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs.edit();
-                    editor.putInt("userId", 51545423);
+                    editor.putString("userId", "51545423");
                     editor.commit();
                 }
                 else {
@@ -101,6 +118,7 @@ public class AppStartActivity extends Activity {
             super.onPreExecute();
             //get sharedPreferences here
         }
+
         @Override
         protected void onPostExecute(String s) {
             //do something as the execution completed, you can launch your real activity.
@@ -113,5 +131,13 @@ public class AppStartActivity extends Activity {
 
     }
 
+    protected void RegsiterGuest()
+    {
+
+    }
+    protected void RegisterDevice()
+    {
+
+    }
 
 }

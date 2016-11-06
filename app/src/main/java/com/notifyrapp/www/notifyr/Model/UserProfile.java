@@ -5,7 +5,7 @@ package com.notifyrapp.www.notifyr.Model;
  */
 
 public class UserProfile {
-    String UserId;
-    String Email;
-    String Password;
+    public String UserId;
+    public String Email;
+    public String Password;
 }

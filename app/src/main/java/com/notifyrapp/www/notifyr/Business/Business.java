@@ -6,11 +6,9 @@ import com.notifyrapp.www.notifyr.Data.RepositoryBuilder;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
-import java.util.List;
+import com.notifyrapp.www.notifyr.Model.UserProfile;
 
-/**
- * Created by K on 11/4/2016.
- */
+import java.util.List;
 
 
 public class Business {
@@ -32,7 +30,7 @@ public class Business {
         this.context = context;
         repo = new Repository(context);
         repoBuilder = new RepositoryBuilder(context);
-        webApi = new WebApi();
+        webApi = new WebApi(context);
     }
 
     //region Article
@@ -58,5 +56,19 @@ public class Business {
         return repoBuilder.CreateNotifyrDatabase(userId);
     }
 
+    //endregion
+
+    //region User Accounts
+    public void RegisterAccount(String userName, String password, final Runnable callback)
+    {
+        webApi.RegisterUserProfile(userName,password,new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                callback.run();
+            }
+        });
+    }
     //endregion
 }
