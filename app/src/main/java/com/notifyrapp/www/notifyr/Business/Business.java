@@ -1,5 +1,8 @@
 package com.notifyrapp.www.notifyr.Business;
 
+import android.content.Context;
+
+import com.notifyrapp.www.notifyr.Data.RepositoryBuilder;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
@@ -12,11 +15,25 @@ import java.util.List;
 
 public class Business {
 
+    /* The View Context */
+    Context context;
+
     /* Data comes from the Notifyr Web Api */
-    WebApi webApi = new WebApi();
+    WebApi webApi;
 
     /* Data comes from local SQL Lite */
-    Repository repo = new Repository();
+    Repository repo;
+
+    /* Builds Databases and Tables */
+    RepositoryBuilder repoBuilder;
+
+    public Business(Context context)
+    {
+        this.context = context;
+        repo = new Repository(context);
+        repoBuilder = new RepositoryBuilder(context);
+        webApi = new WebApi();
+    }
 
     //region Article
 
@@ -34,9 +51,12 @@ public class Business {
     //region Data Access
     public Boolean CheckIfDatabaseExists()
     {
-        return repo.CheckIfDatabaseExistsi();
+        return repoBuilder.CheckIfDatabaseExists();
     }
-
+    public Boolean CreateNotifyrDatabase(String userId)
+    {
+        return repoBuilder.CreateNotifyrDatabase(userId);
+    }
 
     //endregion
 }

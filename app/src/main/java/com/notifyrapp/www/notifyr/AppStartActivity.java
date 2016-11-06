@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.TabLayout;
@@ -31,6 +32,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import com.notifyrapp.www.notifyr.Business.Business;
 
 import static java.lang.Thread.sleep;
 
@@ -56,7 +59,8 @@ public class AppStartActivity extends Activity {
 
     @Override
     protected void onResume() {
-        if(xTask.getStatus().equals(AsyncTask.Status.PENDING)) xTask.execute();
+
+        if(xTask.getStatus().equals(AsyncTask.Status.PENDING)) xTask.execute(this);
         super.onResume();
     }
 
@@ -66,11 +70,14 @@ public class AppStartActivity extends Activity {
             try {
                 /******* CHECK/CREATE LOCAL DB HERE *******/
                 Boolean localDbExists = false;
-                Database
+                Context context = params[0];
+                Business business = new Business(context);
+
+                business.CreateNotifyrDatabase("91315557-b9fa-4884-8ec4-cd372065c456");
 
                 if(localDbExists) {
+
                     // Use it
-                    Context context = params[0];
                     SharedPreferences prefs =
                             context.getSharedPreferences("UserSettings",
                                     Context.MODE_PRIVATE);
@@ -81,8 +88,6 @@ public class AppStartActivity extends Activity {
                 else {
                     // Create a new account and contact the database
                 }
-
-
                 sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -107,5 +112,6 @@ public class AppStartActivity extends Activity {
         super.onPostCreate(savedInstanceState);
 
     }
+
 
 }

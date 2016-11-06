@@ -1,89 +1,61 @@
 package com.notifyrapp.www.notifyr.Data;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
-/**
- * Created by K on 11/5/2016.
- */
 
 public class Repository {
 
-    private String dbName = "NotifyrLocal";
+    private Context context;
+    private String dbName = "NotifyrLocal.db";
 
     //region Get Data
+    public Repository(Context context)
+    {
+        this.context = context;
+    }
 
     public UserProfile GetUserProfile()
     {
         return new UserProfile();
     }
 
+    public List<Article> GetArticles(int skip, int take,String sortBy)
+    {
+        return new ArrayList<Article>();
+    }
+
+    public Article GetArticleById(long id)
+    {
+        return new Article();
+    }
+
     //endregion
 
     //region Save Data
-    public Boolean SaveUserProfile()
+
+    public Boolean SaveUserProfile(UserProfile userProfile)
     {
         return true;
     }
+
+    public Boolean SaveArticle(Article article)
+    {
+        return true;
+    }
+
     //endregion
 
 
 
-    //region Helper Functions
-
-    public Boolean CheckIfDatabaseExists()
-    {
-        return false;
-    }
-
-    public Boolean OpenOrCreateDatabase()
-    {
-        SQLiteDatabase myDB= null;
-        String TableName = "UserProfile";
-
-        String Data="";
-
-  /* Create a Database. */
-        try {
-            myDB = myDB.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-
-   /* Create a Table in the Database. */
-            myDB.execSQL("CREATE TABLE IF NOT EXISTS "
-                    + TableName
-                    + " (Id VARCHAR, Email VARCHAR);");
-
-   /* Insert data to a Table*/
-            myDB.execSQL("INSERT INTO "
-                    + TableName
-                    + " (Field1, Field2)"
-                    + " VALUES ('23123123213123', kleingomes@gmail.com);");
-
-   /*retrieve data from database */
-            Cursor c = myDB.rawQuery("SELECT * FROM " + TableName , null);
-
-            int Column1 = c.getColumnIndex("Field1");
-            int Column2 = c.getColumnIndex("Field2");
-
-            // Check if our result was valid.
-            c.moveToFirst();
-            if (c != null) {
-                // Loop through all Results
-                do {
-                    String Name = c.getString(Column1);
-                    int Age = c.getInt(Column2);
-                    Data =Data +Name+"/"+Age+"\n";
-                }while(c.moveToNext());
-            }
-        }
-        catch(Exception e) {
-        } finally {
-            if (myDB != null)
-                myDB.close();
-        }
-        return true;
-    }
-    //endregion
 
 }
