@@ -37,6 +37,10 @@ import android.widget.Button;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+
 import static java.lang.Thread.sleep;
 
 /**
@@ -54,29 +58,39 @@ public class AppStartActivity extends Activity {
         String userId = "";
 
         /* CHECK IF USER EXISTS  */
-        userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userId", "");
+        userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userid", "");
         if(userId.equals(""))
         {
             /* CREATE ACCOUNT */
-            biz.RegisterAccount("","",new Runnable()
-            {
-                @Override
-                public void run()
+            try {
+                biz.RegisterAccount("","",new Runnable()
                 {
-                    // Running callback
-                }
-            });
-            Log.d("ACCOUNT_CHECK","No Account Found" + userId);
+                    @Override
+                    public void run()
+                    {
+                        // Running callback
+                        Log.d("CALLBACK_CHECK","REACHED CALL BACK");
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("ACCOUNT_CHECK","No Account Found " + userId);
         }
         else
         {
             /* ACCOUNT EXISTS */
-            Log.d("ACCOUNT_CHECK","Account Exists" + userId);
+            Log.d("ACCOUNT_CHECK","Account Exists: " + userId);
         }
 
         /* REGISTER FOR REMOTE NOTIFICATIONS */
 
-        if(xTask.getStatus().equals(AsyncTask.Status.PENDING)) xTask.execute(this);
+        if(xTask.getStatus().equals(AsyncTask.Status.PENDING)) {
+            xTask.execute(this);
+        }
 
     }
 

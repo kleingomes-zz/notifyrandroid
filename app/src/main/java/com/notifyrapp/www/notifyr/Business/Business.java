@@ -8,6 +8,9 @@ import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.List;
 
 
@@ -59,8 +62,7 @@ public class Business {
     //endregion
 
     //region User Accounts
-    public void RegisterAccount(String userName, String password, final Runnable callback)
-    {
+    public void RegisterAccount(String userName, String password, final Runnable callback) throws IOException, JSONException {
         webApi.RegisterUserProfile(userName,password,new Runnable()
         {
             @Override
