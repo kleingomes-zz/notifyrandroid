@@ -49,18 +49,20 @@ import static java.lang.Thread.sleep;
  */
 public class AppStartActivity extends Activity {
 
-
+    Context ctx;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_start);
         Business biz = new Business(this);
         String userId = "";
-
+        ctx = this;
         /* CHECK IF USER EXISTS  */
+        PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "").commit();
         userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userid", "");
         if(userId.equals(""))
         {
+            Log.d("ACCOUNT_CHECK","No Account Found... Contacting Server to create one " + userId);
             /* CREATE ACCOUNT */
             try {
                 biz.RegisterAccount("","",new Runnable()
@@ -70,6 +72,11 @@ public class AppStartActivity extends Activity {
                     {
                         // Running callback
                         Log.d("CALLBACK_CHECK","REACHED CALL BACK");
+                        /******* CREATE LOCAL DB HERE *******/
+                        String user = PreferenceManager.getDefaultSharedPreferences(ctx).getString("userid", "");
+                        Business business = new Business(ctx);
+                        business.CreateNotifyrDatabase(user);
+                        startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
                     }
                 });
             } catch (IOException e) {
@@ -77,53 +84,33 @@ public class AppStartActivity extends Activity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            Log.d("ACCOUNT_CHECK","No Account Found " + userId);
+            Log.d("ACCOUNT_CHECK","Account Created: " + userId);
         }
         else
         {
             /* ACCOUNT EXISTS */
-            Log.d("ACCOUNT_CHECK","Account Exists: " + userId);
+            Log.d("ACCOUNT_CHECK","Account Exists... Logging In As: " + userId);
+            startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
         }
 
         /* REGISTER FOR REMOTE NOTIFICATIONS */
 
-        if(xTask.getStatus().equals(AsyncTask.Status.PENDING)) {
-            xTask.execute(this);
-        }
-
     }
 
-    private AsyncTask<Context, Void, String> xTask = new AsyncTask<Context, Void, String>() {
+    private AsyncTask<Object, Void, String> createOrUpdateDatabase = new AsyncTask<Object, Void, String>() {
+
+       //  if(createOrUpdateDatabase.getStatus().equals(AsyncTask.Status.PENDING)) {
+            //createOrUpdateDatabase.execute(this,user);
+        //        }
+
         @Override
-        protected String doInBackground(Context... params) {
-            try {
-                /******* CHECK/CREATE LOCAL DB HERE *******/
-                Boolean localDbExists = false;
+        protected String doInBackground(Object... params) {
 
-                if(localDbExists) {
-
-                    Context context = params[0];
-                    Business business = new Business(context);
-
-                    business.CreateNotifyrDatabase("91315557-b9fa-4884-8ec4-cd372065c456");
-
-                    // Use it
-                    SharedPreferences prefs =
-                            context.getSharedPreferences("UserSettings",
-                                    Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("userId", "51545423");
-                    editor.commit();
-                }
-                else {
-                    // Create a new account and contact the database
-                }
-                sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
+            /******* CREATE LOCAL DB HERE *******/
+            Context context = (Context)params[0];
+            String userId =  (String)params[1];
+            Business business = new Business(context);
+            business.CreateNotifyrDatabase(userId);
             return null;
         }
 
@@ -135,6 +122,7 @@ public class AppStartActivity extends Activity {
 
         @Override
         protected void onPostExecute(String s) {
+            startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
             //do something as the execution completed, you can launch your real activity.
         }
     };

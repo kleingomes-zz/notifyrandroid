@@ -38,7 +38,8 @@ public class RepositoryBuilder {
 
         try {
             /* Create Database */
-            this.notifyrDB = this.context.openOrCreateDatabase("DatabaseName", MODE_PRIVATE, null);
+            this.context.deleteDatabase(dbName);
+            this.notifyrDB = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
             /* Create Tables */
             CreateUserProfileTable();

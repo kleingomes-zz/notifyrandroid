@@ -16,6 +16,7 @@ public class Repository {
 
     private Context context;
     private String dbName = "NotifyrLocal.db";
+    private String userId;
 
     //region Get Data
     public Repository(Context context)
@@ -44,6 +45,27 @@ public class Repository {
 
     public Boolean SaveUserProfile(UserProfile userProfile)
     {
+        String tableName = "UserProfile";
+        SQLiteDatabase notifyrDB;
+        notifyrDB = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
+        Boolean accountExists = CheckIfTableHasRows(tableName);
+
+        if(accountExists)
+        {
+            // Clear the Account Row
+            notifyrDB.execSQL("DELETE FROM "+tableName);
+        }
+        // Insert the profile
+        notifyrDB.execSQL("INSERT INTO "
+                    + tableName
+                    + " (Id, Email,AccountType)"
+                    + " VALUES ('"+userProfile.UserId+"', null,null);");
+
+        if (notifyrDB != null) {
+            notifyrDB.close();
+        }
+
         return true;
     }
 
@@ -51,8 +73,34 @@ public class Repository {
     {
         return true;
     }
-
     //endregion
+
+    //region Helpers
+    private boolean CheckIsDataAlreadyInDBorNot(String TableName,
+                                                      String dbfield, String fieldValue) {
+        SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+        String Query = "Select * from " + TableName + " where " + dbfield + " = " + fieldValue;
+        Cursor cursor = sqldb.rawQuery(Query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
+    private boolean CheckIfTableHasRows(String TableName) {
+        SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+        String Query = "Select * from " + TableName;
+        Cursor cursor = sqldb.rawQuery(Query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
 
 
 

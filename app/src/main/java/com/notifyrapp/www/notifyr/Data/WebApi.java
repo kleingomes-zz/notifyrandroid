@@ -32,17 +32,12 @@ public class WebApi {
     private String apiBaseUrl = "http://www.notifyr.ca/dev/service/api/";
     //private String apiBaseUrlDev = "http://www.notifyr.ca/dev/service/api/";
     private Context context;
-    private UserProfile userProfile;
     private String accesToken;
 
     /* Constructor */
     public WebApi(Context context)
     {
         this.context = context;
-        this.userProfile = new UserProfile();
-        this.userProfile.UserId = PreferenceManager.getDefaultSharedPreferences(context).getString("userid", "");
-        this.userProfile.Password = PreferenceManager.getDefaultSharedPreferences(context).getString("password", "");
-        this.userProfile.Email = PreferenceManager.getDefaultSharedPreferences(context).getString("email", "");
     }
 
     //region User Profile
@@ -51,7 +46,7 @@ public class WebApi {
         String url = apiBaseUrl + urlPath;
 
         if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
-            postJSONObjectFromURL.execute(url,context,callback,new UserProfile());
+            postJSONObjectFromURL.execute(url,context,callback,NotifyrObjects.UserProfile);
         }
     }
     //endregion
@@ -70,7 +65,7 @@ public class WebApi {
     }
     //endregion
 
-    //region Helpers
+    //region Network Requests
     private AsyncTask<Object, Void, List<Object>> postJSONObjectFromURL = new AsyncTask<Object, Void, List<Object>>() {
 
         @Override
@@ -79,7 +74,7 @@ public class WebApi {
             String urlString = (String) params[0];
             Context parentContext = (Context) params[1];
             Runnable callback = (Runnable) params[2];
-            UserProfile user = (UserProfile) params[3];
+            NotifyrObjects notifyrObjectType = (NotifyrObjects) params[3];
 
             String result = "";
             try {
@@ -104,7 +99,7 @@ public class WebApi {
                 List<Object> returnObj = new ArrayList<>();
                 returnObj.add(new JSONObject(result));
                 returnObj.add(callback);
-                returnObj.add(user);
+                returnObj.add(notifyrObjectType);
                 returnObj.add(context);
                 return returnObj;//new JSONObject(result);
             } catch (JSONException e) {
@@ -118,20 +113,29 @@ public class WebApi {
             // Save to Local Settings and Database
             JSONObject jsonObject = (JSONObject) returnObjects.get(0);
             Runnable callback = (Runnable) returnObjects.get(1);
-            Object returnObject = returnObjects.get(3);
+            NotifyrObjects notifyrType = (NotifyrObjects) returnObjects.get(3);
 
             try {
 
-                if (returnObject instanceof UserProfile) {
+                if (notifyrType == NotifyrObjects.UserProfile) {
+                    Repository repo = new Repository(context);
+                    UserProfile userProfile = new UserProfile();
                     userProfile.UserId = jsonObject.getString("UserId");
                     userProfile.Email = jsonObject.getString("Email");
+                    repo.SaveUserProfile(userProfile);
                     PreferenceManager.getDefaultSharedPreferences(context).edit().putString("userid", userProfile.UserId).commit();
                 }
 
-                if (returnObject instanceof Article) {
-                    userProfile.UserId = jsonObject.getString("UserId");
-                    userProfile.Email = jsonObject.getString("Email");
+                if (notifyrType == NotifyrObjects.Article) {
+
+
                 }
+
+                if (notifyrType == NotifyrObjects.Item) {
+
+
+                }
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -141,8 +145,12 @@ public class WebApi {
             super.onPostExecute(returnObjects);
         }
     };
+    //endregion
 
-
+    //region Helpers
+    public enum NotifyrObjects {
+        Article, Item, UserProfile
+    }
 
     private String streamToString(InputStream is) throws IOException {
         StringBuilder sb = new StringBuilder();
