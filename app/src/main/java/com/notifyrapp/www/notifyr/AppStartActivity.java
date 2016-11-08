@@ -63,7 +63,7 @@ public class AppStartActivity extends Activity {
         if(userId.equals(""))
         {
             Log.d("ACCOUNT_CHECK","No Account Found... Contacting Server to create one " + userId);
-            /* CREATE ACCOUNT */
+            //* CREATE ACCOUNT *//*
             try {
                 biz.RegisterAccount("","",new Runnable()
                 {
@@ -72,26 +72,34 @@ public class AppStartActivity extends Activity {
                     {
                         // Running callback
                         Log.d("CALLBACK_CHECK","REACHED CALL BACK");
-                        /******* CREATE LOCAL DB HERE *******/
+                        //******* CREATE LOCAL DB HERE *******//*
                         String user = PreferenceManager.getDefaultSharedPreferences(ctx).getString("userid", "");
                         Business business = new Business(ctx);
-                        business.CreateNotifyrDatabase(user);
-                        business.UpdateToken();
+                        //business.CreateNotifyrDatabase(user);
+                        business.UpdateToken(new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        });
                         startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
                     }
                 });
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             Log.d("ACCOUNT_CHECK","Account Created: " + userId);
         }
         else
         {
-            /* ACCOUNT EXISTS */
+            //* ACCOUNT EXISTS *//*
             Log.d("ACCOUNT_CHECK","Account Exists... Logging In As: " + userId);
-            startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
+            new Business(ctx).UpdateToken(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
+                }
+            });
         }
 
         /* REGISTER FOR REMOTE NOTIFICATIONS */
@@ -128,15 +136,6 @@ public class AppStartActivity extends Activity {
         }
     };
 
-    @Override
-    protected void onResume() {
-        String  userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userid", "");
-        if(!userId.equals("")) {
-            Business biz = new Business(this);
-            biz.UpdateToken();
-        }
-        super.onResume();
-    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

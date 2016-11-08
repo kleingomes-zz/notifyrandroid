@@ -15,6 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,22 +34,24 @@ public class WebApi {
     /* Private Fields */
     private String apiBaseUrl = "http://www.notifyr.ca/dev/service/api/";
     private String tokenUrl = "http://www.notifyr.ca/dev/service/token";
+    private String defaultPassword = "2014$NotifyrPassword$2014";
     //private String apiBaseUrlDev = "http://www.notifyr.ca/dev/service/api/";
     private Context context;
-    private String accessToken;
-    private String userId;
+    private String accessToken = "";
+    private String userId = "";
 
     /* Constructor */
     public WebApi(Context context)
     {
         this.context = context;
         this.userId = PreferenceManager.getDefaultSharedPreferences(context).getString("userid", "");
-        if(this.accessToken.equals("") && !this.userId.equals(""))
+   /*     if(this.accessToken.equals("") && !this.userId.equals(""))
         {
             GetAccessToken(null);
-        }
+        }*/
     }
     //region Security
+
     public void GetAccessToken(Runnable callback)
     {
         String url = tokenUrl;
@@ -57,10 +61,11 @@ public class WebApi {
         }
     }
 
+
     //endregion
 
     //region User Profile
-    public void RegisterUserProfile(String userName, String password, Runnable callback) throws IOException, JSONException {
+    public void RegisterUserProfile(String userName, String password, Runnable callback){
         String urlPath = "Account/RegisterGuest";
         String url = apiBaseUrl + urlPath;
 
@@ -94,18 +99,53 @@ public class WebApi {
             Context parentContext = (Context) params[1];
             Runnable callback = (Runnable) params[2];
             NotifyrObjects notifyrObjectType = (NotifyrObjects) params[3];
-
             String result = "";
+
             try {
 
                 URL url = new URL(urlString);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000 /* milliseconds */);
-                conn.setConnectTimeout(15000 /* milliseconds */);
-                conn.setRequestMethod("POST");
-                conn.setDoInput(true);   //* uses POST
-                conn.setDoOutput(true);
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);
+
+                /* Set Request Type */
+                if(notifyrObjectType == NotifyrObjects.AccessToken || notifyrObjectType == NotifyrObjects.UserProfile) {
+                    conn.setRequestMethod("POST");
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                }
+                else if(notifyrObjectType == NotifyrObjects.Item || notifyrObjectType == NotifyrObjects.Article )
+                {
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
+                }
+
+
+                /* Set body if needed */
+                if(notifyrObjectType == NotifyrObjects.AccessToken)
+                {
+                    String userName =  userId + "@notifyr.ca";
+
+                    String str =  "grant_type=password&username="+ userName + "&password="+defaultPassword;
+                    byte[] outputInBytes = str.getBytes("UTF-8");
+                    OutputStream os = conn.getOutputStream();
+                    os.write( outputInBytes );
+                    os.close();
+                }
+
                 conn.connect();
+                int statusCode = conn.getResponseCode();
+
+                InputStream is = null;
+
+                if (statusCode >= 200 && statusCode < 400) {
+                    // Create an InputStream in order to extract the response object
+                    is = conn.getInputStream();
+                }
+                else {
+                    is = conn.getErrorStream();
+                }
+
                 InputStream stream = conn.getInputStream();
                 result = streamToString(stream);
                 System.out.println("JSON: " + result);
@@ -116,10 +156,13 @@ public class WebApi {
 
             try {
                 List<Object> returnObj = new ArrayList<>();
-                returnObj.add(new JSONObject(result));
-                returnObj.add(callback);
-                returnObj.add(notifyrObjectType);
-                returnObj.add(context);
+                if(!result.equals("")) {
+
+                    returnObj.add(new JSONObject(result));
+                    returnObj.add(callback);
+                    returnObj.add(notifyrObjectType);
+                    returnObj.add(context);
+                }
                 return returnObj;//new JSONObject(result);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -130,43 +173,45 @@ public class WebApi {
         @Override
         protected void onPostExecute(List<Object> returnObjects) {
             // Save to Local Settings and Database
-            JSONObject jsonObject = (JSONObject) returnObjects.get(0);
-            Runnable callback = (Runnable) returnObjects.get(1);
-            NotifyrObjects notifyrType = (NotifyrObjects) returnObjects.get(3);
 
-            try {
+            if(returnObjects != null && returnObjects.size() == 4) {
+                JSONObject jsonObject = (JSONObject) returnObjects.get(0);
+                Runnable callback = (Runnable) returnObjects.get(1);
+                NotifyrObjects notifyrType = (NotifyrObjects) returnObjects.get(2);
 
-                if (notifyrType == NotifyrObjects.UserProfile) {
-                    Repository repo = new Repository(context);
-                    UserProfile userProfile = new UserProfile();
-                    userProfile.UserId = jsonObject.getString("UserId");
-                    userProfile.Email = jsonObject.getString("Email");
-                    repo.SaveUserProfile(userProfile);
-                    PreferenceManager.getDefaultSharedPreferences(context).edit().putString("userid", userProfile.UserId).commit();
+                try {
+
+                    if (notifyrType == NotifyrObjects.UserProfile) {
+                        Repository repo = new Repository(context);
+                        UserProfile userProfile = new UserProfile();
+                        userProfile.UserId = jsonObject.getString("UserId");
+                        userProfile.Email = jsonObject.getString("Email");
+                        //repo.SaveUserProfile(userProfile);
+                        PreferenceManager.getDefaultSharedPreferences(context).edit().putString("userid", userProfile.UserId).commit();
+                    }
+
+                    if (notifyrType == NotifyrObjects.Article) {
+
+
+                    }
+
+                    if (notifyrType == NotifyrObjects.Item) {
+
+
+                    }
+
+                    if (notifyrType == NotifyrObjects.AccessToken) {
+                        AccessToken acesssTokenObj = new AccessToken();
+                        acesssTokenObj.setTokenValue(jsonObject.getString("access_token"));
+                        accessToken = acesssTokenObj.getTokenValue();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                if (notifyrType == NotifyrObjects.Article) {
-
-
+                if (callback != null) {
+                    callback.run();
                 }
-
-                if (notifyrType == NotifyrObjects.Item) {
-
-
-                }
-
-                if (notifyrType == NotifyrObjects.AccessToken) {
-                    AccessToken acesssTokenObj = new AccessToken();
-                    acesssTokenObj.setTokenValue(jsonObject.getString("access_token"));
-                    accessToken = acesssTokenObj.getTokenValue();
-                }
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if(callback != null) {
-                callback.run();
             }
             super.onPostExecute(returnObjects);
         }

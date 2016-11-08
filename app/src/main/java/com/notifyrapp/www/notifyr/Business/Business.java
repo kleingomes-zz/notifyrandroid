@@ -31,9 +31,6 @@ public class Business {
     public Business(Context context)
     {
         this.context = context;
-        repo = new Repository(context);
-        repoBuilder = new RepositoryBuilder(context);
-        webApi = new WebApi(context);
     }
 
     //region Article
@@ -52,35 +49,24 @@ public class Business {
     //region Data Access
     public Boolean CheckIfDatabaseExists()
     {
-        return repoBuilder.CheckIfDatabaseExists();
+        return new RepositoryBuilder(context).CheckIfDatabaseExists();
     }
     public Boolean CreateNotifyrDatabase(String userId)
     {
-        return repoBuilder.CreateNotifyrDatabase(userId);
+        return new RepositoryBuilder(context).CreateNotifyrDatabase(userId);
     }
 
     //endregion
 
     //region User Accounts
-    public void RegisterAccount(String userName, String password, final Runnable callback) throws IOException, JSONException {
-        webApi.RegisterUserProfile(userName,password,new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                callback.run();
-            }
-        });
+    public void RegisterAccount(String userName, String password, Runnable callback){
+        new WebApi(context).RegisterUserProfile(userName,password,callback);
     }
 
-    public void UpdateToken()
-    {
-        webApi.GetAccessToken(null);
-    }
 
     public void UpdateToken(Runnable callback)
     {
-        webApi.GetAccessToken(callback);
+        new WebApi(context).GetAccessToken(callback);
     }
     //endregion
 
