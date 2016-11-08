@@ -34,6 +34,7 @@ public class WebApi {
     /* Private Fields */
     private String apiBaseUrl = "http://www.notifyr.ca/dev/service/api/";
     private String tokenUrl = "http://www.notifyr.ca/dev/service/token";
+
     private String defaultPassword = "2014$NotifyrPassword$2014";
     //private String apiBaseUrlDev = "http://www.notifyr.ca/dev/service/api/";
     private Context context;
@@ -45,6 +46,8 @@ public class WebApi {
     {
         this.context = context;
         this.userId = PreferenceManager.getDefaultSharedPreferences(context).getString("userid", "");
+        this.accessToken = PreferenceManager.getDefaultSharedPreferences(context).getString("accesstoken", "");
+
    /*     if(this.accessToken.equals("") && !this.userId.equals(""))
         {
             GetAccessToken(null);
@@ -74,6 +77,17 @@ public class WebApi {
         }
     }
     //endregion
+
+    //region User Profile
+    public void GetItemArticles(long itemId,int skip,int take,String sortBy, Runnable callback){
+        String urlPath = "Item/GetItemArticles?itemId="+itemId+"&skip="+skip+"&take="+take;
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback,NotifyrObjects.Article);
+        }
+    }
+    //endregion
+
 
     //region Articles
     public List<Article> GetArticles(int skip, int take,String sortBy, int itemTypeId )
@@ -116,16 +130,16 @@ public class WebApi {
                 }
                 else if(notifyrObjectType == NotifyrObjects.Item || notifyrObjectType == NotifyrObjects.Article )
                 {
+                    String bearer = "Bearer " + accessToken;
+                    conn.setRequestProperty("Authorization", bearer);
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                 }
 
-
-                /* Set body if needed */
+                /* Set Request Body */
                 if(notifyrObjectType == NotifyrObjects.AccessToken)
                 {
                     String userName =  userId + "@notifyr.ca";
-
                     String str =  "grant_type=password&username="+ userName + "&password="+defaultPassword;
                     byte[] outputInBytes = str.getBytes("UTF-8");
                     OutputStream os = conn.getOutputStream();
@@ -204,6 +218,7 @@ public class WebApi {
                         AccessToken acesssTokenObj = new AccessToken();
                         acesssTokenObj.setTokenValue(jsonObject.getString("access_token"));
                         accessToken = acesssTokenObj.getTokenValue();
+                        PreferenceManager.getDefaultSharedPreferences(context).edit().putString("accesstoken",accessToken).commit();
                     }
 
                 } catch (JSONException e) {

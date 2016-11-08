@@ -58,6 +58,12 @@ public class Business {
 
     //endregion
 
+    //region Articles
+    public void GetItemArticles(long itemId,int skip,int take,String sortBy, Runnable callback){
+        new WebApi(context).GetItemArticles(itemId,skip,take,sortBy,callback);
+    }
+    //endregion
+
     //region User Accounts
     public void RegisterAccount(String userName, String password, Runnable callback){
         new WebApi(context).RegisterUserProfile(userName,password,callback);

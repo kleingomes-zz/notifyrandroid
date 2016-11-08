@@ -79,10 +79,10 @@ public class AppStartActivity extends Activity {
                         business.UpdateToken(new Runnable() {
                             @Override
                             public void run() {
-
+                                startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
                             }
                         });
-                        startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
+
                     }
                 });
             } catch (Exception e) {
@@ -97,7 +97,7 @@ public class AppStartActivity extends Activity {
             new Business(ctx).UpdateToken(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
+                     startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
                 }
             });
         }
@@ -140,15 +140,6 @@ public class AppStartActivity extends Activity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-    }
-
-    protected void RegsiterGuest()
-    {
-
-    }
-    protected void RegisterDevice()
-    {
 
     }
 
