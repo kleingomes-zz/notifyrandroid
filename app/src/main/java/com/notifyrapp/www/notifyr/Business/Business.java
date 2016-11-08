@@ -72,6 +72,16 @@ public class Business {
             }
         });
     }
+
+    public void UpdateToken()
+    {
+        webApi.GetAccessToken(null);
+    }
+
+    public void UpdateToken(Runnable callback)
+    {
+        webApi.GetAccessToken(callback);
+    }
     //endregion
 
 

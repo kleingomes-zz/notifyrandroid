@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.notifyrapp.www.notifyr.Model.AccessToken;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
 
@@ -30,15 +31,33 @@ public class WebApi {
 
     /* Private Fields */
     private String apiBaseUrl = "http://www.notifyr.ca/dev/service/api/";
+    private String tokenUrl = "http://www.notifyr.ca/dev/service/token";
     //private String apiBaseUrlDev = "http://www.notifyr.ca/dev/service/api/";
     private Context context;
-    private String accesToken;
+    private String accessToken;
+    private String userId;
 
     /* Constructor */
     public WebApi(Context context)
     {
         this.context = context;
+        this.userId = PreferenceManager.getDefaultSharedPreferences(context).getString("userid", "");
+        if(this.accessToken.equals("") && !this.userId.equals(""))
+        {
+            GetAccessToken(null);
+        }
     }
+    //region Security
+    public void GetAccessToken(Runnable callback)
+    {
+        String url = tokenUrl;
+
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback,NotifyrObjects.AccessToken);
+        }
+    }
+
+    //endregion
 
     //region User Profile
     public void RegisterUserProfile(String userName, String password, Runnable callback) throws IOException, JSONException {
@@ -136,12 +155,19 @@ public class WebApi {
 
                 }
 
+                if (notifyrType == NotifyrObjects.AccessToken) {
+                    AccessToken acesssTokenObj = new AccessToken();
+                    acesssTokenObj.setTokenValue(jsonObject.getString("access_token"));
+                    accessToken = acesssTokenObj.getTokenValue();
+                }
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            callback.run();
+            if(callback != null) {
+                callback.run();
+            }
             super.onPostExecute(returnObjects);
         }
     };
@@ -149,7 +175,7 @@ public class WebApi {
 
     //region Helpers
     public enum NotifyrObjects {
-        Article, Item, UserProfile
+        Article, Item, UserProfile, AccessToken
     }
 
     private String streamToString(InputStream is) throws IOException {

@@ -58,7 +58,7 @@ public class AppStartActivity extends Activity {
         String userId = "";
         ctx = this;
         /* CHECK IF USER EXISTS  */
-        PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "").commit();
+    //  PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "").commit();
         userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userid", "");
         if(userId.equals(""))
         {
@@ -76,6 +76,7 @@ public class AppStartActivity extends Activity {
                         String user = PreferenceManager.getDefaultSharedPreferences(ctx).getString("userid", "");
                         Business business = new Business(ctx);
                         business.CreateNotifyrDatabase(user);
+                        business.UpdateToken();
                         startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
                     }
                 });
@@ -126,6 +127,16 @@ public class AppStartActivity extends Activity {
             //do something as the execution completed, you can launch your real activity.
         }
     };
+
+    @Override
+    protected void onResume() {
+        String  userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userid", "");
+        if(!userId.equals("")) {
+            Business biz = new Business(this);
+            biz.UpdateToken();
+        }
+        super.onResume();
+    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
