@@ -8,16 +8,16 @@
         <item name="colorAccent">@color/colorNotifyrLightBlue</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="@style/Theme.AppCompat.Light" />
 
-    <style name="FullscreenTheme" parent="@android:style/Theme.NoTitleBar">
+    <style name="FullscreenTheme" parent="@style/Theme.AppCompat.DayNight">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowBackground">@null</item>
@@ -28,7 +28,8 @@
     <style name="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
-    <style name="MyTheme" parent="@android:style/Theme.Holo.Light">
+
+ <!--   <style name="MyTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/MyTheme.ActionBarStyle</item>
     </style>
 
@@ -39,4 +40,6 @@
     <style name="MyTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/colorNotifyrLightBlue</item>
     </style>
+
+-->
 </resources>
