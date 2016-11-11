@@ -97,7 +97,7 @@ public class AppStartActivity extends AppCompatActivity {
             new Business(ctx).UpdateToken(new Runnable() {
                 @Override
                 public void run() {
-                     startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
+                     startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                 }
             });
         }

@@ -1,9 +1,15 @@
 package com.notifyrapp.www.notifyr;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.IdRes;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
@@ -19,11 +25,13 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.notifyrapp.www.notifyr.Model.Article;
 
 
 
-public class ArticleActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -40,12 +48,19 @@ public class ArticleActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
+    private Context ctx;
+    TextView abTitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_article);
+        setContentView(R.layout.activity_main);
+        this.ctx = this;
 
+        // INIT
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar);
+        abTitle =  (TextView)findViewById(R.id.abTitle);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorNotifyrLightBlue)));
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -60,15 +75,56 @@ public class ArticleActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-      FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-      fab.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-              Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                      .setAction("Action", null).show();
-          }
-      });
-      
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
+
+        bottomNavigationBar
+                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Home"))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Interests"))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Discover"))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Notifications"))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Settings"))
+                .setActiveColor(R.color.colorNotifyrLightBlue)
+                .setInActiveColor("#95a5a6")
+                .setBarBackgroundColor("#ECECEC")
+                .setMode(BottomNavigationBar.MODE_FIXED)
+                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
+                .initialise();
+        bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener(){
+            @Override
+            public void onTabSelected(int position) {
+                if(position == 0)
+                {
+                    AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+                    appBar.setVisibility(View.VISIBLE);
+                    abTitle.setText("Home");
+                }
+                else
+                {
+                    AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+                    appBar.setVisibility(View.INVISIBLE);
+                }
+                if(position == 1) {   abTitle.setText("My Interests"); }
+                if(position == 2) {   abTitle.setText("Discover"); }
+                if(position == 3) {   abTitle.setText("Notifications"); }
+                if(position == 4) {   abTitle.setText("Settings"); }
+            }
+            @Override
+            public void onTabUnselected(int position) {
+            }
+            @Override
+            public void onTabReselected(int position) {
+            }
+        });
+
     }
 
 
@@ -79,24 +135,20 @@ public class ArticleActivity extends AppCompatActivity {
         return true;
     }
 
-   /** @Override
+    /** @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    // Handle action bar item clicks here. The action bar will
+    // automatically handle clicks on the Home/Up button, so long
+    // as you specify a parent activity in AndroidManifest.xml.
+    int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+    //noinspection SimplifiableIfStatement
+    if (id == R.id.action_settings) {
+    return true;
+    }
 
-        return super.onOptionsItemSelected(item);
+    return super.onOptionsItemSelected(item);
     }*/
-
-    
-  
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -161,11 +213,17 @@ public class ArticleActivity extends AppCompatActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_article, container, false);
-          //  TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-         //   textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            //  TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            //   textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }
+
+    //region UI
+
+
+
+    //endregion
 }
