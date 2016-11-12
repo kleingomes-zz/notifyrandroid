@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Context ctx;
     TextView abTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
 
         bottomNavigationBar
-                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Home"))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Interests"))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Discover"))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Notifications"))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, "Settings"))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_home_black_24dp, R.string.menu_tab_0))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_star_border_black_24dp, R.string.menu_tab_1))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_explore_black_24dp, R.string.menu_tab_2))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_notifications_none_black_24dp, R.string.menu_tab_3))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, R.string.menu_tab_4))
                 .setActiveColor(R.color.colorNotifyrLightBlue)
                 .setInActiveColor("#95a5a6")
                 .setBarBackgroundColor("#ECECEC")
@@ -105,17 +106,17 @@ public class MainActivity extends AppCompatActivity {
                 {
                     AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
                     appBar.setVisibility(View.VISIBLE);
-                    abTitle.setText("Home");
+                    abTitle.setText(R.string.menu_tab_0);
                 }
                 else
                 {
                     AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
                     appBar.setVisibility(View.INVISIBLE);
                 }
-                if(position == 1) {   abTitle.setText("My Interests"); }
-                if(position == 2) {   abTitle.setText("Discover"); }
-                if(position == 3) {   abTitle.setText("Notifications"); }
-                if(position == 4) {   abTitle.setText("Settings"); }
+                if(position == 1) {   abTitle.setText(R.string.menu_tab_1); }
+                if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
+                if(position == 3) {   abTitle.setText(R.string.menu_tab_3); }
+                if(position == 4) {   abTitle.setText(R.string.menu_tab_4); }
             }
             @Override
             public void onTabUnselected(int position) {

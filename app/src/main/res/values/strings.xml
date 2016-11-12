@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Notifyr</string>
     <string name="action_settings">Settings</string>
+
+    <string name="menu_tab_0">Home</string>
+    <string name="menu_tab_1">My Interests</string>
+    <string name="menu_tab_2">Discover</string>
+    <string name="menu_tab_3">Notifications</string>
+    <string name="menu_tab_4">Settings</string>
+
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="title_activity_app_start">AppStartActivity</string>
