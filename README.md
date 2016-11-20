@@ -1,6 +1,6 @@
 ## H2 Notifyr Android App
 
-## H3 Links
+## H3 Web Links
 <b> Development </b>
 http://www.notifyr.ca/dev/service/api
 
