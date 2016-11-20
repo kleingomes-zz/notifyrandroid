@@ -1,13 +1,13 @@
-Notifyr Android App
+## H2 Notifyr Android App
 
-Development
+## H3 Development
 http://www.notifyr.ca/dev/service/api
 
-Production
+## H2 Production
 http://www.notifyr.ca/service/api
 
-API Help
+## H2 API Help
 http://www.notifyr.ca/service/help
 
-Website
+## H2 Website
 http://www.notifyrapp.com
