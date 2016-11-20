@@ -1,7 +1,5 @@
 package com.notifyrapp.www.notifyr.Model;
 
-import android.media.session.MediaSession;
-
 import java.util.Date;
 
 /**
@@ -10,27 +8,27 @@ import java.util.Date;
 
 public class AccessToken {
 
-    private String Value;
-    private Date Issued;
-    private Date Expired;
-    private String TokenType;
-    private long ExpiresIn;
+    private String value;
+    private Date issued;
+    private Date expired;
+    private String tokenType;
+    private long expiresIn;
 
     /* Getters and Setters */
-    public String getTokenValue() { return Value; }
-    public void setTokenValue(String Value) { this.Value = Value; }
+    public String getTokenValue() { return value; }
+    public void setTokenValue(String Value) { this.value = Value; }
 
-    public Date getIssuedDate() { return Issued; }
-    public void setIssuedDate(Date Issued) { this.Issued = Issued; }
+    public Date getIssuedDate() { return issued; }
+    public void setIssuedDate(Date Issued) { this.issued = Issued; }
 
-    public Date getExpiryDate() { return Expired; }
-    public void setExpiryDate(Date expiryDate) { this.Expired = expiryDate; }
+    public Date getExpiryDate() { return expired; }
+    public void setExpiryDate(Date expiryDate) { this.expired = expiryDate; }
 
-    public String getTokenType() { return TokenType; }
-    public void setTokenType(String tokenType) { this.TokenType = TokenType; }
+    public String getTokenType() { return tokenType; }
+    public void setTokenType(String tokenType) { this.tokenType = this.tokenType; }
 
-    public long getExpiresInDate() { return ExpiresIn; }
-    public void setExpiresInDate(long ExpiresInDate) { this.ExpiresIn = ExpiresInDate; }
+    public long getExpiresInDate() { return expiresIn; }
+    public void setExpiresInDate(long ExpiresInDate) { this.expiresIn = ExpiresInDate; }
 
 
 }

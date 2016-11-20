@@ -5,7 +5,49 @@ package com.notifyrapp.www.notifyr.Model;
  */
 
 public class Item {
-    int Id;
-    String Name;
-    String IUrl;
+    private int id;
+    private String name;
+    private String iurl;
+    private int itemTypeId;
+    private String itemTypeName;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getIurl() {
+        return iurl;
+    }
+
+    public void setIurl(String iurl) {
+        this.iurl = iurl;
+    }
+
+    public int getItemTypeId() {
+        return itemTypeId;
+    }
+
+    public void setItemTypeId(int itemTypeId) {
+        this.itemTypeId = itemTypeId;
+    }
+
+    public String getItemTypeName() {
+        return itemTypeName;
+    }
+
+    public void setItemTypeName(String itemTypeName) {
+        this.itemTypeName = itemTypeName;
+    }
 }

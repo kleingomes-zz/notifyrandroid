@@ -24,12 +24,12 @@ public class RepositoryBuilder {
 
     //region  Functions
 
-    public Boolean CheckIfDatabaseExists()
+    public Boolean checkIfDatabaseExists()
     {
         return false;
     }
 
-    public Boolean CreateNotifyrDatabase(String userId)
+    public Boolean createNotifyrDatabase(String userId)
     {
         this.userId = userId;
         this.notifyrDB= null;

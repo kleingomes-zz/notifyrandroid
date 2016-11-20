@@ -6,11 +6,7 @@ import com.notifyrapp.www.notifyr.Data.RepositoryBuilder;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
-import com.notifyrapp.www.notifyr.Model.UserProfile;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.List;
 
 
@@ -33,6 +29,8 @@ public class Business {
         this.context = context;
     }
 
+
+
     //region Article
 
     /* Get All Articles for All Items */
@@ -47,33 +45,52 @@ public class Business {
     //endregion
 
     //region Data Access
-    public Boolean CheckIfDatabaseExists()
+    public Boolean checkIfDatabaseExists()
     {
-        return new RepositoryBuilder(context).CheckIfDatabaseExists();
+        return new RepositoryBuilder(context).checkIfDatabaseExists();
     }
-    public Boolean CreateNotifyrDatabase(String userId)
+    public Boolean createNotifyrDatabase(String userId)
     {
-        return new RepositoryBuilder(context).CreateNotifyrDatabase(userId);
+        return new RepositoryBuilder(context).createNotifyrDatabase(userId);
+    }
+
+    //endregion
+
+    //region Items
+    public void getAllItems(CallbackInterface callback)
+    {
+        new WebApi(context).getAllItems(callback);
+    }
+
+    public void getPopularItems(int skip,int take,CallbackInterface callback)
+    {
+        new WebApi(context).getPopularItems(skip,take,callback);
     }
 
     //endregion
 
     //region Articles
-    public void GetItemArticles(long itemId,int skip,int take,String sortBy, Runnable callback){
-        new WebApi(context).GetItemArticles(itemId,skip,take,sortBy,callback);
+    public void getItemArticles(long itemId,int skip,int take,String sortBy, CallbackInterface callback){
+        new WebApi(context).getItemArticles(itemId,skip,take,sortBy,callback);
     }
     //endregion
 
     //region User Accounts
-    public void RegisterAccount(String userName, String password, Runnable callback){
-        new WebApi(context).RegisterUserProfile(userName,password,callback);
+    public void registerAccount(String userName, String password, CallbackInterface callback){
+        new WebApi(context).registerUserProfile(userName,password,callback);
     }
 
 
-    public void UpdateToken(Runnable callback)
+    public void updateToken(Runnable callback)
     {
-        new WebApi(context).GetAccessToken(callback);
+     //   new WebApi(context).getAccessToken(callback);
     }
+
+    public void updateToken(CallbackInterface callback)
+    {
+        new WebApi(context).getAccessToken(callback);
+    }
+
     //endregion
 
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -20,6 +21,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -31,8 +33,12 @@ import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Article;
+import com.notifyrapp.www.notifyr.Model.Item;
 
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener {
@@ -69,13 +75,19 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorNotifyrLightBlue)));
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
 
+        Business b = new Business(this);
+        b.getPopularItems(0,20,new CallbackInterface()
+        {
+            @Override
+            public void onCompleted(Object data) {
+                // Running callback
+                Log.d("CALLBACK_CHECK","DOWNLOADED ITEMS");
+                ArrayList<Item> items = (ArrayList<Item>) data;
 
+            }
 
-
-        //////////////
+        });
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -116,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 // FRAGMENT
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
 
                 if(position == 0)
                 {

@@ -1,45 +1,16 @@
 package com.notifyrapp.www.notifyr;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 
 import com.notifyrapp.www.notifyr.Business.Business;
-import com.notifyrapp.www.notifyr.Model.UserProfile;
-
-import org.json.JSONException;
-
-import java.io.IOException;
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 
 import static java.lang.Thread.sleep;
 
@@ -50,17 +21,16 @@ import static java.lang.Thread.sleep;
 
 
 
-public class AppStartActivity extends AppCompatActivity {
+public class AppStartActivity extends AppCompatActivity{
 
     Context ctx;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_start);
         Business biz = new Business(this);
-
         String userId = "";
-
         ctx = this;
         /* CHECK IF USER EXISTS  */
     //  PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "").commit();
@@ -70,25 +40,26 @@ public class AppStartActivity extends AppCompatActivity {
             Log.d("ACCOUNT_CHECK","No Account Found... Contacting Server to create one " + userId);
             //* CREATE ACCOUNT *//*
             try {
-                biz.RegisterAccount("","",new Runnable()
+                biz.registerAccount("","",new CallbackInterface()
                 {
                     @Override
-                    public void run()
-                    {
+                    public void onCompleted(Object data) {
                         // Running callback
                         Log.d("CALLBACK_CHECK","REACHED CALL BACK");
+                        String userId = (String) data;
+                        PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", userId).commit();
                         //******* CREATE LOCAL DB HERE *******//*
-                        String user = PreferenceManager.getDefaultSharedPreferences(ctx).getString("userid", "");
                         Business business = new Business(ctx);
-                        //business.CreateNotifyrDatabase(user);
-                        business.UpdateToken(new Runnable() {
+                        //business.createNotifyrDatabase(user);
+                        business.updateToken(new CallbackInterface() {
                             @Override
-                            public void run() {
+                            public void onCompleted(Object data) {
                                 startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                             }
                         });
 
                     }
+
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -99,9 +70,9 @@ public class AppStartActivity extends AppCompatActivity {
         {
             //* ACCOUNT EXISTS *//*
             Log.d("ACCOUNT_CHECK","Account Exists... Logging In As: " + userId);
-            new Business(ctx).UpdateToken(new Runnable() {
+            new Business(ctx).updateToken(new CallbackInterface() {
                 @Override
-                public void run() {
+                public void onCompleted(Object data) {
                      startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                 }
             });
@@ -124,7 +95,7 @@ public class AppStartActivity extends AppCompatActivity {
             Context context = (Context)params[0];
             String userId =  (String)params[1];
             Business business = new Business(context);
-            business.CreateNotifyrDatabase(userId);
+            business.createNotifyrDatabase(userId);
             return null;
         }
 
@@ -145,7 +116,6 @@ public class AppStartActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
     }
 
 }

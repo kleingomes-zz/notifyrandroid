@@ -1,6 +1,7 @@
 package com.notifyrapp.www.notifyr.Data;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
@@ -20,13 +21,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.AccessToken;
 import com.notifyrapp.www.notifyr.Model.Article;
+import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.Item;
 import static java.lang.Thread.sleep;
 
 public class WebApi {
@@ -50,12 +55,12 @@ public class WebApi {
 
    /*     if(this.accessToken.equals("") && !this.userId.equals(""))
         {
-            GetAccessToken(null);
+            getAccessToken(null);
         }*/
     }
     //region Security
 
-    public void GetAccessToken(Runnable callback)
+    public void getAccessToken(CallbackInterface callback)
     {
         String url = tokenUrl;
 
@@ -68,7 +73,7 @@ public class WebApi {
     //endregion
 
     //region User Profile
-    public void RegisterUserProfile(String userName, String password, Runnable callback){
+    public void registerUserProfile(String userName, String password, CallbackInterface callback){
         String urlPath = "Account/RegisterGuest";
         String url = apiBaseUrl + urlPath;
 
@@ -78,14 +83,31 @@ public class WebApi {
     }
     //endregion
 
-    //region User Profile
-    public void GetItemArticles(long itemId,int skip,int take,String sortBy, Runnable callback){
-        String urlPath = "Item/GetItemArticles?itemId="+itemId+"&skip="+skip+"&take="+take;
+    //region Items
+    public void getItemArticles(long itemId, int skip, int take, String sortBy, CallbackInterface callback){
+        String urlPath = "Item/getItemArticles?itemId="+itemId+"&skip="+skip+"&take="+take;
         String url = apiBaseUrl + urlPath;
         if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
-            postJSONObjectFromURL.execute(url,context,callback,NotifyrObjects.Article);
+            postJSONObjectFromURL.execute(url,context,callback, Item);
         }
     }
+
+    public void getPopularItems(int skip, int take, CallbackInterface callback){
+        String urlPath = "Item/getPopularItems?skip="+skip+"&take="+take;
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, Item);
+        }
+    }
+
+    public void getAllItems(CallbackInterface callback){
+        String urlPath = "Item/getAllItems";
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, Item );
+        }
+    }
+
     //endregion
 
 
@@ -111,7 +133,7 @@ public class WebApi {
             HttpURLConnection httpcon;
             String urlString = (String) params[0];
             Context parentContext = (Context) params[1];
-            Runnable callback = (Runnable) params[2];
+            CallbackInterface callback = (CallbackInterface) params[2];
             NotifyrObjects notifyrObjectType = (NotifyrObjects) params[3];
             String result = "";
 
@@ -128,7 +150,7 @@ public class WebApi {
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
                 }
-                else if(notifyrObjectType == NotifyrObjects.Item || notifyrObjectType == NotifyrObjects.Article )
+                else if(notifyrObjectType == Item || notifyrObjectType == NotifyrObjects.Article )
                 {
                     String bearer = "Bearer " + accessToken;
                     conn.setRequestProperty("Authorization", bearer);
@@ -171,8 +193,15 @@ public class WebApi {
             try {
                 List<Object> returnObj = new ArrayList<>();
                 if(!result.equals("")) {
+                    if(notifyrObjectType == NotifyrObjects.Article || notifyrObjectType == NotifyrObjects.Item)
+                    {
+                        returnObj.add(new JSONArray(result));
+                    }
+                    else
+                    {
+                        returnObj.add(new JSONObject(result));
+                    }
 
-                    returnObj.add(new JSONObject(result));
                     returnObj.add(callback);
                     returnObj.add(notifyrObjectType);
                     returnObj.add(context);
@@ -189,44 +218,63 @@ public class WebApi {
             // Save to Local SettingsActivity and Database
 
             if(returnObjects != null && returnObjects.size() == 4) {
-                JSONObject jsonObject = (JSONObject) returnObjects.get(0);
-                Runnable callback = (Runnable) returnObjects.get(1);
+
+                CallbackInterface callback = (CallbackInterface) returnObjects.get(1);
                 NotifyrObjects notifyrType = (NotifyrObjects) returnObjects.get(2);
+                JSONObject jsonObject = null;
+                JSONArray jsonArray = null;
+
+                if(notifyrType == NotifyrObjects.Article || notifyrType == NotifyrObjects.Item)
+                {
+                    jsonArray = (JSONArray) returnObjects.get(0);
+                }
+                else
+                {
+                    jsonObject = (JSONObject) returnObjects.get(0);
+                }
 
                 try {
 
                     if (notifyrType == NotifyrObjects.UserProfile) {
-                        Repository repo = new Repository(context);
-                        UserProfile userProfile = new UserProfile();
-                        userProfile.UserId = jsonObject.getString("UserId");
-                        userProfile.Email = jsonObject.getString("Email");
+                        //Repository repo = new Repository(context);
+                        //UserProfile userProfile = new UserProfile();
+                        //userProfile.UserId = jsonObject.getString("UserId");
+                        //userProfile.Email = jsonObject.getString("Email");
                         //repo.SaveUserProfile(userProfile);
-                        PreferenceManager.getDefaultSharedPreferences(context).edit().putString("userid", userProfile.UserId).commit();
+                        //PreferenceManager.getDefaultSharedPreferences(context).edit().putString("userid", userProfile.UserId).commit();
+                        callback.onCompleted(jsonObject.getString("UserId"));
                     }
+                    else if (notifyrType == NotifyrObjects.Article) {
 
-                    if (notifyrType == NotifyrObjects.Article) {
-
-
-                    }
-
-                    if (notifyrType == NotifyrObjects.Item) {
 
 
                     }
-
-                    if (notifyrType == NotifyrObjects.AccessToken) {
+                    else if (notifyrType == Item) {
+                        ArrayList<Item> items = new ArrayList<Item>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            Item item = new Item();
+                            JSONObject jsonItem = jsonArray.getJSONObject(i);
+                            item.setId((!jsonItem.isNull( "Id" ) ?  jsonItem.getInt("Id") : -1));
+                            item.setName(!jsonItem.isNull( "Name" ) ?  jsonItem.getString("Name") : "");
+                            item.setIurl(!jsonItem.isNull( "IUrl" ) ?  jsonItem.getString("IUrl") : "");
+                            item.setItemTypeId((!jsonItem.isNull( "ItemTypeId" ) ?  jsonItem.getInt("ItemTypeId") : -1));
+                            item.setItemTypeName((!jsonItem.isNull( "ItemTypeName" ) ?  jsonItem.getString("ItemTypeName") : ""));
+                            items.add(item);
+                        }
+                        callback.onCompleted(items);
+                    }
+                    else if (notifyrType == NotifyrObjects.AccessToken) {
                         AccessToken acesssTokenObj = new AccessToken();
                         acesssTokenObj.setTokenValue(jsonObject.getString("access_token"));
                         accessToken = acesssTokenObj.getTokenValue();
                         PreferenceManager.getDefaultSharedPreferences(context).edit().putString("accesstoken",accessToken).commit();
+                        callback.onCompleted(null);
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (callback != null) {
-                    callback.run();
-                }
+
             }
             super.onPostExecute(returnObjects);
         }
