@@ -47,6 +47,9 @@ import static java.lang.Thread.sleep;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
+
+
+
 public class AppStartActivity extends AppCompatActivity {
 
     Context ctx;
@@ -55,7 +58,9 @@ public class AppStartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_start);
         Business biz = new Business(this);
+
         String userId = "";
+
         ctx = this;
         /* CHECK IF USER EXISTS  */
     //  PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "").commit();
@@ -79,7 +84,7 @@ public class AppStartActivity extends AppCompatActivity {
                         business.UpdateToken(new Runnable() {
                             @Override
                             public void run() {
-                                //startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
+                                startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                             }
                         });
 
@@ -97,7 +102,7 @@ public class AppStartActivity extends AppCompatActivity {
             new Business(ctx).UpdateToken(new Runnable() {
                 @Override
                 public void run() {
-                     startActivity(new Intent(AppStartActivity.this, MainActivity.class));
+                     startActivity(new Intent(AppStartActivity.this, SettingsActivity.class));
                 }
             });
         }

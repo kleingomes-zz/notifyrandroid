@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
+    android:fadeScrollbars="false"
+    android:scrollbars="none">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/UserSettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp"
+        tools:context="com.example.dchi.usersettingspage.MainActivity">
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/darkGray">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/S"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/lightGray">
+
+                    <TextView
+                        android:id="@+id/txtSettings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="30dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Settings"
+                        android:textColor="@color/darkGray"
+                        android:textSize="14sp" />
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/MN"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginLeft="0dp"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp">
+
+                        <TextView
+                            android:id="@+id/txtMaxNotification"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginBottom="100dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="15dp"
+
+                            android:layout_weight="0"
+                            android:fontFamily="sans-serif"
+                            android:text="Max Notifications"
+                            android:textAlignment="viewStart"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:textStyle="normal|bold" />
+
+                        <TextView
+                            android:id="@+id/txtMaxNotificationDescription"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="false"
+                            android:layout_alignParentRight="false"
+                            android:layout_alignTop="@+id/txtMaxNotification"
+                            android:layout_marginEnd="0dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="22dp"
+                            android:text="Set the maximum number of notifications we send you per day"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarMaxNotificationsPerDay"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@+id/txtMaxNotificationDescription"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignRight="@+id/txtMaxNotificationDescription"
+                            android:layout_below="@+id/txtMaxNotificationDescription"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginTop="29dp"
+                            android:paddingEnd="30dip"
+                            android:paddingStart="30dip" />
+
+                        <TextView
+                            android:id="@+id/txtSeekBarValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/txtMaxNotificationDescription"
+                            android:layout_centerHorizontal="true"
+                            android:text="0 per day"
+                            android:textColor="@color/notifyrBlue"
+                            android:textSize="16sp" />
+
+                    </RelativeLayout>
+
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/DAI"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/txtDownloadArticleImages"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginBottom="60dp"
+                            android:layout_marginLeft="22dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="15dp"
+                            android:text="Download Article Images"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:textStyle="normal|bold" />
+
+                        <RadioGroup
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:orientation="horizontal"
+                            android:id="@+id/radioGroup">
+
+                            <RadioButton
+                                android:id="@+id/radioButtonNever"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignLeft="@+id/txtSeekBarValue"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignStart="@+id/txtSeekBarValue"
+                                android:layout_marginTop="48dp"
+                                android:text="RadioButton" />
+
+                            <RadioButton
+                                android:id="@+id/radioButtonWifiOnly"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBaseline="@+id/radioButtonNever"
+                                android:layout_alignBottom="@+id/radioButtonNever"
+                                android:layout_marginLeft="73dp"
+                                android:layout_marginStart="73dp"
+                                android:layout_toEndOf="@+id/radioButtonNever"
+                                android:layout_toRightOf="@+id/radioButtonNever"
+                                android:text="RadioButton" />
+
+                            <RadioButton
+                                android:id="@+id/radioButtonAlways"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBaseline="@+id/radioButtonNever"
+                                android:layout_alignBottom="@+id/radioButtonNever"
+                                android:layout_alignEnd="@+id/txtDownloadArticleImages"
+                                android:layout_alignRight="@+id/txtDownloadArticleImages"
+                                android:text="RadioButton" />
+                        </RadioGroup>
+
+                    </RelativeLayout>
+
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/ARM"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="0dp"
+                    android:background="@color/white"
+                    android:padding="0dp">
+
+                    <RelativeLayout android:layout_width="match_parent">
+
+                        <TextView
+                            android:id="@+id/txtArticleReaderMode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginBottom="50dp"
+                            android:layout_marginLeft="28dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="15dp"
+                            android:padding="0dp"
+                            android:text="Article Reader Mode"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:textStyle="normal|bold" />
+
+                        <TextView
+                            android:id="@+id/txtArticleReaderModeDescription"
+                            android:layout_width="245dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@+id/txtArticleReaderMode"
+                            android:layout_alignStart="@+id/txtArticleReaderMode"
+                            android:layout_centerVertical="false"
+                            android:layout_marginBottom="15dp"
+                            android:layout_marginTop="40dp"
+                            android:lines="2"
+                            android:maxLines="2"
+                            android:padding="0dp"
+                            android:text="Articles will default to display in reader mode when available"
+                            android:textAlignment="viewStart"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+
+                        <Switch
+                            android:id="@+id/btnArticleReaderMode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="false"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="0dp"
+                            android:layout_marginRight="30dp"
+                            android:layout_toEndOf="@+id/txtArticleReaderModeDescription"
+                            android:layout_toRightOf="@+id/txtArticleReaderModeDescription"
+                            android:height="0dp"
+                            android:switchMinWidth="50dp" />
+                    </RelativeLayout>
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/AI"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/lightGray">
+
+                    <TextView
+                        android:id="@+id/txtAccountInformation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="30dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Account Information"
+                        android:textColor="@color/darkGray"
+                        android:textSize="14sp" />
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/NS"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/txtNetworkStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="false"
+                            android:layout_alignParentLeft="false"
+                            android:layout_alignParentStart="false"
+                            android:layout_marginBottom="15dp"
+                            android:layout_marginLeft="38dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="15dp"
+                            android:text="Network Status"
+                            android:textColor="@color/darkGray"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+                </TableRow>
+            </TableRow>
+
+
+            <TableRow
+                android:id="@+id/STN"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/btnSendTestNotification"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginStart="30dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Send Test Notification"
+                        android:textAllCaps="false"
+                        android:textColor="@color/notifyrBlue"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/A"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/lightGray">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/txtAbout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="30dp"
+                            android:fontFamily="sans-serif"
+                            android:text="About"
+                            android:textColor="@color/darkGray"
+                            android:textSize="14sp" />
+                    </RelativeLayout>
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/P"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btnPrivacy"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="false"
+                            android:layout_centerHorizontal="false"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginStart="0dp"
+                            android:fontFamily="sans-serif"
+                            android:text="Privacy"
+                            android:textAlignment="viewStart"
+                            android:textAllCaps="false"
+                            android:textColor="@color/darkGray"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:id="@+id/imgPrivacyArrow"
+                            android:layout_width="60dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/arrow" />
+
+                    </RelativeLayout>
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/T"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btnTerms"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="false"
+                            android:layout_centerHorizontal="false"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginStart="0dp"
+                            android:fontFamily="sans-serif"
+                            android:text="Terms"
+                            android:textAlignment="viewStart"
+                            android:textAllCaps="false"
+                            android:textColor="@color/darkGray"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:id="@+id/imgTermsArrow"
+                            android:layout_width="60dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/arrow" />
+
+                    </RelativeLayout>
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/RAS"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btnRateOnAppStore"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="false"
+                            android:layout_centerHorizontal="false"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginStart="0dp"
+                            android:fontFamily="sans-serif"
+                            android:text="Rate on App Store"
+                            android:textAlignment="viewStart"
+                            android:textAllCaps="false"
+                            android:textColor="@color/darkGray"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:id="@+id/imgRateOnAppStoreArrow"
+                            android:layout_width="60dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/arrow" />
+                    </RelativeLayout>
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/V"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/txtVersion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="false"
+                            android:layout_alignParentLeft="false"
+                            android:layout_alignParentStart="false"
+                            android:layout_marginBottom="15dp"
+                            android:layout_marginLeft="38dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="15dp"
+                            android:text="Version"
+                            android:textColor="@color/darkGray"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/SF"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btnSendFeedback"
+                            style="@android:style/Widget.Material.Light.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginStart="30dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="Send Feedback"
+                            android:textAllCaps="false"
+                            android:textColor="@color/notifyrBlue"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+                </TableRow>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin=".25dp">
+
+                <TableRow
+                    android:id="@+id/BlankGray"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/lightGray">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/txtBlankGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="sans-serif"
+                            android:text="About"
+                            android:textColor="@color/lightGray"
+                            android:textSize="14sp" />
+                    </RelativeLayout>
+                </TableRow>
+            </TableRow>
+        </TableLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

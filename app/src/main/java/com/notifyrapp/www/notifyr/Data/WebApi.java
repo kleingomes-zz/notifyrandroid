@@ -186,7 +186,7 @@ public class WebApi {
 
         @Override
         protected void onPostExecute(List<Object> returnObjects) {
-            // Save to Local Settings and Database
+            // Save to Local SettingsActivity and Database
 
             if(returnObjects != null && returnObjects.size() == 4) {
                 JSONObject jsonObject = (JSONObject) returnObjects.get(0);

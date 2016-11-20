@@ -116,7 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 if(position == 1) {   abTitle.setText(R.string.menu_tab_1); }
                 if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
                 if(position == 3) {   abTitle.setText(R.string.menu_tab_3); }
-                if(position == 4) {   abTitle.setText(R.string.menu_tab_4); }
+                if(position == 4)
+                {
+                    abTitle.setText(R.string.menu_tab_4);
+                }
             }
             @Override
             public void onTabUnselected(int position) {
