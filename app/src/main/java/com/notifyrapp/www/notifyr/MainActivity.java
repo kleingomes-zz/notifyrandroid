@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
@@ -17,6 +19,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -24,6 +27,7 @@ import android.view.ViewGroup;
 
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
@@ -31,7 +35,7 @@ import com.notifyrapp.www.notifyr.Model.Article;
 
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private Context ctx;
+    SettingsFragment settingsFragment;
     TextView abTitle;
 
     @Override
@@ -67,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
 
+
+
+
+        //////////////
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -76,14 +86,14 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+     /*   FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
 
@@ -102,6 +112,12 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener(){
             @Override
             public void onTabSelected(int position) {
+
+                // FRAGMENT
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+
                 if(position == 0)
                 {
                     AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
@@ -116,9 +132,19 @@ public class MainActivity extends AppCompatActivity {
                 if(position == 1) {   abTitle.setText(R.string.menu_tab_1); }
                 if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
                 if(position == 3) {   abTitle.setText(R.string.menu_tab_3); }
+
                 if(position == 4)
                 {
                     abTitle.setText(R.string.menu_tab_4);
+                    settingsFragment = new SettingsFragment();
+                    fragmentTransaction.add(R.id.fragment_container, settingsFragment,"settings_frag");
+                    fragmentTransaction.commit();
+                }
+                else
+                {
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag("settings_frag");
+                    if(fragment != null)
+                        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
                 }
             }
             @Override
@@ -132,11 +158,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_article, menu);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     /** @Override
