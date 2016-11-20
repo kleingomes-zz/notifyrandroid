@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
 
         @Override
@@ -181,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     return "Companies";
                 case 2:
+                    return "Education";
+                case 3:
                     return "Products";
             }
             return null;
