@@ -41,7 +41,7 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener, MyItemsFragment.OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private ViewPager mViewPager;
     private Context ctx;
     SettingsFragment settingsFragment;
+    MyItemsFragment myItemsFragment;
     TextView abTitle;
 
     @Override
@@ -76,18 +77,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // setSupportActionBar(toolbar);
 
-        Business b = new Business(this);
-        b.getPopularItems(0,20,new CallbackInterface()
-        {
-            @Override
-            public void onCompleted(Object data) {
-                // Running callback
-                Log.d("CALLBACK_CHECK","DOWNLOADED ITEMS");
-                ArrayList<Item> items = (ArrayList<Item>) data;
 
-            }
-
-        });
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -121,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 .setMode(BottomNavigationBar.MODE_FIXED)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
                 .initialise();
+
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener(){
             @Override
             public void onTabSelected(int position) {
@@ -140,9 +131,22 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                     AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
                     appBar.setVisibility(View.INVISIBLE);
                 }
-                if(position == 1) {   abTitle.setText(R.string.menu_tab_1); }
-                if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
                 if(position == 3) {   abTitle.setText(R.string.menu_tab_3); }
+                if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
+
+                if(position == 1)
+                {
+                    abTitle.setText(R.string.menu_tab_1);
+                    myItemsFragment = new MyItemsFragment();
+                    fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
+                    fragmentTransaction.commit();
+                }
+                else
+                {
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag("myitems_frag");
+                    if(fragment != null)
+                        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+                }
 
                 if(position == 4)
                 {
@@ -270,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         }
     }
 
-    //region UI
+    //region My Interests
 
 
 

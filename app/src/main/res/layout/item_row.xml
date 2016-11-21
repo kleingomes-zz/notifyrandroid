@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/item_row">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@drawable/loadapplogo"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/item_image_view"
+            android:scaleType="fitCenter"
+            android:maxWidth="50dp"
+            android:minWidth="50dp"
+            />
+
+        <TextView
+            android:text="Apple"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/item_name"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/item_image_view"
+            android:layout_toEndOf="@+id/item_image_view" />
+
+        <TextView
+            android:text="Frequency: 1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/item_frequency"
+            android:layout_alignBottom="@+id/item_image_view"
+            android:layout_alignLeft="@+id/item_name"
+            android:layout_alignStart="@+id/item_name"
+            android:textSize="10sp"
+            android:fontFamily="sans-serif" />
+    </RelativeLayout>
+
+</TableRow>

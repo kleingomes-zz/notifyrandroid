@@ -67,6 +67,11 @@ public class Business {
         new WebApi(context).getPopularItems(skip,take,callback);
     }
 
+    public void getUserItems(CallbackInterface callback)
+    {
+        new WebApi(context).getUserItems(callback);
+    }
+
     //endregion
 
     //region Articles
@@ -92,6 +97,7 @@ public class Business {
     }
 
     //endregion
+
 
 
 }

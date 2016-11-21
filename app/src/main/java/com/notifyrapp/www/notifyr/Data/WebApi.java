@@ -108,6 +108,14 @@ public class WebApi {
         }
     }
 
+    public void getUserItems(CallbackInterface callback){
+        String urlPath = "Item/GetUserItems";
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, Item );
+        }
+    }
+
     //endregion
 
 
