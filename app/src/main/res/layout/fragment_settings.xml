@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_weight="1"
@@ -29,7 +30,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/S"
@@ -58,7 +59,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/MN"
@@ -113,17 +114,19 @@
 
                         <SeekBar
                             android:id="@+id/seekBarMaxNotificationsPerDay"
-                            android:layout_width="300dp"
                             android:layout_height="wrap_content"
                             android:layout_alignEnd="@+id/txtMaxNotificationDescription"
-                            android:layout_alignParentLeft="true"
                             android:layout_alignParentRight="true"
                             android:layout_alignRight="@+id/txtMaxNotificationDescription"
                             android:layout_below="@+id/txtMaxNotificationDescription"
                             android:layout_marginStart="0dp"
                             android:layout_marginTop="29dp"
-                            android:paddingEnd="30dip"
-                            android:paddingStart="30dip" />
+                            android:paddingEnd="45dip"
+                            android:paddingStart="45dip"
+                            android:thumb = "@drawable/seekbar_thumb"
+                            android:layout_width="300dp"
+                            android:layout_alignParentLeft="true"
+                            android:thumbOffset="0dp" />
 
                         <TextView
                             android:id="@+id/txtSeekBarValue"
@@ -132,7 +135,7 @@
                             android:layout_below="@+id/txtMaxNotificationDescription"
                             android:layout_centerHorizontal="true"
                             android:text="0 per day"
-                            android:textColor="@color/notifyrBlue"
+                            android:textColor="@color/colorNotifyrLightBlue"
                             android:textSize="16sp" />
 
                     </RelativeLayout>
@@ -143,7 +146,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/DAI"
@@ -221,7 +224,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/ARM"
@@ -278,7 +281,9 @@
                             android:layout_toEndOf="@+id/txtArticleReaderModeDescription"
                             android:layout_toRightOf="@+id/txtArticleReaderModeDescription"
                             android:height="0dp"
-                            android:switchMinWidth="50dp" />
+                            android:switchMinWidth="75dp"
+                            android:thumb="@drawable/thumb"
+                            android:track="@drawable/track"/>
                     </RelativeLayout>
                 </TableRow>
             </TableRow>
@@ -286,7 +291,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/AI"
@@ -315,7 +320,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/NS"
@@ -350,7 +355,8 @@
                 android:id="@+id/STN"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:layout_marginBottom=".25dp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -368,7 +374,7 @@
                         android:fontFamily="sans-serif-medium"
                         android:text="Send Test Notification"
                         android:textAllCaps="false"
-                        android:textColor="@color/notifyrBlue"
+                        android:textColor="@color/colorNotifyrLightBlue"
                         android:textSize="16sp" />
                 </RelativeLayout>
             </TableRow>
@@ -376,7 +382,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/A"
@@ -410,7 +416,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/P"
@@ -454,7 +460,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/T"
@@ -498,7 +504,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/RAS"
@@ -541,7 +547,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/V"
@@ -574,7 +580,7 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_marginBottom=".25dp">
 
                 <TableRow
                     android:id="@+id/SF"
@@ -598,7 +604,7 @@
                             android:fontFamily="sans-serif-medium"
                             android:text="Send Feedback"
                             android:textAllCaps="false"
-                            android:textColor="@color/notifyrBlue"
+                            android:textColor="@color/colorNotifyrLightBlue"
                             android:textSize="16sp" />
                     </RelativeLayout>
                 </TableRow>
@@ -606,8 +612,7 @@
 
             <TableRow
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin=".25dp">
+                android:layout_height="wrap_content">
 
                 <TableRow
                     android:id="@+id/BlankGray"
@@ -629,7 +634,7 @@
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="0dp"
                             android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="70dp"
                             android:fontFamily="sans-serif"
                             android:text="About"
                             android:textColor="@color/lightGray"
