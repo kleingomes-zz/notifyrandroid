@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -23,8 +24,9 @@ public class SettingsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     TextView txtsettings, txtMaxNotification, txtMaxNotificationDescription, txtNotificationsPerDay, txtDownloadArticleImages, txtArticleReaderMode, txtArticleReaderModeDescription,
-            txtAccountInformation, txtNetworkStatus, txtAbout, txtVersion;
+            txtAccountInformation, txtNetworkStatus, txtNetworkStatusGreen, txtAbout, txtVersion, txtVersionNumber;
     Button btnSendTestNotification, btnPrivacy, btnTerms, btnRateOnAppStore, btnSendFeedback;
+    RadioButton RadioBtnNever, RadioBtnWifiOnly, RadioBtnAlways;
     Typeface openSansRegular, openSansLight;
     SeekBar seekBarMaxNotificationsPerDay;
     TextView txtSeekBarValue;
@@ -70,14 +72,24 @@ public class SettingsFragment extends Fragment {
         txtArticleReaderModeDescription = (TextView) view.findViewById(R.id.txtArticleReaderModeDescription);
         txtAccountInformation = (TextView) view.findViewById(R.id.txtAccountInformation);
         txtNetworkStatus = (TextView) view.findViewById(R.id.txtNetworkStatus);
+        txtNetworkStatusGreen = (TextView) view.findViewById(R.id.txtNetworkStatusGreen);
         txtAbout = (TextView) view.findViewById(R.id.txtAbout);
         txtVersion = (TextView) view.findViewById(R.id.txtVersion);
+        txtVersionNumber = (TextView) view.findViewById(R.id.txtVersionNumber);
+
+
 
         btnSendTestNotification = (Button) view.findViewById(R.id.btnSendTestNotification);
         btnPrivacy = (Button) view.findViewById(R.id.btnPrivacy);
         btnTerms = (Button) view.findViewById(R.id.btnTerms);
         btnRateOnAppStore = (Button) view.findViewById(R.id.btnRateOnAppStore);
         btnSendFeedback = (Button) view.findViewById(R.id.btnSendFeedback);
+
+        RadioBtnNever = (RadioButton) view.findViewById(R.id.radioButtonNever);
+        RadioBtnWifiOnly = (RadioButton) view.findViewById(R.id.radioButtonWifiOnly);
+        RadioBtnAlways = (RadioButton) view.findViewById(R.id.radioButtonAlways);
+
+
 
         openSansRegular = Typeface.createFromAsset(getActivity().getAssets(), "fonts/OpenSans-Regular.ttf");
         openSansLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/OpenSans-Light.ttf");
@@ -91,13 +103,18 @@ public class SettingsFragment extends Fragment {
         txtArticleReaderModeDescription.setTypeface(openSansLight);
         txtAccountInformation.setTypeface(openSansRegular);
         txtNetworkStatus.setTypeface(openSansRegular);
+        txtNetworkStatusGreen.setTypeface(openSansRegular);
         txtAbout.setTypeface(openSansRegular);
         txtVersion.setTypeface(openSansRegular);
+        txtVersionNumber.setTypeface(openSansRegular);
         btnSendTestNotification.setTypeface(openSansRegular);
         btnPrivacy.setTypeface(openSansRegular);
         btnTerms.setTypeface(openSansRegular);
         btnRateOnAppStore.setTypeface(openSansRegular);
         btnSendFeedback.setTypeface(openSansRegular);
+        RadioBtnNever.setTypeface(openSansRegular);
+        RadioBtnWifiOnly.setTypeface(openSansRegular);
+        RadioBtnAlways.setTypeface(openSansRegular);
         seekBarMaxNotificationsPerDay = (SeekBar) view.findViewById(R.id.seekBarMaxNotificationsPerDay);
         txtSeekBarValue = (TextView) view.findViewById(R.id.txtSeekBarValue);
 
