@@ -198,6 +198,7 @@
                                 android:layout_marginStart="0dp"
                                 android:background="@drawable/radio_button_selector"
                                 android:textAlignment="center"
+                                android:textColor="@drawable/radio_button_text_color"
                                 />
 
                             <RadioButton
@@ -213,7 +214,10 @@
                                 android:layout_marginTop="48dp"
                                 android:checked="true"
                                 android:background="@drawable/radio_button_selector"
-                                android:textAlignment="center" />
+                                android:textAlignment="center"
+                                android:textColor="@drawable/radio_button_text_color"
+
+                                />
 
                             <RadioButton
                                 android:id="@+id/radioButtonAlways"
@@ -227,7 +231,10 @@
                                 android:button="@null"
                                 android:layout_marginTop="48dp"
                                 android:background="@drawable/radio_button_selector"
-                                android:textAlignment="center" />
+                                android:textAlignment="center"
+                                android:textColor="@drawable/radio_button_text_color"
+
+                                />
                         </RadioGroup>
 
                     </RelativeLayout>

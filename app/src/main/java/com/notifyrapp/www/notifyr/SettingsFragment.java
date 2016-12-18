@@ -23,6 +23,10 @@ public class SettingsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private boolean isDirtyServer;
+    private boolean isDirtyLocal;
+
     TextView txtsettings, txtMaxNotification, txtMaxNotificationDescription, txtNotificationsPerDay, txtDownloadArticleImages, txtArticleReaderMode, txtArticleReaderModeDescription,
             txtAccountInformation, txtNetworkStatus, txtNetworkStatusGreen, txtAbout, txtVersion, txtVersionNumber;
     Button btnSendTestNotification, btnPrivacy, btnTerms, btnRateOnAppStore, btnSendFeedback;
@@ -53,7 +57,10 @@ public class SettingsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+      //hardcode all the settings on the initial create
+        //make the usersettings class global and instantiate it inside oncreate and set it to defaults
+        //so when a person makes a change you should be able to test it against an initial flag
+        //onleave if isdirty == true then save to the database or local
     }
 
     @Override
