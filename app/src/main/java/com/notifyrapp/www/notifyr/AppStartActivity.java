@@ -51,19 +51,19 @@ public class AppStartActivity extends AppCompatActivity{
                         PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", userId).commit();
                         //******* CREATE LOCAL DB HERE *******//*
                         Business business = new Business(ctx);
-                        //business.createNotifyrDatabase(user);
+                        business.createNotifyrDatabase(userId);
                         business.updateToken(new CallbackInterface() {
                             @Override
                             public void onCompleted(Object data) {
                                 startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                             }
                         });
-
                     }
 
                 });
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.d("ACCOUNT_CHECK","Account Failed: " + e.getMessage());
             }
             Log.d("ACCOUNT_CHECK","Account Created: " + userId);
         }

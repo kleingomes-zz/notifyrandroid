@@ -17,21 +17,17 @@ public class RepositoryBuilder {
     private SQLiteDatabase notifyrDB;
 
     /* Constructor */
-    public RepositoryBuilder(Context context)
+    public RepositoryBuilder(Context context,String userId)
     {
         this.context = context;
+        this.userId = userId;
     }
 
     //region  Functions
 
-    public Boolean checkIfDatabaseExists()
+    public Boolean createNotifyrDatabase()
     {
-        return false;
-    }
 
-    public Boolean createNotifyrDatabase(String userId)
-    {
-        this.userId = userId;
         this.notifyrDB= null;
         String TableName = "UserProfile";
         String Data="";
@@ -42,10 +38,10 @@ public class RepositoryBuilder {
             this.notifyrDB = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
             /* Create Tables */
-            CreateUserProfileTable();
-            CreateArticleTable();
-            CreateItemTable();
-            CreateUserSettingsTable();
+            createUserProfileTable();
+            createArticleTable();
+            createItemTable();
+            createUserSettingsTable();
         }
         catch(Exception e) {
             Log.e("exception", e.getMessage());
@@ -58,7 +54,7 @@ public class RepositoryBuilder {
         return true;
     }
 
-    private void CreateUserProfileTable()
+    private void createUserProfileTable()
     {
         String TableName = "UserProfile";
         String PrintToConsole="";
@@ -95,28 +91,66 @@ public class RepositoryBuilder {
         ///////////////////////// END PRINT ROWS ///////////////////////////////
     }
 
-    private void CreateArticleTable()
+    private void createArticleTable()
     {
+        String TableName = "Article";
 
+        this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
+                + TableName
+                + "("
+                + "ArticleId INTEGER PRIMARY KEY,"
+                + "Source VARCHAR,"
+                + "Score INTEGER,"
+                + "Title VARCHAR,"
+                + "Author VARCHAR,"
+                + "Description VARCHAR,"
+                + "URL VARCHAR,"
+                + "IURL VARCHAR,"
+                + "ArticleNotifiedDate DATETIME,"
+                + "PublishDate DATETIME,"
+                + "IsFavourite BIT,"
+                + "ShortLinkURL VARCHAR,"
+                + "RelatedInterests VARCHAR,"
+                + "TimeAgo VARCHAR,"
+                + "NotifiedTimeAgo VARCHAR,"
+                + "RelatedInterestsURL VARCHAR"
+                + ");");
     }
 
-    private void CreateItemTable()
+    private void createItemTable()
     {
+        String TableName = "Item";
 
+        this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
+                + TableName
+                + "("
+                + "ItemId INTEGER PRIMARY KEY,"
+                + "Name VARCHAR,"
+                + "IUrl VARCHAR,"
+                + "ItemTypeId INTEGER,"
+                + "ItemTypeName VARCHAR,"
+                + "IUrl VARCHAR"
+                + ");");
     }
 
-    private void CreateUserSettingsTable()
+    private void createUserSettingsTable()
     {
         String TableName = "UserSetting";
         this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
                 + TableName
-                + " (Id VARCHAR, MaxNotifications INT, ArticleDisplayType INT,ArticleReaderMode BIT);");
+                + " (MaxNotifications INT, ArticleDisplayType INT,ArticleReaderMode BIT);");
     }
 
 
     //endregion
 
     //region test code
+    private void printTable(String tableName)
+    {
+        Log.e("Printing Table:", tableName);
 
+        // Print Code Here
+
+    }
     //endregion
 }

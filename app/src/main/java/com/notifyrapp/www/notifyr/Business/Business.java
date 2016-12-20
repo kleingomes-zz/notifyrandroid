@@ -45,13 +45,10 @@ public class Business {
     //endregion
 
     //region Data Access
-    public Boolean checkIfDatabaseExists()
-    {
-        return new RepositoryBuilder(context).checkIfDatabaseExists();
-    }
+
     public Boolean createNotifyrDatabase(String userId)
     {
-        return new RepositoryBuilder(context).createNotifyrDatabase(userId);
+        return new RepositoryBuilder(context,userId).createNotifyrDatabase();
     }
 
     //endregion
