@@ -61,7 +61,7 @@ public class RepositoryBuilder {
 
         this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
                     + TableName
-                    + " (Id VARCHAR, Email VARCHAR, AccountType VARCHAR);");
+                    + " (Id VARCHAR, Email VARCHAR,Password VARCHAR, AccountType VARCHAR);");
 
         /* Insert data to a Table*/
         this.notifyrDB.execSQL("INSERT INTO "
@@ -128,8 +128,7 @@ public class RepositoryBuilder {
                 + "Name VARCHAR,"
                 + "IUrl VARCHAR,"
                 + "ItemTypeId INTEGER,"
-                + "ItemTypeName VARCHAR,"
-                + "IUrl VARCHAR"
+                + "ItemTypeName VARCHAR"
                 + ");");
     }
 
@@ -138,7 +137,11 @@ public class RepositoryBuilder {
         String TableName = "UserSetting";
         this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
                 + TableName
-                + " (MaxNotifications INT, ArticleDisplayType INT,ArticleReaderMode BIT);");
+                + " (MaxNotifications INTEGER, ArticleDisplayType INTEGER,ArticleReaderMode INTEGER);");
+        this.notifyrDB.execSQL("INSERT INTO "
+                + TableName
+                + " (MaxNotifications, ArticleDisplayType,ArticleReaderMode)"
+                + " VALUES (5,3,0);");
     }
 
 

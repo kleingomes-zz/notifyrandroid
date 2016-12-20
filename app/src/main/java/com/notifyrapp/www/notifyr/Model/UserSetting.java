@@ -6,26 +6,26 @@ package com.notifyrapp.www.notifyr.Model;
 
 public class UserSetting {
 
-    private int maxNotificaitons;
-    private ArticleDisplayType articleDisplayType;
+    private int maxNotifications;
+    private int articleDisplayType;
     private boolean articleReaderMode;
     private String networkStatus;
     private String version;
 
 
     public int getMaxNotificaitons() {
-        return maxNotificaitons;
+        return maxNotifications;
     }
 
-    public void setMaxNotificaitons(int maxNotificaitons) {
-        maxNotificaitons = maxNotificaitons;
+    public void setMaxNotificaitons(int maxNotifications) {
+        this.maxNotifications = maxNotifications;
     }
 
-    public ArticleDisplayType getArticleDisplayType() {
+    public int getArticleDisplayType() {
         return articleDisplayType;
     }
 
-    public void setArticleDisplayType(ArticleDisplayType articleDisplayType) {
+    public void setArticleDisplayType(int articleDisplayType) {
         this.articleDisplayType = articleDisplayType;
     }
 
@@ -47,6 +47,10 @@ public class UserSetting {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public void setArticleReaderMode(boolean articleReaderMode) {
+        this.articleReaderMode = articleReaderMode;
     }
 }
 

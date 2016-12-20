@@ -11,6 +11,7 @@ import android.content.Intent;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
+import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import static java.lang.Thread.sleep;
 
@@ -52,6 +53,8 @@ public class AppStartActivity extends AppCompatActivity{
                         //******* CREATE LOCAL DB HERE *******//*
                         Business business = new Business(ctx);
                         business.createNotifyrDatabase(userId);
+                        UserSetting settings = business.getUserSettings();
+                        Log.d("SETTINGS", String.valueOf(settings.getMaxNotificaitons()));
                         business.updateToken(new CallbackInterface() {
                             @Override
                             public void onCompleted(Object data) {
@@ -69,8 +72,20 @@ public class AppStartActivity extends AppCompatActivity{
         }
         else
         {
+
+            Business business = new Business(ctx);
+            if(!business.checkIfDatabaseExists()) {
+                business.createNotifyrDatabase(userId);
+                Log.d("DATABASE_CHECK","Account Exists... But Not Database: " + userId);
+            }
+            else {
+                Log.d("DATABASE_CHECK", "Database Exists...: " + userId);
+            }
+
             //* ACCOUNT EXISTS *//*
             Log.d("ACCOUNT_CHECK","Account Exists... Logging In As: " + userId);
+            UserSetting settings = business.getUserSettings();
+
             new Business(ctx).updateToken(new CallbackInterface() {
                 @Override
                 public void onCompleted(Object data) {

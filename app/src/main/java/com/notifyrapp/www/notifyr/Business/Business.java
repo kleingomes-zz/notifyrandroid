@@ -1,11 +1,14 @@
 package com.notifyrapp.www.notifyr.Business;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 import com.notifyrapp.www.notifyr.Data.RepositoryBuilder;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
+import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import java.util.List;
 
@@ -93,6 +96,19 @@ public class Business {
         new WebApi(context).getAccessToken(callback);
     }
 
+    public UserSetting getUserSettings()
+    {
+        return new Repository(context).getUserSettings();
+    }
+
+    /**
+     * Check if the database exist and can be read.
+     *
+     * @return true if it exists and can be read, false if it doesn't
+     */
+    public boolean checkIfDatabaseExists() {
+        return new Repository(context).checkIfDatabaseExists();
+    }
     //endregion
 
 
