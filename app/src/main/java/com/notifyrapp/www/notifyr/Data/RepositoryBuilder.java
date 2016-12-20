@@ -63,9 +63,6 @@ public class RepositoryBuilder {
         String TableName = "UserProfile";
         String PrintToConsole="";
 
-        /* Create a Table in the Database. */
-        // db.execSQL("DROP TABLE IF EXISTS UserProfile;");
-
         this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
                     + TableName
                     + " (Id VARCHAR, Email VARCHAR, AccountType VARCHAR);");
@@ -73,8 +70,8 @@ public class RepositoryBuilder {
         /* Insert data to a Table*/
         this.notifyrDB.execSQL("INSERT INTO "
                     + TableName
-                    + " (Id, Email,AccountType)"
-                    + " VALUES ('"+this.userId+"', null,null);");
+                    + " (Id, Email,Password,AccountType)"
+                    + " VALUES ('"+this.userId+"',null, null,null);");
 
         ///////////////////////// PRINT ROWS ///////////////////////////////
         /* Retrieve data from database */
@@ -95,7 +92,7 @@ public class RepositoryBuilder {
                 Log.e("CreateUserProfileTable", PrintToConsole);
             }while(c.moveToNext());
         }
-        ///////////////////////// PRINT ROWS ///////////////////////////////
+        ///////////////////////// END PRINT ROWS ///////////////////////////////
     }
 
     private void CreateArticleTable()
@@ -110,7 +107,10 @@ public class RepositoryBuilder {
 
     private void CreateUserSettingsTable()
     {
-
+        String TableName = "UserSetting";
+        this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
+                + TableName
+                + " (Id VARCHAR, MaxNotifications INT, ArticleDisplayType INT,ArticleReaderMode BIT);");
     }
 
 
