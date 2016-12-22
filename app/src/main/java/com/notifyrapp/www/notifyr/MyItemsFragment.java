@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -41,6 +42,9 @@ public class MyItemsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    /* Widgets */
+    EditText searchText;
 
     public MyItemsFragment() {
         // Required empty public constructor
@@ -77,8 +81,13 @@ public class MyItemsFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);
+
+        // Init the Widgets
+        searchText = (EditText) view.findViewById(R.id.txtSearchItems);
+        searchText.setHint("Search");
+
+
         Business biz = new Business(view.getContext());
         biz.getUserItemsFromLocal(new CallbackInterface()
         {

@@ -15,18 +15,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:text="Search"
+            android:text=""
             android:ems="10"
             android:id="@+id/txtSearchItems"
             android:backgroundTint="@color/lightGray"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/my_items_table">
+            />
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scrollView1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/my_items_table">
 
-        </TableLayout>
+            </TableLayout>
+        </ScrollView>
     </LinearLayout>
 
 </FrameLayout>

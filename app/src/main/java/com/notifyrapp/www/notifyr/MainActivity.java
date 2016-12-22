@@ -3,6 +3,7 @@ package com.notifyrapp.www.notifyr;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -24,10 +25,13 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,10 +120,26 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             @Override
             public void onTabSelected(int position) {
 
-                // FRAGMENT
+                // FRAGMENT MANAGER
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+                // DROP THE CURRENT FRAGMENT
+                Fragment fragment = null;
+
+                Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
+                Fragment pos1 = getSupportFragmentManager().findFragmentByTag("myitems_frag");
+                Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
+                Fragment pos3 = getSupportFragmentManager().findFragmentByTag("notifications_frag");
+                Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
+
+                if(pos0 != null) {  getSupportFragmentManager().beginTransaction().remove(pos0).commit(); }
+                if(pos1 != null) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
+                if(pos2 != null) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
+                if(pos3 != null) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
+                if(pos4 != null) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
+
+                // LOAD THE NEW FRAGMENT
                 if(position == 0)
                 {
                     AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
@@ -131,8 +151,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                     AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
                     appBar.setVisibility(View.INVISIBLE);
                 }
-                if(position == 3) {   abTitle.setText(R.string.menu_tab_3); }
-                if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
 
                 if(position == 1)
                 {
@@ -141,25 +159,14 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                     fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
                     fragmentTransaction.commit();
                 }
-                else
-                {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag("myitems_frag");
-                    if(fragment != null)
-                        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-                }
-
-                if(position == 4)
+                else if(position == 3) {   abTitle.setText(R.string.menu_tab_3); }
+                else if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
+                else if(position == 4)
                 {
                     abTitle.setText(R.string.menu_tab_4);
                     settingsFragment = new SettingsFragment();
                     fragmentTransaction.add(R.id.fragment_container, settingsFragment,"settings_frag");
                     fragmentTransaction.commit();
-                }
-                else
-                {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag("settings_frag");
-                    if(fragment != null)
-                        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
                 }
             }
             @Override
@@ -279,4 +286,20 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
 
     //endregion
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent( event );
+    }
 }

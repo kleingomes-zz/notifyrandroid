@@ -34,27 +34,11 @@ public class Business {
     }
 
 
-
-    //region Article
-
-    /* Get All Articles for All Items */
-    public List<Article> GetArticles(int skip, int take,String sortBy,int itemTypeId) {
-        return webApi.GetArticles(skip,take,sortBy,itemTypeId);
-    }
-
-    //endregion
-
-    //region Item
-
-    //endregion
-
     //region Data Access
-
     public Boolean createNotifyrDatabase(String userId)
     {
         return new RepositoryBuilder(context,userId).createNotifyrDatabase();
     }
-
     //endregion
 
     //region Items
@@ -82,10 +66,13 @@ public class Business {
     {
         return new Repository(context).saveUserItemLocal(userItem);
     }
-
     //endregion
 
     //region Articles
+    public List<Article> GetArticles(int skip, int take,String sortBy,int itemTypeId) {
+        return webApi.GetArticles(skip,take,sortBy,itemTypeId);
+    }
+
     public void getItemArticles(long itemId,int skip,int take,String sortBy, CallbackInterface callback){
         new WebApi(context).getItemArticles(itemId,skip,take,sortBy,callback);
     }
@@ -94,12 +81,6 @@ public class Business {
     //region User Accounts
     public void registerAccount(String userName, String password, CallbackInterface callback){
         new WebApi(context).registerUserProfile(userName,password,callback);
-    }
-
-
-    public void updateToken(Runnable callback)
-    {
-     //   new WebApi(context).getAccessToken(callback);
     }
 
     public void updateToken(CallbackInterface callback)
@@ -112,11 +93,6 @@ public class Business {
         return new Repository(context).getUserSettings();
     }
 
-    /**
-     * Check if the database exist and can be read.
-     *
-     * @return true if it exists and can be read, false if it doesn't
-     */
     public boolean checkIfDatabaseExists() {
         return new Repository(context).checkIfDatabaseExists();
     }
