@@ -7,6 +7,7 @@ import android.util.Log;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
+import com.notifyrapp.www.notifyr.SettingsFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -120,6 +121,34 @@ public class Repository {
         return userSetting;
     }
 
+    public Boolean saveUserSettings(UserSetting userSetting)
+    {
+        String tableName = "UserSetting";
+        SQLiteDatabase notifyrDB;
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            // Insert the profile
+            db.execSQL("UPDATE " //update
+                    + tableName
+                    + " (MaxNotifications , ArticleDisplayType, ArticleReaderMode)"
+                    + " SET MaxNotifications = '"+userSetting.getMaxNotificaitons()+"', ArticleDisplayType = '"+userSetting.getArticleDisplayType()+"', ArticleReaderMode = '"+userSetting.isArticleReaderMode()+"' ");
+
+        }
+        catch(Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+
+
+        return isSuccess;
+    }
 
     //endregion
 
