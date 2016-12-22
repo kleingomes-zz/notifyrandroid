@@ -80,7 +80,7 @@ public class MyItemsFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);
         Business biz = new Business(view.getContext());
-        biz.getUserItems(new CallbackInterface()
+        biz.getUserItemsFromLocal(new CallbackInterface()
         {
             @Override
             public void onCompleted(Object data) {

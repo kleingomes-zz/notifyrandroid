@@ -11,7 +11,10 @@ import android.content.Intent;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
+import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
+
+import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
@@ -89,6 +92,18 @@ public class AppStartActivity extends AppCompatActivity{
             new Business(ctx).updateToken(new CallbackInterface() {
                 @Override
                 public void onCompleted(Object data) {
+                    new Business(ctx).getUserItemsFromLocal(new CallbackInterface()
+                    {
+                        @Override
+                        public void onCompleted(Object data) {
+                            // Running callback
+                            Log.d("CALLBACK_CHECK","SAVED ITEMS TO LOCAL STORE");
+                            ArrayList<Item> items = (ArrayList<Item>) data;
+                            for (Item currentItem: items) {
+
+                            }
+                        }
+                    });
                      startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                 }
             });

@@ -40,7 +40,9 @@ public class RepositoryBuilder {
             /* Create Tables */
             createUserProfileTable();
             createArticleTable();
+            createArticleFavouriteTable();
             createItemTable();
+            createUserItemTable();
             createUserSettingsTable();
         }
         catch(Exception e) {
@@ -117,6 +119,32 @@ public class RepositoryBuilder {
                 + ");");
     }
 
+    private void createArticleFavouriteTable()
+    {
+        String TableName = "ArticleFavourite";
+
+        this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
+                + TableName
+                + "("
+                + "ArticleId INTEGER PRIMARY KEY,"
+                + "Source VARCHAR,"
+                + "Score INTEGER,"
+                + "Title VARCHAR,"
+                + "Author VARCHAR,"
+                + "Description VARCHAR,"
+                + "URL VARCHAR,"
+                + "IURL VARCHAR,"
+                + "ArticleNotifiedDate DATETIME,"
+                + "PublishDate DATETIME,"
+                + "IsFavourite BIT,"
+                + "ShortLinkURL VARCHAR,"
+                + "RelatedInterests VARCHAR,"
+                + "TimeAgo VARCHAR,"
+                + "NotifiedTimeAgo VARCHAR,"
+                + "RelatedInterestsURL VARCHAR"
+                + ");");
+    }
+
     private void createItemTable()
     {
         String TableName = "Item";
@@ -129,6 +157,23 @@ public class RepositoryBuilder {
                 + "IUrl VARCHAR,"
                 + "ItemTypeId INTEGER,"
                 + "ItemTypeName VARCHAR"
+                + ");");
+    }
+
+    private void createUserItemTable()
+    {
+        String TableName = "UserItem";
+
+        this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
+                + TableName
+                + "("
+                + "ItemId INTEGER PRIMARY KEY,"
+                + "Name VARCHAR,"
+                + "IUrl VARCHAR,"
+                + "ItemTypeId INTEGER,"
+                + "ItemTypeName VARCHAR,"
+                + "UserItemId INTEGER,"
+                + "Priority INTEGER"
                 + ");");
     }
 

@@ -8,6 +8,7 @@ import com.notifyrapp.www.notifyr.Data.RepositoryBuilder;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
+import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import java.util.List;
@@ -67,9 +68,19 @@ public class Business {
         new WebApi(context).getPopularItems(skip,take,callback);
     }
 
-    public void getUserItems(CallbackInterface callback)
+    public void getUserItemsFromLocal(CallbackInterface callback)
     {
         new WebApi(context).getUserItems(callback);
+    }
+
+    public void getUserItemsFromServer(CallbackInterface callback)
+    {
+        new WebApi(context).getUserItems(callback);
+    }
+
+    public Boolean saveUserItemLocal(Item userItem)
+    {
+        return new Repository(context).saveUserItemLocal(userItem);
     }
 
     //endregion

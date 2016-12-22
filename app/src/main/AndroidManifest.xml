@@ -31,6 +31,7 @@
 
                 <!-- <category android:name="android.intent.category." /> -->
             </intent-filter>
+            
         </activity>
     </application>
 

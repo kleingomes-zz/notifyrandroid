@@ -10,6 +10,8 @@ public class Item {
     private String iurl;
     private int itemTypeId;
     private String itemTypeName;
+    private int priority;
+    private int userItemId;
 
     public int getId() {
         return id;
@@ -49,5 +51,21 @@ public class Item {
 
     public void setItemTypeName(String itemTypeName) {
         this.itemTypeName = itemTypeName;
+    }
+
+    public int getUserItemId() {
+        return userItemId;
+    }
+
+    public void setUserItemId(int userItemId) {
+        this.userItemId = userItemId;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }

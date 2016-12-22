@@ -3,17 +3,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.os.AsyncTask;
 import android.util.Log;
+
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Article;
+import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
-import com.notifyrapp.www.notifyr.SettingsFragment;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.Item;
 
 
 public class Repository {
@@ -152,6 +156,9 @@ public class Repository {
 
     //endregion
 
+
+
+
     //region Save Data
 
     public Boolean SaveUserProfile(UserProfile userProfile)
@@ -184,7 +191,46 @@ public class Repository {
     {
         return true;
     }
+
+    public Boolean saveUserItemLocal(Item userItem){
+
+        String tableName = "UserItem";
+        SQLiteDatabase notifyrDB;
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Boolean exists = CheckIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()));
+            if(!exists) {
+                // Insert the useritem
+                db.execSQL("INSERT INTO "
+                        + tableName
+                        + " (ItemId, Name,IUrl,ItemTypeId,ItemTypeName,UserItemId,Priority)"
+                        + " VALUES ("
+                        + userItem.getId() + ","
+                        + userItem.getName() + ","
+                        + userItem.getItemTypeId() + ","
+                        + userItem.getItemTypeName() + ","
+                        + userItem.getUserItemId() + ","
+                        + userItem.getPriority() + ");");
+            }
+        }
+        catch(Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return isSuccess;
+    }
     //endregion
+
+
+
+
 
     //region Helpers
     private boolean CheckIsDataAlreadyInDBorNot(String TableName,
