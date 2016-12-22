@@ -99,6 +99,8 @@ public class MyItemsFragment extends Fragment {
                 TableLayout itemTable =  (TableLayout) view.findViewById(R.id.my_items_table);
                 for (Item currentItem: items) {
                     TableRow row = (TableRow)inflater.inflate(R.layout.item_row, null,false);//(TableRow) view.findViewById(R.id.item_row);
+                    row.setBackgroundResource(R.drawable.row_border);
+
                     ((TextView)row.findViewById(R.id.item_name)).setText(currentItem.getName());
                     ((TextView)row.findViewById(R.id.item_frequency)).setText("Frequency: High");
                     new DownloadImageTask((ImageView) row.findViewById(R.id.item_image_view))

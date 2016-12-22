@@ -20,18 +20,21 @@
             android:scaleType="fitCenter"
             android:maxWidth="50dp"
             android:minWidth="50dp"
-            />
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp" />
 
         <TextView
             android:text="Apple"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/item_name"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/item_image_view"
-            android:layout_toEndOf="@+id/item_image_view" />
+            android:layout_toEndOf="@+id/item_image_view"
+            android:layout_marginTop="5dp" />
 
         <TextView
             android:text="Frequency: 1"
@@ -42,7 +45,8 @@
             android:layout_alignLeft="@+id/item_name"
             android:layout_alignStart="@+id/item_name"
             android:textSize="10sp"
-            android:fontFamily="sans-serif" />
+            android:fontFamily="sans-serif"
+            android:paddingBottom="15dp" />
     </RelativeLayout>
 
 </TableRow>
