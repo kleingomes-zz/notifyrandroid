@@ -96,6 +96,11 @@ public class Business {
     public boolean checkIfDatabaseExists() {
         return new Repository(context).checkIfDatabaseExists();
     }
+
+    public void syncUserSettingWithServer(UserSetting userSetting){
+        //new WebApi(context).registerUserProfile(userName,password,callback);
+    }
+
     //endregion
 
 
