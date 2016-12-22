@@ -248,7 +248,7 @@ public class WebApi {
                         //UserProfile userProfile = new UserProfile();
                         //userProfile.UserId = jsonObject.getString("UserId");
                         //userProfile.Email = jsonObject.getString("Email");
-                        //repo.SaveUserProfile(userProfile);
+                        //repo.saveUserProfile(userProfile);
                         //PreferenceManager.getDefaultSharedPreferences(context).edit().putString("userid", userProfile.UserId).commit();
                         callback.onCompleted(jsonObject.getString("UserId"));
                     }

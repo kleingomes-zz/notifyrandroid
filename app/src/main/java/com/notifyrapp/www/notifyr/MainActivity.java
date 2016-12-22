@@ -227,20 +227,19 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "All";
+                    return "Newest";
                 case 1:
-                    return "Companies";
+                    return "Popular";
                 case 2:
-                    return "Education";
-                case 3:
-                    return "Products";
+                    return "Bookmarks";
+
             }
             return null;
         }

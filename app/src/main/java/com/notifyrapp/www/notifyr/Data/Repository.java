@@ -3,10 +3,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.os.AsyncTask;
 import android.util.Log;
 
-import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.Item;
 
 
 public class Repository {
@@ -26,21 +23,56 @@ public class Repository {
     private String dbName = "NotifyrLocal.db";
     private String userId;
     private SQLiteDatabase notifyrDB;
-
-    //region Get Data
     public Repository(Context context)
     {
         this.context = context;
     }
 
-    public UserProfile GetUserProfile()
+    //region Items
+    public Boolean saveUserItemLocal(Item userItem){
+
+        String tableName = "UserItem";
+        SQLiteDatabase notifyrDB;
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()));
+            if(!exists) {
+                // Insert the useritem
+                db.execSQL("INSERT INTO "
+                        + tableName
+                        + " (ItemId, Name,IUrl,ItemTypeId,ItemTypeName,UserItemId,Priority)"
+                        + " VALUES ("
+                        + userItem.getId() + ","
+                        + userItem.getName() + ","
+                        + userItem.getItemTypeId() + ","
+                        + userItem.getItemTypeName() + ","
+                        + userItem.getUserItemId() + ","
+                        + userItem.getPriority() + ");");
+            }
+        }
+        catch(Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return isSuccess;
+    }
+    //endregion
+
+    //region Article
+    public Boolean saveArticle(Article article)
     {
-        return new UserProfile();
+        return true;
     }
 
-    public List<Article> GetArticles(int skip, int take,String sortBy)
+    public List<Article> getArticles(int skip, int take, String sortBy)
     {
-
         String TableName = "Article";
         String Data="";
         String PrintToConsole="";
@@ -75,15 +107,41 @@ public class Repository {
                 notifyrDB.close();
             }
         }
-
-
-
         return new ArrayList<Article>();
     }
+    //endregion
 
-    public Article GetArticleById(long id)
+    //region User
+
+    public Boolean saveUserProfile(UserProfile userProfile)
     {
-        return new Article();
+        String tableName = "UserProfile";
+        SQLiteDatabase notifyrDB;
+        notifyrDB = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
+        Boolean accountExists = checkIfTableHasRows(tableName);
+
+        if(accountExists)
+        {
+            // Clear the Account Row
+            notifyrDB.execSQL("DELETE FROM "+tableName);
+        }
+        // Insert the profile
+        notifyrDB.execSQL("INSERT INTO "
+                + tableName
+                + " (Id, Email,AccountType)"
+                + " VALUES ('"+userProfile.UserId+"', null,null);");
+
+        if (notifyrDB != null) {
+            notifyrDB.close();
+        }
+
+        return true;
+    }
+
+    public UserProfile getUserProfile()
+    {
+        return new UserProfile();
     }
 
     public UserSetting getUserSettings() {
@@ -153,88 +211,11 @@ public class Repository {
 
         return isSuccess;
     }
-
     //endregion
-
-
-
-
-    //region Save Data
-
-    public Boolean SaveUserProfile(UserProfile userProfile)
-    {
-        String tableName = "UserProfile";
-        SQLiteDatabase notifyrDB;
-        notifyrDB = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-
-        Boolean accountExists = CheckIfTableHasRows(tableName);
-
-        if(accountExists)
-        {
-            // Clear the Account Row
-            notifyrDB.execSQL("DELETE FROM "+tableName);
-        }
-        // Insert the profile
-        notifyrDB.execSQL("INSERT INTO "
-                    + tableName
-                    + " (Id, Email,AccountType)"
-                    + " VALUES ('"+userProfile.UserId+"', null,null);");
-
-        if (notifyrDB != null) {
-            notifyrDB.close();
-        }
-
-        return true;
-    }
-
-    public Boolean SaveArticle(Article article)
-    {
-        return true;
-    }
-
-    public Boolean saveUserItemLocal(Item userItem){
-
-        String tableName = "UserItem";
-        SQLiteDatabase notifyrDB;
-        SQLiteDatabase db = null;
-        boolean isSuccess = true;
-        try {
-            File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
-            Boolean exists = CheckIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()));
-            if(!exists) {
-                // Insert the useritem
-                db.execSQL("INSERT INTO "
-                        + tableName
-                        + " (ItemId, Name,IUrl,ItemTypeId,ItemTypeName,UserItemId,Priority)"
-                        + " VALUES ("
-                        + userItem.getId() + ","
-                        + userItem.getName() + ","
-                        + userItem.getItemTypeId() + ","
-                        + userItem.getItemTypeName() + ","
-                        + userItem.getUserItemId() + ","
-                        + userItem.getPriority() + ");");
-            }
-        }
-        catch(Exception e) {
-            isSuccess = false;
-            Log.e("exception", e.getMessage());
-        } finally {
-            if (db != null) {
-                db.close();
-            }
-        }
-        return isSuccess;
-    }
-    //endregion
-
-
-
-
 
     //region Helpers
-    private boolean CheckIsDataAlreadyInDBorNot(String TableName,
-                                                      String dbfield, String fieldValue) {
+    private boolean checkIsDataAlreadyInDBorNot(String TableName,
+                                                String dbfield, String fieldValue) {
         SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         String Query = "Select * from " + TableName + " where " + dbfield + " = " + fieldValue;
         Cursor cursor = sqldb.rawQuery(Query, null);
@@ -246,7 +227,7 @@ public class Repository {
         return true;
     }
 
-    private boolean CheckIfTableHasRows(String TableName) {
+    private boolean checkIfTableHasRows(String TableName) {
         SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         String Query = "Select * from " + TableName;
         Cursor cursor = sqldb.rawQuery(Query, null);
@@ -271,5 +252,5 @@ public class Repository {
         }
         return checkDB != null;
     }
-
+    //endregion
 }
