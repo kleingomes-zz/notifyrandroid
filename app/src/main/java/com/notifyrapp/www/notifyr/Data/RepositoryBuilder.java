@@ -34,7 +34,6 @@ public class RepositoryBuilder {
 
         try {
             /* Create Database */
-            this.context.deleteDatabase(dbName);
             this.notifyrDB = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
             /* Create Tables */
@@ -186,7 +185,7 @@ public class RepositoryBuilder {
         this.notifyrDB.execSQL("INSERT INTO "
                 + TableName
                 + " (MaxNotifications, ArticleDisplayType,ArticleReaderMode)"
-                + " VALUES (5,3,0);");
+                + " VALUES (3,2,0);");
     }
 
 

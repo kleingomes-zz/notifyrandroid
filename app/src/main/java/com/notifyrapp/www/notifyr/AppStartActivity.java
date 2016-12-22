@@ -38,6 +38,7 @@ public class AppStartActivity extends AppCompatActivity{
         ctx = this;
         /* CHECK IF USER EXISTS  */
 
+
         userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userid", "");
         // TODO: Remove this line (Hardcoded Klein account)
         PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "6e43f43b-b86d-4eca-ae98-78938fa239af").commit();
@@ -76,7 +77,7 @@ public class AppStartActivity extends AppCompatActivity{
         }
         else
         {
-
+            this.deleteDatabase("NotifyrLocal.db");
             Business business = new Business(ctx);
             if(!business.checkIfDatabaseExists()) {
                 business.createNotifyrDatabase(userId);

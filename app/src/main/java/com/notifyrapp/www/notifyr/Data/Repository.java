@@ -167,6 +167,7 @@ public class Repository {
             if (c != null) {
                 // Loop through all Results
                 do {
+                    Log.d("PRINT THIS",String.valueOf(c.getInt(col_maxNotifications)));
                     userSetting.setMaxNotificaitons(c.getInt(col_maxNotifications));
                     userSetting.setArticleDisplayType(c.getInt(col_displayType));
                     userSetting.setArticleReaderMode(c.getInt(col_readerMode) > 0);
