@@ -190,14 +190,15 @@ public class Repository {
         SQLiteDatabase notifyrDB;
         SQLiteDatabase db = null;
         boolean isSuccess = true;
+        int isArticleReaderMode = (userSetting.isArticleReaderMode()) ? 1:0;
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
             // Insert the profile
             db.execSQL("UPDATE " //update
                     + tableName
-                    + " (MaxNotifications , ArticleDisplayType, ArticleReaderMode)"
-                    + " SET MaxNotifications = '"+userSetting.getMaxNotificaitons()+"', ArticleDisplayType = '"+userSetting.getArticleDisplayType()+"', ArticleReaderMode = '"+userSetting.isArticleReaderMode()+"' ");
+                   // + " (MaxNotifications , ArticleDisplayType, ArticleReaderMode)"
+                    + " SET MaxNotifications = "+String.valueOf(userSetting.getMaxNotificaitons())+", ArticleDisplayType = "+String.valueOf(userSetting.getArticleDisplayType())+", ArticleReaderMode = "+String.valueOf(isArticleReaderMode)+";");
 
         }
         catch(Exception e) {

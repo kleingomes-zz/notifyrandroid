@@ -92,7 +92,10 @@ public class Business {
     {
         return new Repository(context).getUserSettings();
     }
-
+    public boolean saveUserSettings(UserSetting userSetting)
+    {
+        return new Repository(context).saveUserSettings(userSetting);
+    }
     public boolean checkIfDatabaseExists() {
         return new Repository(context).checkIfDatabaseExists();
     }
