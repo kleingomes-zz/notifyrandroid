@@ -171,6 +171,8 @@ public class SettingsFragment extends Fragment {
             RadioBtnAlways.setChecked(true);
         }
 
+        userRadioButtonValue = settings.getArticleDisplayType();
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
@@ -286,13 +288,14 @@ public class SettingsFragment extends Fragment {
             //saveServer(); make this later
         }
         //ARTICLE DISPLAY TYPE (RADIOGROUP)
-        settings.setArticleDisplayType(radioGroup.getCheckedRadioButtonId());
+        settings.setArticleDisplayType(userRadioButtonValue);
         if (userRadioButtonValue != serverRadioButtonValue)
         {
             isDirtyLocal = true;
             business.saveUserSettings(settings);
             //saveLocal()  (save the userRadioButtonValue in the local db)
         }
+
 
     }
 
