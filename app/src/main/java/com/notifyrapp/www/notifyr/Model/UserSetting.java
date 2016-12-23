@@ -4,13 +4,13 @@ package com.notifyrapp.www.notifyr.Model;
  * Created by K on 11/20/2016.
  */
 
-public class UserSetting {
+public class UserSetting  implements java.io.Serializable {
 
-    private int maxNotifications;
-    private int articleDisplayType;
-    private boolean articleReaderMode;
-    private String networkStatus;
-    private String version;
+    public int maxNotifications;
+    public int articleDisplayType;
+    public boolean articleReaderMode;
+    public String networkStatus;
+    public String version;
 
 
     public int getMaxNotificaitons() {

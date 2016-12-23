@@ -92,11 +92,16 @@ public class Business {
     {
         return new Repository(context).getUserSettings();
     }
-    public boolean saveUserSettings(UserSetting userSetting)
+    public boolean saveUserSettingsLocal(UserSetting userSetting)
     {
         return new Repository(context).saveUserSettings(userSetting);
     }
-    public boolean checkIfDatabaseExists() {
+    public void saveUserSettingsServer(UserSetting userSetting,CallbackInterface callback)
+    {
+        new WebApi(context).saveUserSettings(userSetting,callback);
+    }
+    public boolean checkIfDatabaseExists()
+    {
         return new Repository(context).checkIfDatabaseExists();
     }
 

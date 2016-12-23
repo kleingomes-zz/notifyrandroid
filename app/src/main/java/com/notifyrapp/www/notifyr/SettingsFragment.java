@@ -274,7 +274,7 @@ public class SettingsFragment extends Fragment {
             isDirtyLocal = true;
             articleReaderMode = (truth) ? 0:1;
             settings.setArticleReaderMode(!(truth));
-            business.saveUserSettings(settings);
+            business.saveUserSettingsLocal(settings);
             //saveLocal(); (save the opposite of the original boolean value in the server which is = articleReaderMode)
         }
         //SEEKBAR FOR MAX NOTIFICATIONS
@@ -283,16 +283,16 @@ public class SettingsFragment extends Fragment {
         {
             isDirtyLocal = true;
             isDirtyServer = true;
-            business.saveUserSettings(settings);
+            business.saveUserSettingsLocal(settings);
             //saveLocal(); (save the seekbarValueFromUser to the local and server)
-            //saveServer(); make this later
+            business.saveUserSettingsServer(settings,null);
         }
         //ARTICLE DISPLAY TYPE (RADIOGROUP)
         settings.setArticleDisplayType(userRadioButtonValue);
         if (userRadioButtonValue != serverRadioButtonValue)
         {
             isDirtyLocal = true;
-            business.saveUserSettings(settings);
+            business.saveUserSettingsLocal(settings);
             //saveLocal()  (save the userRadioButtonValue in the local db)
         }
 

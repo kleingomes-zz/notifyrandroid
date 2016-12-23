@@ -4,12 +4,14 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -26,6 +28,7 @@ import com.notifyrapp.www.notifyr.Model.AccessToken;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
+import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,6 +84,16 @@ public class WebApi {
             postJSONObjectFromURL.execute(url,context,callback,NotifyrObjects.UserProfile);
         }
     }
+
+    public void saveUserSettings(UserSetting userSetting, CallbackInterface callback){
+        String urlPath = "User/SaveUserSettings";
+
+        String url = apiBaseUrl + urlPath;
+        Log.d("saveUserSettings:",url);
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback,NotifyrObjects.UserSetting,userSetting);
+        }
+    }
     //endregion
 
     //region Items
@@ -118,7 +131,6 @@ public class WebApi {
 
     //endregion
 
-
     //region Articles
     public List<Article> GetArticles(int skip, int take,String sortBy, int itemTypeId )
     {
@@ -143,6 +155,7 @@ public class WebApi {
             Context parentContext = (Context) params[1];
             CallbackInterface callback = (CallbackInterface) params[2];
             NotifyrObjects notifyrObjectType = (NotifyrObjects) params[3];
+
             String result = "";
 
             try {
@@ -153,7 +166,7 @@ public class WebApi {
                 conn.setConnectTimeout(15000);
 
                 /* Set Request Type */
-                if(notifyrObjectType == NotifyrObjects.AccessToken || notifyrObjectType == NotifyrObjects.UserProfile) {
+                if(notifyrObjectType == NotifyrObjects.AccessToken || notifyrObjectType == NotifyrObjects.UserProfile || notifyrObjectType == NotifyrObjects.UserSetting) {
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
@@ -167,11 +180,26 @@ public class WebApi {
                 }
 
                 /* Set Request Body */
+                // Access Token
                 if(notifyrObjectType == NotifyrObjects.AccessToken)
                 {
                     String userName =  userId + "@notifyr.ca";
                     String str =  "grant_type=password&username="+ userName + "&password="+defaultPassword;
                     byte[] outputInBytes = str.getBytes("UTF-8");
+                    OutputStream os = conn.getOutputStream();
+                    os.write( outputInBytes );
+                    os.close();
+                }
+                // User Settings
+                else if(notifyrObjectType == NotifyrObjects.UserSetting)
+                {
+                    UserSetting userSetting = (UserSetting) params[4];
+                    String bearer = "Bearer " + accessToken;
+                    conn.setRequestProperty("Authorization", bearer);
+                    String param = "maxNotifications=" + userSetting.getMaxNotificaitons() + "&"
+                            + "articleDisplayType=" + userSetting.getArticleDisplayType() + "&"
+                            + "articleReaderMode=" + userSetting.isArticleReaderMode();
+                    byte[] outputInBytes = param.getBytes("UTF-8");
                     OutputStream os = conn.getOutputStream();
                     os.write( outputInBytes );
                     os.close();
@@ -291,7 +319,7 @@ public class WebApi {
 
     //region Helpers
     public enum NotifyrObjects {
-        Article, Item, UserProfile, AccessToken
+        Article, Item, UserProfile, AccessToken, UserSetting
     }
 
     private String streamToString(InputStream is) throws IOException {
