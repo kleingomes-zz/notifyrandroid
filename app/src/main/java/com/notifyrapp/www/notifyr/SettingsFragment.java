@@ -35,7 +35,7 @@ public class SettingsFragment extends Fragment {
     private boolean truth;
     private int getMaxNotifications;
     private int swtchCounter;
-    private int seekbarValueFromUser;
+    //private int seekbarValueFromUser;
     private int serverRadioButtonValue;
     private int userRadioButtonValue;
     private int articleReaderMode;
@@ -224,7 +224,7 @@ public class SettingsFragment extends Fragment {
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        seekbarValueFromUser = progress;
+                        //seekbarValueFromUser = progress;
                         isDirtyLocal = true;
                         isDirtyServer = true;
                         if (progress != 20) {
