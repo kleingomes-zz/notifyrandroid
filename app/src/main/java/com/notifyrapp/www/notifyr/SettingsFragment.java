@@ -30,8 +30,8 @@ public class SettingsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private boolean isDirtyServer;
-    private boolean isDirtyLocal;
+    private boolean isDirtyServer = false;
+    private boolean isDirtyLocal = false;
     private boolean truth;
     private int getMaxNotifications;
     private int swtchCounter;
@@ -213,13 +213,20 @@ public class SettingsFragment extends Fragment {
         seekBarMaxNotificationsPerDay.setMax(20);
         getMaxNotifications = settings.getMaxNotificaitons();
         seekBarMaxNotificationsPerDay.setProgress(getMaxNotifications); //set the progress on the maxnotifications to match db
-        txtSeekBarValue.setText(seekBarMaxNotificationsPerDay.getProgress() + " per day"); //set the text on the seekbar to match db
+        if (getMaxNotifications != 20) {
+            txtSeekBarValue.setText(seekBarMaxNotificationsPerDay.getProgress() + " per day"); //set the text on the seekbar to match db
+        }
+        else  {
+            txtSeekBarValue.setText("No Limit");
+        }
         seekBarMaxNotificationsPerDay.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         seekbarValueFromUser = progress;
+                        isDirtyLocal = true;
+                        isDirtyServer = true;
                         if (progress != 20) {
                             txtSeekBarValue.setText(progress + " per day");
                         } else
@@ -271,7 +278,6 @@ public class SettingsFragment extends Fragment {
         // ARTICLE READER MODE SWITCH
         if (swtchCounter%2 != 0) //checks if switch state is the same as when created
         {
-            isDirtyLocal = true;
             articleReaderMode = (truth) ? 0:1;
             settings.setArticleReaderMode(!(truth));
             business.saveUserSettingsLocal(settings);
@@ -279,10 +285,8 @@ public class SettingsFragment extends Fragment {
         }
         //SEEKBAR FOR MAX NOTIFICATIONS
         settings.setMaxNotificaitons(seekBarMaxNotificationsPerDay.getProgress());
-        if (seekbarValueFromUser != getMaxNotifications) //if original value from server is different from userseekbarvalue
+        if (isDirtyLocal == true && isDirtyServer == true) //if original value from server is different from userseekbarvalue
         {
-            isDirtyLocal = true;
-            isDirtyServer = true;
             business.saveUserSettingsLocal(settings);
             //saveLocal(); (save the seekbarValueFromUser to the local and server)
             business.saveUserSettingsServer(settings,null);
@@ -291,7 +295,6 @@ public class SettingsFragment extends Fragment {
         settings.setArticleDisplayType(userRadioButtonValue);
         if (userRadioButtonValue != serverRadioButtonValue)
         {
-            isDirtyLocal = true;
             business.saveUserSettingsLocal(settings);
             //saveLocal()  (save the userRadioButtonValue in the local db)
         }
