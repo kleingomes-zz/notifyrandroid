@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
         setContentView(R.layout.activity_main);
         this.ctx = this;
-        myItemsFragment = new MyItemsFragment();
+
         // INIT
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 if(position == 1)
                 {
                     abTitle.setText(R.string.menu_tab_1);
-
+                    myItemsFragment = new MyItemsFragment();
                     fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
                     fragmentTransaction.commit();
                 }

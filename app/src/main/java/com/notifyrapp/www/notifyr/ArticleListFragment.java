@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -78,8 +79,8 @@ public class ArticleListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
+        MainActivity act = (MainActivity)getActivity();
+        act.abTitle.setText("");
         return inflater.inflate(R.layout.fragment_article_list, container, false);
     }
 

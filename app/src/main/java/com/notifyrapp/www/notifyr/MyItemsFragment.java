@@ -91,7 +91,8 @@ public class MyItemsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);
-
+        MainActivity act = (MainActivity)getActivity();
+        act.abTitle.setText("My Interests");
         // Init the Widgets
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
