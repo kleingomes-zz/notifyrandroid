@@ -295,6 +295,7 @@ public class WebApi {
                             item.setIurl(!jsonItem.isNull( "IUrl" ) ?  jsonItem.getString("IUrl") : "");
                             item.setItemTypeId((!jsonItem.isNull( "ItemTypeId" ) ?  jsonItem.getInt("ItemTypeId") : -1));
                             item.setItemTypeName((!jsonItem.isNull( "ItemTypeName" ) ?  jsonItem.getString("ItemTypeName") : ""));
+                            item.setPriority((!jsonItem.isNull( "Priority" ) ?  jsonItem.getInt("Priority") : -1));
                             items.add(item);
                         }
                         callback.onCompleted(items);

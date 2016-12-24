@@ -68,4 +68,17 @@ public class Item {
     public void setPriority(int priority) {
         this.priority = priority;
     }
+
+    public String getPriorityString()
+    {
+        if(priority == 0)
+            return "None";
+        else if(priority == 1)
+            return "Low";
+        else if(priority == 2)
+            return "Medium";
+        else if(priority == 3)
+            return "High";
+        return "None";
+    }
 }

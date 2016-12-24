@@ -3,6 +3,7 @@ package com.notifyrapp.www.notifyr;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,10 +14,14 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
+import com.notifyrapp.www.notifyr.Business.OnRowLongClickListener;
 import com.notifyrapp.www.notifyr.Model.Item;
 
 import java.util.ArrayList;
@@ -84,9 +89,6 @@ public class MyItemsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);
 
         // Init the Widgets
-        searchText = (EditText) view.findViewById(R.id.txtSearchItems);
-        searchText.setHint("Search");
-
 
         Business biz = new Business(view.getContext());
         biz.getUserItemsFromLocal(new CallbackInterface()
@@ -97,12 +99,50 @@ public class MyItemsFragment extends Fragment {
                 Log.d("CALLBACK_CHECK","DOWNLOADED ITEMS");
                 ArrayList<Item> items = (ArrayList<Item>) data;
                 TableLayout itemTable =  (TableLayout) view.findViewById(R.id.my_items_table);
-                for (Item currentItem: items) {
+                for (final Item currentItem: items) {
                     TableRow row = (TableRow)inflater.inflate(R.layout.item_row, null,false);//(TableRow) view.findViewById(R.id.item_row);
+                    row.setClickable(true);
+                    row.setOnClickListener(onClickListener);
+                    row.setOnLongClickListener(new View.OnLongClickListener()
+                    {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            Log.d("Priority:", String.valueOf(currentItem.getPriority()));
+                            new MaterialDialog.Builder(v.getContext())
+                                    .title("Set Frequency")
+                                    .content("How often would you like to receive notifications?")
+                                    .positiveText("Save")
+                                    .negativeText("Cancel")
+                                    .items(R.array.freq_options)
+                                    .itemsCallbackSingleChoice(3-currentItem.getPriority(), new MaterialDialog.ListCallbackSingleChoice() {
+                                        @Override
+                                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                            /**
+                                             * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
+                                             * returning false here won't allow the newly selected radio button to actually be selected.
+                                             **/
+                                            Log.d("SELECTED RADIO BUTTON:",text + ":" + which);
+                                            Toast.makeText(getActivity(), text + ", ID = " + which, Toast.LENGTH_SHORT).show();
+                                            return true;
+                                        }
+
+                                    })
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                        }
+                                    })
+                                    .show();
+                            return false;
+                        }
+                    });
+
                     row.setBackgroundResource(R.drawable.row_border);
 
                     ((TextView)row.findViewById(R.id.item_name)).setText(currentItem.getName());
-                    ((TextView)row.findViewById(R.id.item_frequency)).setText("Frequency: High");
+
+                    ((TextView)row.findViewById(R.id.item_frequency)).setText("Frequency: "+currentItem.getPriorityString());
                     new DownloadImageTask((ImageView) row.findViewById(R.id.item_image_view))
                             .execute(currentItem.getIurl());
 
@@ -114,6 +154,13 @@ public class MyItemsFragment extends Fragment {
         });
         return view;
     }
+
+    private View.OnClickListener onClickListener= new View.OnClickListener() {
+        public void onClick(View v) {
+
+
+        }
+    };
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
