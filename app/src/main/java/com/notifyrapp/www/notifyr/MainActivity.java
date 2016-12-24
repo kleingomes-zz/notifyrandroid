@@ -8,7 +8,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -123,7 +125,83 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             }
         });*/
 
-        BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                        int position = item.getItemId();
+                        switch (item.getItemId()) {
+                            case R.id.action_home:
+                                position = 0;
+                                break;
+                            case R.id.action_interests:
+                                position = 1;
+                                break;
+                            case R.id.action_discover:
+                                position = 2;
+                                break;
+                            case R.id.action_notifications:
+                                position = 3;
+                                break;
+                            case R.id.action_settings:
+                                position = 4;
+                                break;
+                        }
+                        // FRAGMENT MANAGER
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                        // DROP THE CURRENT FRAGMENT
+                        Fragment fragment = null;
+
+                        Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
+                        Fragment pos1 = getSupportFragmentManager().findFragmentByTag("myitems_frag");
+                        Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
+                        Fragment pos3 = getSupportFragmentManager().findFragmentByTag("notifications_frag");
+                        Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
+
+                        if(pos0 != null) {  getSupportFragmentManager().beginTransaction().remove(pos0).commit(); }
+                        if(pos1 != null) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
+                        if(pos2 != null) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
+                        if(pos3 != null) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
+                        if(pos4 != null) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
+
+                        // LOAD THE NEW FRAGMENT
+                        if(position == 0)
+                        {
+                            AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+                            appBar.setVisibility(View.VISIBLE);
+                            abTitle.setText(R.string.menu_tab_0);
+                        }
+                        else
+                        {
+                            AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+                            appBar.setVisibility(View.INVISIBLE);
+                        }
+
+                        if(position == 1)
+                        {
+                            abTitle.setText(R.string.menu_tab_1);
+                            myItemsFragment = new MyItemsFragment();
+                            fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
+                            fragmentTransaction.commit();
+                        }
+                        else if(position == 3) {   abTitle.setText(R.string.menu_tab_3); }
+                        else if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
+                        else if(position == 4)
+                        {
+                            abTitle.setText(R.string.menu_tab_4);
+                            settingsFragment = new SettingsFragment();
+                            fragmentTransaction.add(R.id.fragment_container, settingsFragment,"settings_frag");
+                            fragmentTransaction.commit();
+                        }
+                        return false;
+                    }
+                });
+
+       /* BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
 
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.mipmap.ic_home_black_24dp, R.string.menu_tab_0))
@@ -197,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             @Override
             public void onTabReselected(int position) {
             }
-        });
+        });*/
 
     }
 
