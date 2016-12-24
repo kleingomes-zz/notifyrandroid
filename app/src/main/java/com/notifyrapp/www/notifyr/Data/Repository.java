@@ -32,7 +32,6 @@ public class Repository {
     public Boolean saveUserItemLocal(Item userItem){
 
         String tableName = "UserItem";
-        SQLiteDatabase notifyrDB;
         SQLiteDatabase db = null;
         boolean isSuccess = true;
         try {
@@ -46,9 +45,10 @@ public class Repository {
                         + " (ItemId, Name,IUrl,ItemTypeId,ItemTypeName,UserItemId,Priority)"
                         + " VALUES ("
                         + userItem.getId() + ","
-                        + userItem.getName() + ","
+                        + "'" + userItem.getName() + "'" + ","
+                        + "'" + userItem.getIurl() + "'" + ","
                         + userItem.getItemTypeId() + ","
-                        + userItem.getItemTypeName() + ","
+                        + "'" +userItem.getItemTypeName() + "'"  + ","
                         + userItem.getUserItemId() + ","
                         + userItem.getPriority() + ");");
             }
@@ -63,6 +63,58 @@ public class Repository {
         }
         return isSuccess;
     }
+
+    public List<Item> getUserItems()
+    {
+        String TableName = "UserItem";
+        String Data="";
+        String PrintToConsole="";
+        SQLiteDatabase db = null;
+        ArrayList<Item> items = new ArrayList<Item>();
+
+
+
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Cursor c =  db.rawQuery("SELECT * FROM " + TableName + " ORDER BY NAME", null);
+
+            int col_itemid = c.getColumnIndex("ItemId");
+            int col_name = c.getColumnIndex("Name");
+            int col_iurl = c.getColumnIndex("IUrl");
+            int col_itemtypeid = c.getColumnIndex("ItemTypeId");
+            int col_itemtypename = c.getColumnIndex("ItemTypeName");
+            int col_useritemid = c.getColumnIndex("UserItemId");
+            int col_priority = c.getColumnIndex("Priority");
+
+            // Check if our result was valid.
+            c.moveToFirst();
+            if (c != null) {
+                // Loop through all Results
+                do {
+                    Item item = new Item();
+                    item.setId(c.getInt(col_itemid));
+                    item.setName(c.getString(col_name));
+                    item.setIurl(c.getString(col_iurl));
+                    item.setItemTypeId(c.getInt(col_itemtypeid));
+                    item.setItemTypeName(c.getString(col_itemtypename));
+                    item.setUserItemId(c.getInt(col_useritemid));
+                    item.setPriority(c.getInt(col_priority));
+                    items.add(item);
+                }while(c.moveToNext());
+            }
+
+        }
+        catch(Exception e) {
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return items;
+    }
+
     //endregion
 
     //region Article
@@ -167,7 +219,7 @@ public class Repository {
             if (c != null) {
                 // Loop through all Results
                 do {
-                    Log.d("getUserSettings:",String.valueOf(c.getInt(col_maxNotifications)));
+                    //Log.d("getUserSettings:",String.valueOf(c.getInt(col_maxNotifications)));
                     userSetting.setMaxNotificaitons(c.getInt(col_maxNotifications));
                     userSetting.setArticleDisplayType(c.getInt(col_displayType));
                     userSetting.setArticleReaderMode(c.getInt(col_readerMode) > 0);

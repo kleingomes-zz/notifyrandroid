@@ -11,6 +11,7 @@ import com.notifyrapp.www.notifyr.Data.Repository;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -52,9 +53,9 @@ public class Business {
         new WebApi(context).getPopularItems(skip,take,callback);
     }
 
-    public void getUserItemsFromLocal(CallbackInterface callback)
+    public List<Item> getUserItemsFromLocal()
     {
-        new WebApi(context).getUserItems(callback);
+        return new Repository(context).getUserItems();
     }
 
     public void getUserItemsFromServer(CallbackInterface callback)

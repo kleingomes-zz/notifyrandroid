@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.notifyrapp.www.notifyr.R;
+
 import java.io.InputStream;
 
 /**
@@ -33,6 +35,12 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPostExecute(Bitmap result) {
-        bmImage.setImageBitmap(result);
+        if(result!= null) {
+            bmImage.setImageBitmap(result);
+        }
+        else
+        {
+            bmImage.setBackgroundResource(R.mipmap.ic_launcher);
+        }
     }
 }

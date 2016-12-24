@@ -77,8 +77,8 @@ public class AppStartActivity extends AppCompatActivity{
         }
         else
         {
-            this.deleteDatabase("NotifyrLocal.db");
-            Business business = new Business(ctx);
+            //this.deleteDatabase("NotifyrLocal.db");
+            final Business business = new Business(ctx);
             if(!business.checkIfDatabaseExists()) {
                 business.createNotifyrDatabase(userId);
                 Log.d("DATABASE_CHECK","Account Exists... But Not Database: " + userId);
@@ -91,10 +91,10 @@ public class AppStartActivity extends AppCompatActivity{
             Log.d("ACCOUNT_CHECK","Account Exists... Logging In As: " + userId);
             UserSetting settings = business.getUserSettings();
 
-            new Business(ctx).updateToken(new CallbackInterface() {
+            business.updateToken(new CallbackInterface() {
                 @Override
                 public void onCompleted(Object data) {
-                    new Business(ctx).getUserItemsFromLocal(new CallbackInterface()
+                    business.getUserItemsFromServer(new CallbackInterface()
                     {
                         @Override
                         public void onCompleted(Object data) {
@@ -102,7 +102,7 @@ public class AppStartActivity extends AppCompatActivity{
                             Log.d("CALLBACK_CHECK","SAVED ITEMS TO LOCAL STORE");
                             ArrayList<Item> items = (ArrayList<Item>) data;
                             for (Item currentItem: items) {
-
+                                business.saveUserItemLocal(currentItem);
                             }
                         }
                     });
