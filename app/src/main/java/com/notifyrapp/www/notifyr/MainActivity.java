@@ -21,10 +21,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.widget.ActionMenuView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +47,11 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener, MyItemsFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener,
+        MyItemsFragment.OnFragmentInteractionListener,
+        WebViewFragment.OnFragmentInteractionListener,
+        ArticleListFragment.OnFragmentInteractionListener
+{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -68,8 +74,24 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     TextView abTitle;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+
+
+            case android.R.id.home:
+                FragmentManager fm = this.getSupportFragmentManager();
+                fm.popBackStack ("myitems_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         this.ctx = this;
         myItemsFragment = new MyItemsFragment();

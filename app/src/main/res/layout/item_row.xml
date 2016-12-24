@@ -36,7 +36,7 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/item_image_view"
             android:layout_toEndOf="@+id/item_image_view"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="12dp" />
 
         <TextView
             android:text="Frequency: 1"
@@ -48,7 +48,7 @@
             android:layout_alignStart="@+id/item_name"
             android:textSize="10sp"
             android:fontFamily="sans-serif"
-            android:paddingBottom="15dp" />
+            android:paddingBottom="9dp" />
     </RelativeLayout>
 
 </TableRow>

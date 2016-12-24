@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,6 +83,7 @@ public class MyItemsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -90,7 +93,8 @@ public class MyItemsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);
 
         // Init the Widgets
-
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
         Business biz = new Business(view.getContext());
         List<Item> userItemsList = biz.getUserItemsFromLocal();
 
@@ -98,7 +102,20 @@ public class MyItemsFragment extends Fragment {
         for (final Item currentItem: userItemsList) {
             TableRow row = (TableRow)inflater.inflate(R.layout.item_row, null,false);//(TableRow) view.findViewById(R.id.item_row);
             row.setClickable(true);
-            row.setOnClickListener(onClickListener);
+            row.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(), "Clicked Item: " + currentItem.getName(),
+                            Toast.LENGTH_SHORT).show();
+
+                    Fragment newFragment = new ArticleListFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, newFragment);
+                    transaction.addToBackStack("myitems_frag");
+                    transaction.commit();
+                }
+            });
             row.setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override
@@ -150,12 +167,6 @@ public class MyItemsFragment extends Fragment {
         return view;
     }
 
-    private View.OnClickListener onClickListener= new View.OnClickListener() {
-        public void onClick(View v) {
-
-
-        }
-    };
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
