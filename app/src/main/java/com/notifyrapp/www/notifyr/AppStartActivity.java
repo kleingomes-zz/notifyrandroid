@@ -11,10 +11,14 @@ import android.content.Intent;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
+import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static java.lang.Thread.sleep;
 
@@ -106,7 +110,23 @@ public class AppStartActivity extends AppCompatActivity{
                             }
                         }
                     });
-                     startActivity(new Intent(AppStartActivity.this, MainActivity.class));
+                    // TODO: remove this
+                    PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("LastUpdateUserNotifiedArticles", "").commit();
+                    String lastUpdate = PreferenceManager.getDefaultSharedPreferences(ctx).getString("LastUpdateUserNotifiedArticles", "");
+                    business.getUserNotifications(lastUpdate,new CallbackInterface()
+                    {
+                        @Override
+                        public void onCompleted(Object data) {
+                            // Running callback
+                            Log.d("CALLBACK_CHECK","SAVED NOTIFIED ARTICLES TO LOCAL STORE");
+                            ArrayList<Article> articles = (ArrayList<articles>) data;
+                            for (Article currentArticle: articles) {
+                                business.saveUserNotificationLocal(articles);
+                            }
+                        }
+                    });
+
+                    startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                 }
             });
         }

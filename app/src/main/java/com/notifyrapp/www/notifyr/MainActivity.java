@@ -39,8 +39,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ashokvarma.bottomnavigation.BottomNavigationBar;
-import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+
 import com.notifyrapp.www.notifyr.Business.BottomNavigationViewHelper;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;

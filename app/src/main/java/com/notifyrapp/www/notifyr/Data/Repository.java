@@ -267,6 +267,100 @@ public class Repository {
     }
     //endregion
 
+    //region Notifications
+    public Boolean saveUserNotificationLocal(Article article){
+
+        String tableName = "UserNotification";
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ArticleId",String.valueOf(article.getId()));
+            if(!exists) {
+                // Insert the UserNotification
+                db.execSQL("INSERT INTO "
+                        + tableName
+                        + " (ArticleId, Source,Score,Title,Author,Description,URL,IURL,ArticleNotifiedDate,PublishDate,IsFavourite,ShortLinkURL,RelatedInterests,TimeAgo,NotifiedTimeAgo,RelatedInterestsURL)"
+                        + " VALUES ("
+                        + article.getId() + ","
+                        + "'" + article.getSource() + "'" + ","
+                        + article.getScore() + ","
+                        +  "'" + article.getTitle() + "'" + ","
+                        + "'" + article.getAuthor() + "'" + ","
+                        +  "'" + article.getDescription() + "'" + ","
+                        +  "'" + article.getUrl() + "'" + ","
+                        +  "'" + article.getIurl() + "'" + ","
+                        +  "'" + article.getArticleNotifiedDate() + "'" + ","
+                        +  "'" + article.getPublishDate() + "'" + ","
+                        +  "'" + article.getFavourite() + "'" + ","
+                        +  "'" + article.getShortLinkUrl() + "'" + ","
+                        +  "'" + article.getRelatedInterests() + "'" + ","
+                        +  "'" + article.getTimeAgo() + "'" + ","
+                        +  "'" + article.getNotifiedTimeAgo() + "'" + ","
+                        +  "'" + article.getRelatedInterestsURL() + "'" + ","
+                        + ");");
+            }
+        }
+        catch(Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return isSuccess;
+    }
+
+    public List<Article> getUserNotificationsLocal() /* TODO ADD PARAMS FOR PAGING) */
+    {
+        String TableName = "UserNotification";
+        String Data="";
+        SQLiteDatabase db = null;
+        ArrayList<Article> articles = new ArrayList<Article>();
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Cursor c =  db.rawQuery("SELECT * FROM " + TableName + " ORDER BY ArticleNotifiedDate DESC", null);
+
+            int col_articleid = c.getColumnIndex("ArticleId");
+            // UPDATE THIS FOR NOTIFICATION
+            /*
+            int col_name = c.getColumnIndex("Name");
+            int col_iurl = c.getColumnIndex("IUrl");
+            int col_itemtypeid = c.getColumnIndex("ItemTypeId");
+            int col_itemtypename = c.getColumnIndex("ItemTypeName");
+            int col_useritemid = c.getColumnIndex("UserItemId");
+            int col_priority = c.getColumnIndex("Priority");
+            */
+
+            // Check if our result was valid.
+            c.moveToFirst();
+            if (c != null) {
+                // Loop through all Results
+                do {
+                    Article article = new Article();
+                    article.setId(c.getInt(col_articleid));
+                    /* FINISH THIS FOR REST OF ATTRIBUTES */
+                    
+                    articles.add(article);
+                }while(c.moveToNext());
+            }
+
+        }
+        catch(Exception e) {
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return items;
+    }
+
+    //endregion
+
     //region Helpers
     private boolean checkIsDataAlreadyInDBorNot(String TableName,
                                                 String dbfield, String fieldValue) {

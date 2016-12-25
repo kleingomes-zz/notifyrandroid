@@ -1,18 +1,28 @@
 package com.notifyrapp.www.notifyr.Business;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
+import com.notifyrapp.www.notifyr.AppStartActivity;
 import com.notifyrapp.www.notifyr.Data.RepositoryBuilder;
+import com.notifyrapp.www.notifyr.MainActivity;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 
 public class Business {
@@ -31,6 +41,7 @@ public class Business {
 
     public Business(Context context)
     {
+        JodaTimeAndroid.init(context);
         this.context = context;
     }
 
@@ -111,6 +122,29 @@ public class Business {
     }
 
     //endregion
+
+    //region Notifications
+    public void getUserNotifications(String fromDate, final CallbackInterface callback)
+    {
+        new WebApi(context).getUserNotifications(fromDate,new CallbackInterface() {
+            @Override
+            public void onCompleted(Object data) {
+
+                org.joda.time.DateTime now = new org.joda.time.DateTime(); // Default time zone.
+                org.joda.time.DateTime zulu = now.toDateTime( org.joda.time.DateTimeZone.UTC );
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putString("LastUpdateUserNotifiedArticles", zulu.toString()).commit();
+                Log.d("PRINTTIME:",zulu.toString());
+                callback.onCompleted(data);
+            }
+        });
+    }
+
+    public Boolean saveUserNotificationLocal(Article article)
+    {
+        return new Repository(context).saveUserNotificationLocal(article);
+    }
+
+    //endregions
 
 
 

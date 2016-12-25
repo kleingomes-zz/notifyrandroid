@@ -39,6 +39,7 @@ public class RepositoryBuilder {
             /* Create Tables */
             createUserProfileTable();
             createArticleTable();
+            createUserNotificationTable();
             createArticleFavouriteTable();
             createItemTable();
             createUserItemTable();
@@ -95,6 +96,32 @@ public class RepositoryBuilder {
     private void createArticleTable()
     {
         String TableName = "Article";
+
+        this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
+                + TableName
+                + "("
+                + "ArticleId INTEGER PRIMARY KEY,"
+                + "Source VARCHAR,"
+                + "Score INTEGER,"
+                + "Title VARCHAR,"
+                + "Author VARCHAR,"
+                + "Description VARCHAR,"
+                + "URL VARCHAR,"
+                + "IURL VARCHAR,"
+                + "ArticleNotifiedDate DATETIME,"
+                + "PublishDate DATETIME,"
+                + "IsFavourite BIT,"
+                + "ShortLinkURL VARCHAR,"
+                + "RelatedInterests VARCHAR,"
+                + "TimeAgo VARCHAR,"
+                + "NotifiedTimeAgo VARCHAR,"
+                + "RelatedInterestsURL VARCHAR"
+                + ");");
+    }
+
+    private void createUserNotificationTable()
+    {
+        String TableName = "UserNotification";
 
         this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
                 + TableName

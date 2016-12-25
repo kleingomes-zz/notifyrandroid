@@ -13,6 +13,7 @@ public class Article {
     private String source;
     private String title;
     private String author;
+    private String description;
     private String url;
     private String iurl;
     private Date articleNotifiedDate;
@@ -129,5 +130,13 @@ public class Article {
 
     public void setRelatedInterestsURL(String relatedInterestsURL) {
         this.relatedInterestsURL = relatedInterestsURL;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

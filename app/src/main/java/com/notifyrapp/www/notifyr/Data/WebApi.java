@@ -20,7 +20,9 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
@@ -144,6 +146,22 @@ public class WebApi {
         return articles;
     }
     //endregion
+
+    //region Notifications
+    public void getUserNotifications(String fromDate, CallbackInterface callback)
+    {
+        if(fromDate == null || fromDate.isEmpty())
+        {
+            fromDate = "2000-01-01";
+        }
+        String urlPath = "Article/GetUserNotifiedArticles?fromDate=" + fromDate;
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, NotifyrObjects.Article);
+        }
+    }
+
+    //endregions
 
     //region Network Requests
     private AsyncTask<Object, Void, List<Object>> postJSONObjectFromURL = new AsyncTask<Object, Void, List<Object>>() {
@@ -281,9 +299,15 @@ public class WebApi {
                         callback.onCompleted(jsonObject.getString("UserId"));
                     }
                     else if (notifyrType == NotifyrObjects.Article) {
-
-
-
+                        ArrayList<Article> articles = new ArrayList<Article>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            Article article = new Article();
+                            JSONObject jsonItem = jsonArray.getJSONObject(i);
+                            article.setId((!jsonItem.isNull( "Id" ) ?  jsonItem.getInt("Id") : -1));
+                            articles.add(article);
+                            Log.d("SAVE_ARTICLE", !jsonItem.isNull( "Title" ) ?  jsonItem.getString("Title") : "");
+                        }
+                        callback.onCompleted(articles);
                     }
                     else if (notifyrType == Item) {
                         ArrayList<Item> items = new ArrayList<Item>();
