@@ -146,7 +146,7 @@ public class Business {
 
     public List<Article> getUserNotificationsLocal() /* TODO ADD PARAMS FOR PAGING) */
     {
-        return new Repository(context).getUserNotifications);
+        return new Repository(context).getUserNotifications();
     }
     //endregions
 
