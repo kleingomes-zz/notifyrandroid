@@ -268,7 +268,7 @@ public class Repository {
     //endregion
 
     //region Notifications
-    public Boolean saveUserNotificationLocal(Article article){
+    public Boolean saveUserNotification(Article article){
 
         String tableName = "UserNotification";
         SQLiteDatabase db = null;
@@ -313,7 +313,7 @@ public class Repository {
         return isSuccess;
     }
 
-    public List<Article> getUserNotificationsLocal() /* TODO ADD PARAMS FOR PAGING) */
+    public List<Article> getUserNotifications() /* TODO ADD PARAMS FOR PAGING) */
     {
         String TableName = "UserNotification";
         String Data="";

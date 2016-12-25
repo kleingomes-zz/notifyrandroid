@@ -141,12 +141,12 @@ public class Business {
 
     public Boolean saveUserNotificationLocal(Article article)
     {
-        return new Repository(context).saveUserNotificationLocal(article);
+        return new Repository(context).saveUserNotification(article);
     }
 
     public List<Article> getUserNotificationsLocal() /* TODO ADD PARAMS FOR PAGING) */
     {
-        return new Repository(context).getUserNotificationsLocal();
+        return new Repository(context).getUserNotifications);
     }
     //endregions
 
