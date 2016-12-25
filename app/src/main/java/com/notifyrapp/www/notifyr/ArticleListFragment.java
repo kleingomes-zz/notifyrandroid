@@ -5,14 +5,30 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
+import com.notifyrapp.www.notifyr.Model.Article;
+import com.notifyrapp.www.notifyr.Model.Item;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -24,14 +40,8 @@ import android.widget.Toast;
  * create an instance of this fragment.
  */
 public class ArticleListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int mParam1;
 
     private OnFragmentInteractionListener mListener;
 
@@ -43,16 +53,14 @@ public class ArticleListFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param position Parameter 1.
      * @return A new instance of fragment ArticleListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ArticleListFragment newInstance(String param1, String param2) {
+    public static ArticleListFragment newInstance(int position) {
         ArticleListFragment fragment = new ArticleListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt("pos", position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,8 +71,7 @@ public class ArticleListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = getArguments().getInt("pos");
         }
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -81,7 +88,34 @@ public class ArticleListFragment extends Fragment {
         // Inflate the layout for this fragment
         MainActivity act = (MainActivity)getActivity();
         act.abTitle.setText("");
-        return inflater.inflate(R.layout.fragment_article_list, container, false);
+        // Inflate the layout for this fragment
+        final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
+       // MainActivity act = (MainActivity)getActivity();
+        act.abTitle.setText("My Interests");
+        // Init the Widgets
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
+        Business biz = new Business(view.getContext());
+
+        List<Article> articleList = new ArrayList<Article>();// biz.getUserArticlesLocal();
+
+        TableLayout itemTable =  (TableLayout) view.findViewById(R.id.article_list_table);
+        for (final Article currentArticle: articleList) {
+            TableRow row = (TableRow)inflater.inflate(R.layout.article_image_row, null,false);//(TableRow) view.findViewById(R.id.item_row);
+            row.setClickable(true);
+
+            row.setBackgroundResource(R.drawable.row_border);
+
+            ((TextView)row.findViewById(R.id.txtImageArticleTitle)).setText(currentArticle.getTitle());
+
+            ImageView image = (ImageView) row.findViewById(R.id.imgArticle);
+
+            new DownloadImageTask(image).execute(currentArticle.getIurl());
+
+            itemTable.addView(row);
+        }
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

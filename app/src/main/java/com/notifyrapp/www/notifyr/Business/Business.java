@@ -88,6 +88,10 @@ public class Business {
     public void getItemArticles(long itemId,int skip,int take,String sortBy, CallbackInterface callback){
         new WebApi(context).getItemArticles(itemId,skip,take,sortBy,callback);
     }
+
+    public void  getUserArticles(int skip, int take,String sortBy, int itemTypeId, CallbackInterface callback)    {
+        new WebApi(context).getUserArticles(skip,take,sortBy,itemTypeId,callback);
+    }
     //endregion
 
     //region User Accounts
