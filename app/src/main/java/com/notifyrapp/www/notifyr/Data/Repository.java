@@ -298,7 +298,7 @@ public class Repository {
                         +  "'" + article.getRelatedInterests() + "'" + ","
                         +  "'" + article.getTimeAgo() + "'" + ","
                         +  "'" + article.getNotifiedTimeAgo() + "'" + ","
-                        +  "'" + article.getRelatedInterestsURL() + "'" + ","
+                        +  "'" + article.getRelatedInterestsURL() + "'"
                         + ");");
             }
         }
@@ -325,6 +325,7 @@ public class Repository {
             Cursor c =  db.rawQuery("SELECT * FROM " + TableName + " ORDER BY ArticleNotifiedDate DESC", null);
 
             int col_articleid = c.getColumnIndex("ArticleId");
+            int col_title = c.getColumnIndex("Title");
             // UPDATE THIS FOR NOTIFICATION
             /*
             int col_name = c.getColumnIndex("Name");
@@ -342,8 +343,9 @@ public class Repository {
                 do {
                     Article article = new Article();
                     article.setId(c.getInt(col_articleid));
+                    article.setTitle(c.getString(col_title));
                     /* FINISH THIS FOR REST OF ATTRIBUTES */
-                    
+
                     articles.add(article);
                 }while(c.moveToNext());
             }
@@ -356,7 +358,7 @@ public class Repository {
                 db.close();
             }
         }
-        return items;
+        return articles;
     }
 
     //endregion

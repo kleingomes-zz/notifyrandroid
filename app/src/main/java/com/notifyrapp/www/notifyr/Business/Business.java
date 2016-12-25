@@ -144,6 +144,10 @@ public class Business {
         return new Repository(context).saveUserNotificationLocal(article);
     }
 
+    public List<Article> getUserNotificationsLocal() /* TODO ADD PARAMS FOR PAGING) */
+    {
+        return new Repository(context).getUserNotificationsLocal();
+    }
     //endregions
 
 

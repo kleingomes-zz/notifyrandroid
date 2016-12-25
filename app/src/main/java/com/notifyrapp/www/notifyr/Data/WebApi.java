@@ -20,6 +20,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +33,7 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -286,8 +288,8 @@ public class WebApi {
                 {
                     jsonObject = (JSONObject) returnObjects.get(0);
                 }
-
                 try {
+
 
                     if (notifyrType == NotifyrObjects.UserProfile) {
                         //Repository repo = new Repository(context);
@@ -299,15 +301,40 @@ public class WebApi {
                         callback.onCompleted(jsonObject.getString("UserId"));
                     }
                     else if (notifyrType == NotifyrObjects.Article) {
-                        ArrayList<Article> articles = new ArrayList<Article>();
+
+                            ArrayList<Article> articles = new ArrayList<Article>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Article article = new Article();
                             JSONObject jsonItem = jsonArray.getJSONObject(i);
                             article.setId((!jsonItem.isNull( "Id" ) ?  jsonItem.getInt("Id") : -1));
+
+                            String pubDateStr = jsonItem.getString("PublishDate");
+                            String notifyrDateStr = jsonItem.getString("ArticleNotifiedDate");
+
+
+
+                            Date pubDate = DateTime.parse(pubDateStr).toDate();
+                            Date notifyrDate = DateTime.parse(notifyrDateStr).toDate();
+
+                            article.setScore((!jsonItem.isNull( "Score" ) ?  jsonItem.getInt("Score") : -1));
+                            article.setSource(!jsonItem.isNull( "Source" ) ?  jsonItem.getString("Source") : "");
+                            article.setTitle(!jsonItem.isNull( "Title" ) ?  jsonItem.getString("Title") : "");
+                            article.setAuthor(!jsonItem.isNull( "Author" ) ?  jsonItem.getString("Author") : "");
+                            article.setDescription(!jsonItem.isNull( "Description" ) ?  jsonItem.getString("Description") : "");
+                            article.setUrl(!jsonItem.isNull( "URL" ) ?  jsonItem.getString("URL") : "");
+                            article.setArticleNotifiedDate(pubDate);
+                            article.setPublishDate(notifyrDate);
+                            article.setFavourite(!jsonItem.isNull( "IsFavourite" ) ?  jsonItem.getBoolean("IsFavourite") : false);
+                            article.setShortLinkUrl(!jsonItem.isNull( "ShortLinkUrl" ) ?  jsonItem.getString("ShortLinkUrl") : "");
+                            article.setRelatedInterests(!jsonItem.isNull( "RelatedInterests" ) ?  jsonItem.getString("RelatedInterests") : "");
+                            article.setTimeAgo(!jsonItem.isNull( "TimeAgo" ) ?  jsonItem.getString("TimeAgo") : "");
+                            article.setNotifiedTimeAgo(!jsonItem.isNull( "NotifiedTimeAgo" ) ?  jsonItem.getString("NotifiedTimeAgo") : "");
+                            article.setRelatedInterestsURL(!jsonItem.isNull( "RelatedInterestsIURL" ) ?  jsonItem.getString("RelatedInterestsIURL") : "");
                             articles.add(article);
                             Log.d("SAVE_ARTICLE", !jsonItem.isNull( "Title" ) ?  jsonItem.getString("Title") : "");
                         }
                         callback.onCompleted(articles);
+
                     }
                     else if (notifyrType == Item) {
                         ArrayList<Item> items = new ArrayList<Item>();
@@ -331,8 +358,7 @@ public class WebApi {
                         PreferenceManager.getDefaultSharedPreferences(context).edit().putString("accesstoken",accessToken).commit();
                         callback.onCompleted(null);
                     }
-
-                } catch (JSONException e) {
+                    } catch (JSONException e) {
                     e.printStackTrace();
                 }
 

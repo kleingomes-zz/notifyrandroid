@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static java.lang.Thread.sleep;
 
@@ -81,7 +82,8 @@ public class AppStartActivity extends AppCompatActivity{
         }
         else
         {
-            //this.deleteDatabase("NotifyrLocal.db");
+            // TODO: remove this
+            this.deleteDatabase("NotifyrLocal.db");
             final Business business = new Business(ctx);
             if(!business.checkIfDatabaseExists()) {
                 business.createNotifyrDatabase(userId);
@@ -119,9 +121,9 @@ public class AppStartActivity extends AppCompatActivity{
                         public void onCompleted(Object data) {
                             // Running callback
                             Log.d("CALLBACK_CHECK","SAVED NOTIFIED ARTICLES TO LOCAL STORE");
-                            ArrayList<Article> articles = (ArrayList<articles>) data;
+                            ArrayList<Article> articles = (ArrayList<Article>) data;
                             for (Article currentArticle: articles) {
-                                business.saveUserNotificationLocal(articles);
+                                business.saveUserNotificationLocal(currentArticle);
                             }
                         }
                     });
