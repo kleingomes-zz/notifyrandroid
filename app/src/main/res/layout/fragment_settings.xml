@@ -114,8 +114,10 @@
 
                         <SeekBar
                             android:id="@+id/seekBarMaxNotificationsPerDay"
+                            android:layout_width="300dp"
                             android:layout_height="wrap_content"
                             android:layout_alignEnd="@+id/txtMaxNotificationDescription"
+                            android:layout_alignParentLeft="true"
                             android:layout_alignParentRight="true"
                             android:layout_alignRight="@+id/txtMaxNotificationDescription"
                             android:layout_below="@+id/txtMaxNotificationDescription"
@@ -123,9 +125,7 @@
                             android:layout_marginTop="26dp"
                             android:paddingEnd="45dip"
                             android:paddingStart="45dip"
-                            android:thumb = "@drawable/seekbar_thumb"
-                            android:layout_width="300dp"
-                            android:layout_alignParentLeft="true"
+                            android:thumb="@drawable/seekbar_thumb"
                             android:thumbOffset="0dp" />
 
                         <TextView
@@ -175,14 +175,14 @@
                             android:textStyle="normal|bold" />
 
                         <RadioGroup
+                            android:id="@+id/radioGroup"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:id="@+id/radioGroup"
-                            android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="false"
                             android:layout_alignParentStart="false"
-                            android:layout_centerHorizontal="true">
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:orientation="horizontal">
 
                             <RadioButton
                                 android:id="@+id/radioButtonNever"
@@ -191,15 +191,14 @@
                                 android:layout_alignLeft="@+id/txtSeekBarValue"
                                 android:layout_alignParentTop="true"
                                 android:layout_alignStart="@+id/txtSeekBarValue"
-                                android:layout_marginTop="48dp"
-                                android:text="Never"
-                                android:button="@null"
                                 android:layout_marginLeft="0dp"
                                 android:layout_marginStart="0dp"
+                                android:layout_marginTop="48dp"
                                 android:background="@drawable/radio_button_selector"
+                                android:button="@null"
+                                android:text="Never"
                                 android:textAlignment="center"
-                                android:textColor="@drawable/radio_button_text_color"
-                                />
+                                android:textColor="@drawable/radio_button_text_color" />
 
                             <RadioButton
                                 android:id="@+id/radioButtonWifiOnly"
@@ -207,13 +206,13 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignBaseline="@+id/radioButtonNever"
                                 android:layout_alignBottom="@+id/radioButtonNever"
+                                android:layout_marginTop="48dp"
                                 android:layout_toEndOf="@+id/radioButtonNever"
                                 android:layout_toRightOf="@+id/radioButtonNever"
-                                android:text="Wifi Only"
-                                android:button="@null"
-                                android:layout_marginTop="48dp"
-                                android:checked="true"
                                 android:background="@drawable/radio_button_selector"
+                                android:button="@null"
+                                android:checked="true"
+                                android:text="Wifi Only"
                                 android:textAlignment="center"
                                 android:textColor="@drawable/radio_button_text_color"
 
@@ -227,10 +226,10 @@
                                 android:layout_alignBottom="@+id/radioButtonNever"
                                 android:layout_alignEnd="@+id/txtDownloadArticleImages"
                                 android:layout_alignRight="@+id/txtDownloadArticleImages"
-                                android:text="Always"
-                                android:button="@null"
                                 android:layout_marginTop="48dp"
                                 android:background="@drawable/radio_button_selector"
+                                android:button="@null"
+                                android:text="Always"
                                 android:textAlignment="center"
                                 android:textColor="@drawable/radio_button_text_color"
 
@@ -295,16 +294,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="false"
+                            android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginBottom="0dp"
                             android:layout_marginRight="30dp"
                             android:layout_toEndOf="@+id/txtArticleReaderModeDescription"
                             android:layout_toRightOf="@+id/txtArticleReaderModeDescription"
                             android:height="0dp"
-                            android:switchMinWidth="65dp"
-                            android:thumb = "@drawable/switch_thumb"
                             android:elevation="13dp"
-                            android:layout_alignParentRight="true" />
+                            android:switchMinWidth="65dp"
+                            android:thumb="@drawable/switch_thumb" />
                     </RelativeLayout>
                 </TableRow>
             </TableRow>
@@ -367,18 +366,19 @@
                             android:text="Network Status"
                             android:textColor="@color/darkGray"
                             android:textSize="16sp" />
+
                         <TextView
-                            android:text="Online"
+                            android:id="@+id/txtNetworkStatusGreen"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/txtNetworkStatus"
-                            android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignTop="@+id/txtNetworkStatus"
                             android:layout_centerVertical="true"
-                            android:id="@+id/txtNetworkStatusGreen"
                             android:layout_marginRight="28dp"
+                            android:text="Online"
                             android:textColor="@color/switchGreen"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp" />
                     </RelativeLayout>
                 </TableRow>
             </TableRow>
@@ -388,8 +388,8 @@
                 android:id="@+id/STN"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
-                android:layout_marginBottom=".25dp">
+                android:layout_marginBottom=".25dp"
+                android:background="@color/white">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -608,17 +608,17 @@
                             android:textSize="16sp" />
 
                         <TextView
-                            android:text="1.0.9"
+                            android:id="@+id/txtVersionNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/txtVersion"
-                            android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignTop="@+id/txtVersion"
                             android:layout_centerVertical="true"
-                            android:id="@+id/txtVersionNumber"
                             android:layout_marginRight="28dp"
+                            android:text="1.0.9"
                             android:textColor="@color/darkGray"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp" />
                     </RelativeLayout>
                 </TableRow>
             </TableRow>
@@ -685,6 +685,7 @@
                             android:text="About"
                             android:textColor="@color/lightGray"
                             android:textSize="14sp" />
+
                     </RelativeLayout>
                 </TableRow>
             </TableRow>

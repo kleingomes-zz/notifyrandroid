@@ -325,7 +325,21 @@ public class Repository {
             Cursor c =  db.rawQuery("SELECT * FROM " + TableName + " ORDER BY ArticleNotifiedDate DESC", null);
 
             int col_articleid = c.getColumnIndex("ArticleId");
+            int col_source = c.getColumnIndex("Source");
+            //int col_score = c.getColumnIndex("Score");
             int col_title = c.getColumnIndex("Title");
+           // int col_author = c.getColumnIndex("Author");
+           // int col_description = c.getColumnIndex("Description");
+            //int col_url = c.getColumnIndex("URL");
+            int col_iurl = c.getColumnIndex("IURL");
+            //int col_articleNotifiedDate = c.getColumnIndex("ArticleNotifiedDate");
+            //int col_publishDate = c.getColumnIndex("PublishDate");
+            //int col_isFavourite = c.getColumnIndex("IsFavourite");
+            //int col_shortLinkURL = c.getColumnIndex("ShortLinkURL");
+            //int col_relatedInterests = c.getColumnIndex("RelatedInterests");
+            int col_timeAgo = c.getColumnIndex("TimeAgo");
+            int col_notifiedTimeAgo = c.getColumnIndex("NotifiedTimeAgo");
+            //int col_realtedInterestsURL = c.getColumnIndex("RelatedInterestsURL");
             // UPDATE THIS FOR NOTIFICATION
             /*
             int col_name = c.getColumnIndex("Name");
@@ -342,8 +356,11 @@ public class Repository {
                 // Loop through all Results
                 do {
                     Article article = new Article();
-                    article.setId(c.getInt(col_articleid));
-                    article.setTitle(c.getString(col_title));
+                    article.setId(c.getInt(col_articleid)); //article id
+                    article.setTitle(c.getString(col_title)); //title
+                    article.setSource(c.getString(col_source)); //source
+                    article.setTimeAgo(c.getString(col_timeAgo)); //time ago
+                    article.setIurl(c.getString(col_iurl));
                     /* FINISH THIS FOR REST OF ATTRIBUTES */
 
                     articles.add(article);

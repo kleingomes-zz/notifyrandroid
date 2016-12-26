@@ -7,11 +7,23 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.ImageView;
 
 
+
+import com.notifyrapp.www.notifyr.ArticleListFragment;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.R;
+import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
+
+
+import org.w3c.dom.Text;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,9 +80,42 @@ public class MyNotificationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_notifications, container, false);
-        //Business biz = new Business(view.getContext());
-        //List<Article> userNotificationsList = biz.getuserNotificationsfromlocal;
+        final View view = inflater.inflate(R.layout.fragment_my_notifications, container, false);
+        Business biz = new Business(view.getContext());
+        List<Article> userNotificationsList = biz.getUserNotificationsLocal();
+
+        TableLayout notificationTable = (TableLayout) view.findViewById(R.id.my_notifications_table);
+        for (final Article currentArticle: userNotificationsList) {
+
+            TableRow row = (TableRow) inflater.inflate (R.layout.notification_row, null, false);
+            row.setClickable(true);
+            /*
+            row.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v) {
+                    Fragment newFragment = new ArticleListFragment()
+                }
+            }
+            */
+            //set the border on the backgroud
+            row.setBackgroundResource(R.drawable.row_border);
+            //title of the notification article
+            ((TextView)row.findViewById(R.id.txtNotificationArticle)).setText(currentArticle.getTitle());
+            //name of the source
+            ((TextView)row.findViewById(R.id.txtNotificationSource)).setText(currentArticle.getSource());
+            //name of the item the notification is associated with
+           // ((TextView)row.findViewById(R.id.txtNotificationItem)).setText(currentArticle)
+            //time ago
+            ((TextView)row.findViewById(R.id.txtNotificationTime)).setText(currentArticle.getNotifiedTimeAgo());//or gettimeago
+            //image icon of the item the notification is associated with
+            ImageView image = (ImageView) row.findViewById(R.id.imgNotification);
+            new DownloadImageTask(image).execute(currentArticle.getIurl());
+            notificationTable.addView(row);
+
+        }
+        return view;
+
         //make an array list of articles, and make two or three of them.
         //for loop through each one of the three.
         //make an array of Articles from the article class

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:id="@+id/notificationRow"
+
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@mipmap/ic_launcher"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/imgNotification"
+            android:scaleType="fitCenter"
+            android:maxWidth="50dp"
+            android:minWidth="50dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp" />
+
+        <TextView
+            android:text="MacBook Pro With OLED Touchbar Too Expensive? Laptop Priced At $4,300"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtNotificationArticle"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imgNotification"
+            android:layout_toEndOf="@+id/imgNotification"
+            android:layout_marginTop="5dp"
+            android:textStyle="normal|bold"
+            android:textSize="16sp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginRight="6dp" />
+        <TextView
+            android:text="Game &amp; Guide"
+            android:textColor="#000000"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/imgNotification"
+            android:layout_toEndOf="@+id/imgNotification"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:id="@+id/txtNotificationSource"
+            android:layout_marginTop="44dp"
+            android:textSize="13sp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginRight="100dp" />
+        <TextView
+            android:text="one month ago"
+            android:textColor="#000000"
+            android:maxLines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:layout_marginLeft="15dp"
+
+            android:id="@+id/txtNotificationTime"
+            android:textSize="13sp"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="15dp"
+            android:textAlignment="textEnd"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:text="MacBook Pro"
+            android:textColor="@color/colorNotifyrLightBlue"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/imgNotification"
+            android:layout_toEndOf="@+id/imgNotification"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:id="@+id/txtNotificationItem"
+            android:textStyle="normal|bold"
+            android:layout_marginTop="68dp"
+            android:textSize="15sp"
+            android:layout_marginEnd="140dp"
+            android:layout_marginRight="140dp" />
+
+
+
+    </RelativeLayout>
+
+</TableRow>

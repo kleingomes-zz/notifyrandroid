@@ -45,6 +45,7 @@ import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
+import com.notifyrapp.www.notifyr.UI.MyNotificationsFragment;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener,
         MyItemsFragment.OnFragmentInteractionListener,
         WebViewFragment.OnFragmentInteractionListener,
-        ArticleListFragment.OnFragmentInteractionListener
+        ArticleListFragment.OnFragmentInteractionListener,
+        MyNotificationsFragment.OnFragmentInteractionListener
+
 {
 
     /**
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private Context ctx;
     SettingsFragment settingsFragment;
     MyItemsFragment myItemsFragment;
+    MyNotificationsFragment myNotificationsFragment;
     TextView abTitle;
 
     @Override
@@ -189,7 +193,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                             fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
                             fragmentTransaction.commit();
                         }
-                        else if(position == 3) {   abTitle.setText(R.string.menu_tab_3); }
+                        else if(position == 3) {   abTitle.setText(R.string.menu_tab_3);
+                            myNotificationsFragment = new MyNotificationsFragment();
+                            fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
+                            fragmentTransaction.commit();
+                        }
                         else if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
                         else if(position == 4)
                         {
