@@ -97,7 +97,7 @@ public class ArticleListFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
         Business biz = new Business(view.getContext());
 
-        List<Article> articleList = new ArrayList<Article>();// biz.getUserArticlesLocal();
+        List<Article> articleList = biz.getUserArticlesFromLocal(0,20,"Score",-1);
 
         TableLayout itemTable =  (TableLayout) view.findViewById(R.id.article_list_table);
         for (final Article currentArticle: articleList) {

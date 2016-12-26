@@ -81,7 +81,7 @@ public class Business {
     //endregion
 
     //region Articles
-    public List<Article> GetArticles(int skip, int take,String sortBy,int itemTypeId) {
+    public List<Article> getArticles(int skip, int take,String sortBy,int itemTypeId) {
         return webApi.GetArticles(skip,take,sortBy,itemTypeId);
     }
 
@@ -89,8 +89,30 @@ public class Business {
         new WebApi(context).getItemArticles(itemId,skip,take,sortBy,callback);
     }
 
-    public void  getUserArticles(int skip, int take,String sortBy, int itemTypeId, CallbackInterface callback)    {
-        new WebApi(context).getUserArticles(skip,take,sortBy,itemTypeId,callback);
+    public void  getUserArticlesFromServer(int skip, int take, String sortBy, int itemTypeId, final CallbackInterface callback)    {
+        new WebApi(context).getUserArticles(skip,take,sortBy,itemTypeId,new CallbackInterface() {
+            @Override
+            public void onCompleted(Object data) {
+                Business b = new Business(context);
+                Log.d("CALLBACK_CHECK","GOT USER ARTICLES FROM SERVER... SAVING TO LOCAL NOW....");
+                ArrayList<Article> articles = (ArrayList<Article>) data;
+                for (Article currentArticle: articles) {
+                    b.saveArticleLocal(currentArticle);
+                }
+                if (callback != null) {
+                    callback.onCompleted(data);
+                }
+            }
+        });
+    }
+
+    public List<Article>  getUserArticlesFromLocal(int skip, int take,String sortBy, int itemTypeId)    {
+        return new Repository(context).getUserArticles(skip,take,sortBy,itemTypeId);
+    }
+
+    public Boolean saveArticleLocal(Article article)
+    {
+        return new Repository(context).saveArticle(article);
     }
     //endregion
 
@@ -138,7 +160,9 @@ public class Business {
                 org.joda.time.DateTime zulu = now.toDateTime( org.joda.time.DateTimeZone.UTC );
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putString("LastUpdateUserNotifiedArticles", zulu.toString()).commit();
                 Log.d("PRINTTIME:",zulu.toString());
-                callback.onCompleted(data);
+                if (callback != null) {
+                    callback.onCompleted(data);
+                }
             }
         });
     }

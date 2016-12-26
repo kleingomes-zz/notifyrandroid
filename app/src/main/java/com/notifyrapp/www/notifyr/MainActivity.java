@@ -48,6 +48,7 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.UI.MyNotificationsFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener,
@@ -98,27 +99,25 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // INIT
         setContentView(R.layout.activity_main);
         this.ctx = this;
-
-        // INIT
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
         abTitle =  (TextView)findViewById(R.id.abTitle);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorNotifyrLightBlue)));
-        // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        // setSupportActionBar(toolbar);
-
-
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        // FETCH
+        // Prefetch articles and other data here
+        // This will only load once on MainActivityCreate
+        Business business = new Business(ctx);
+        business.getUserArticlesFromServer(0,100,"Score",-1,null);
+
 
      /*   FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                 position = 4;
                                 break;
                         }
+
                         // FRAGMENT MANAGER
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -161,19 +161,21 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         // DROP THE CURRENT FRAGMENT
                         Fragment fragment = null;
 
+                        // Check which fragment is active, inactive ones return null
                         Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
                         Fragment pos1 = getSupportFragmentManager().findFragmentByTag("myitems_frag");
                         Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
                         Fragment pos3 = getSupportFragmentManager().findFragmentByTag("notifications_frag");
                         Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
 
+                        // Remove the fragment that is not null from the manager
                         if(pos0 != null) {  getSupportFragmentManager().beginTransaction().remove(pos0).commit(); }
                         if(pos1 != null) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
                         if(pos2 != null) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
                         if(pos3 != null) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
                         if(pos4 != null) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
 
-                        // LOAD THE NEW FRAGMENT
+                        // SHOW/HIDE the app bar depending on which menu tab you're on
                         if(position == 0)
                         {
                             AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
@@ -186,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                             appBar.setVisibility(View.INVISIBLE);
                         }
 
+                        // LOAD THE NEW FRAGMENT
                         if(position == 1)
                         {
                             abTitle.setText(R.string.menu_tab_1);
@@ -209,82 +212,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         return false;
                     }
                 });
-
-       /* BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
-
-        bottomNavigationBar
-                .addItem(new BottomNavigationItem(R.mipmap.ic_home_black_24dp, R.string.menu_tab_0))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_star_border_black_24dp, R.string.menu_tab_1))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_explore_black_24dp, R.string.menu_tab_2))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_notifications_none_black_24dp, R.string.menu_tab_3))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_settings_black_24dp, R.string.menu_tab_4))
-                .setActiveColor(R.color.colorNotifyrLightBlue)
-                .setInActiveColor("#95a5a6")
-                .setBarBackgroundColor("#ECECEC")
-                .setMode(BottomNavigationBar.MODE_FIXED)
-                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
-                .initialise();
-
-        bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener(){
-            @Override
-            public void onTabSelected(int position) {
-
-                // FRAGMENT MANAGER
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                // DROP THE CURRENT FRAGMENT
-                Fragment fragment = null;
-
-                Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
-                Fragment pos1 = getSupportFragmentManager().findFragmentByTag("myitems_frag");
-                Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
-                Fragment pos3 = getSupportFragmentManager().findFragmentByTag("notifications_frag");
-                Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
-
-                if(pos0 != null) {  getSupportFragmentManager().beginTransaction().remove(pos0).commit(); }
-                if(pos1 != null) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
-                if(pos2 != null) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
-                if(pos3 != null) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
-                if(pos4 != null) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
-
-                // LOAD THE NEW FRAGMENT
-                if(position == 0)
-                {
-                    AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-                    appBar.setVisibility(View.VISIBLE);
-                    abTitle.setText(R.string.menu_tab_0);
-                }
-                else
-                {
-                    AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-                    appBar.setVisibility(View.INVISIBLE);
-                }
-
-                if(position == 1)
-                {
-                    abTitle.setText(R.string.menu_tab_1);
-                    myItemsFragment = new MyItemsFragment();
-                    fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
-                    fragmentTransaction.commit();
-                }
-                else if(position == 3) {   abTitle.setText(R.string.menu_tab_3); }
-                else if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
-                else if(position == 4)
-                {
-                    abTitle.setText(R.string.menu_tab_4);
-                    settingsFragment = new SettingsFragment();
-                    fragmentTransaction.add(R.id.fragment_container, settingsFragment,"settings_frag");
-                    fragmentTransaction.commit();
-                }
-            }
-            @Override
-            public void onTabUnselected(int position) {
-            }
-            @Override
-            public void onTabReselected(int position) {
-            }
-        });*/
 
     }
 

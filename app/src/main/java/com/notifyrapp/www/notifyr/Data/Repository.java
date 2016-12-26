@@ -10,8 +10,11 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
+import org.joda.time.DateTime;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -19,14 +22,19 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Repository {
 
+    /* Private Fields */
     private Context context;
     private String dbName = "NotifyrLocal.db";
     private String userId;
     private SQLiteDatabase notifyrDB;
+
+    /* Constructor */
     public Repository(Context context)
     {
         this.context = context;
     }
+
+    /* Member Functions */
 
     //region Items
     public Boolean saveUserItemLocal(Item userItem){
@@ -120,7 +128,47 @@ public class Repository {
     //region Article
     public Boolean saveArticle(Article article)
     {
-        return true;
+        String tableName = "Article";
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ArticleId",String.valueOf(article.getId()));
+            if(!exists) {
+                // Insert the UserNotification
+                db.execSQL("INSERT INTO "
+                        + tableName
+                        + " (ArticleId, Source,Score,Title,Author,Description,URL,IURL,ArticleNotifiedDate,PublishDate,IsFavourite,ShortLinkURL,RelatedInterests,TimeAgo,NotifiedTimeAgo,RelatedInterestsURL)"
+                        + " VALUES ("
+                        + article.getId() + ","
+                        + "'" + article.getSource() + "'" + ","
+                        + article.getScore() + ","
+                        +  "'" + article.getTitle() + "'" + ","
+                        + "'" + article.getAuthor() + "'" + ","
+                        +  "'" + article.getDescription() + "'" + ","
+                        +  "'" + article.getUrl() + "'" + ","
+                        +  "'" + article.getIurl() + "'" + ","
+                        +  "'" + article.getArticleNotifiedDate() + "'" + ","
+                        +  "'" + article.getPublishDate() + "'" + ","
+                        +  "'" + article.getFavourite() + "'" + ","
+                        +  "'" + article.getShortLinkUrl() + "'" + ","
+                        +  "'" + article.getRelatedInterests() + "'" + ","
+                        +  "'" + article.getTimeAgo() + "'" + ","
+                        +  "'" + article.getNotifiedTimeAgo() + "'" + ","
+                        +  "'" + article.getRelatedInterestsURL() + "'"
+                        + ");");
+            }
+        }
+        catch(Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return isSuccess;
     }
 
     public List<Article> getArticles(int skip, int take, String sortBy)
@@ -160,6 +208,80 @@ public class Repository {
             }
         }
         return new ArrayList<Article>();
+    }
+
+    public List<Article> getUserArticles(int skip, int take,String sortBy, int itemTypeId)    {
+        String TableName = "Article";
+        String Data="";
+        SQLiteDatabase db = null;
+        ArrayList<Article> articles = new ArrayList<Article>();
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+
+            /* TODO: finish this query */
+            Cursor c =  db.rawQuery("SELECT * FROM " + TableName + " ORDER BY PublishDate DESC", null);
+
+            int col_articleid = c.getColumnIndex("ArticleId");
+            int col_source = c.getColumnIndex("Source");
+            int col_score = c.getColumnIndex("Score");
+            int col_title = c.getColumnIndex("Title");
+            int col_author = c.getColumnIndex("Author");
+            int col_description = c.getColumnIndex("Description");
+            int col_url = c.getColumnIndex("URL");
+            int col_iurl = c.getColumnIndex("IURL");
+            int col_articleNotifiedDate = c.getColumnIndex("ArticleNotifiedDate");
+            int col_publishDate = c.getColumnIndex("PublishDate");
+            int col_isFavourite = c.getColumnIndex("IsFavourite");
+            int col_shortLinkURL = c.getColumnIndex("ShortLinkURL");
+            int col_relatedInterests = c.getColumnIndex("RelatedInterests");
+            int col_timeAgo = c.getColumnIndex("TimeAgo");
+            int col_notifiedTimeAgo = c.getColumnIndex("NotifiedTimeAgo");
+            int col_realtedInterestsURL = c.getColumnIndex("RelatedInterestsURL");
+
+
+            // Check if our result was valid.
+            c.moveToFirst();
+            if (c != null) {
+                // Loop through all Results
+                do {
+
+                    /* Need to convert the strings to Date types */
+                    String pubDateStr = c.getString(col_articleNotifiedDate);
+                    String notifyrDateStr = c.getString(col_publishDate);
+                    Date pubDate = DateTime.parse(pubDateStr).toDate();
+                    Date notifyrDate = DateTime.parse(notifyrDateStr).toDate();
+
+                    Article article = new Article();
+                    article.setScore(c.getInt(col_score));
+                    article.setId(c.getInt(col_articleid));
+                    article.setTitle(c.getString(col_title));
+                    article.setTimeAgo(c.getString(col_author));
+                    article.setDescription(c.getString(col_description));
+                    article.setUrl(c.getString(col_url));
+                    article.setSource(c.getString(col_source));
+                    article.setTimeAgo(c.getString(col_timeAgo));
+                    article.setIurl(c.getString(col_iurl));
+                    article.setArticleNotifiedDate(notifyrDate);
+                    article.setPublishDate(pubDate);
+                    article.setFavourite(c.getInt(col_isFavourite) == 1 ? true : false);
+                    article.setShortLinkUrl(c.getString(col_shortLinkURL));
+                    article.setRelatedInterests(c.getString(col_relatedInterests));
+                    article.setNotifiedTimeAgo(c.getString(col_notifiedTimeAgo));
+                    article.setRelatedInterestsURL(c.getString(col_realtedInterestsURL));
+                    articles.add(article);
+                }while(c.moveToNext());
+            }
+
+        }
+        catch(Exception e) {
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return articles;
     }
     //endregion
 
