@@ -115,8 +115,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         // FETCH
         // Prefetch articles and other data here
         // This will only load once on MainActivityCreate
-        Business business = new Business(ctx);
-        business.getUserArticlesFromServer(0,100,"Score",-1,null);
+
 
 
      /*   FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

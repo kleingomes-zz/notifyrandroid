@@ -1,9 +1,11 @@
 package com.notifyrapp.www.notifyr;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -23,12 +25,15 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.notifyrapp.www.notifyr.R.id.container;
 
 
 /**
@@ -43,6 +48,8 @@ public class ArticleListFragment extends Fragment {
 
     private int mParam1;
 
+    private Context ctx;
+    private Activity act;
     private OnFragmentInteractionListener mListener;
 
     public ArticleListFragment() {
@@ -79,7 +86,6 @@ public class ArticleListFragment extends Fragment {
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
         upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
-
     }
 
     @Override
@@ -87,6 +93,7 @@ public class ArticleListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         MainActivity act = (MainActivity)getActivity();
+        this.act = act;
         act.abTitle.setText("");
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
@@ -95,28 +102,54 @@ public class ArticleListFragment extends Fragment {
         // Init the Widgets
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
-        Business biz = new Business(view.getContext());
 
-        List<Article> articleList = biz.getUserArticlesFromLocal(0,20,"Score",-1);
 
-        TableLayout itemTable =  (TableLayout) view.findViewById(R.id.article_list_table);
-        for (final Article currentArticle: articleList) {
-            TableRow row = (TableRow)inflater.inflate(R.layout.article_image_row, null,false);//(TableRow) view.findViewById(R.id.item_row);
-            row.setClickable(true);
-
-            row.setBackgroundResource(R.drawable.row_border);
-
-            ((TextView)row.findViewById(R.id.txtImageArticleTitle)).setText(currentArticle.getTitle());
-
-            ImageView image = (ImageView) row.findViewById(R.id.imgArticle);
-
-            new DownloadImageTask(image).execute(currentArticle.getIurl());
-
-            itemTable.addView(row);
-        }
+        this.ctx = view.getContext();
 
         return view;
     }
+
+   /* public class AsyncTest extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            final Business business = new Business(ctx);
+            business.getUserArticlesFromServer(0, 100, "Score", -1, new CallbackInterface() {
+                @Override
+                public void onCompleted(Object data) {
+
+                    ArrayList<Article> articles = (ArrayList<Article>) data;
+                    List<Article> articleList = business.getUserArticlesFromLocal(0,20,"Score",-1);
+
+                    TableLayout itemTable =  (TableLayout) view.findViewById(R.id.article_list_table);
+                    for (final Article currentArticle: articleList) {
+                        TableRow row = (TableRow)inflater.inflate(R.layout.article_image_row, null,false);//(TableRow) view.findViewById(R.id.item_row);
+                        row.setClickable(true);
+
+                        row.setBackgroundResource(R.drawable.row_border);
+
+                        ((TextView)row.findViewById(R.id.txtImageArticleTitle)).setText(currentArticle.getTitle());
+
+                        ImageView image = (ImageView) row.findViewById(R.id.imgArticle);
+
+                        new DownloadImageTask(image).execute(currentArticle.getIurl());
+
+                        itemTable.addView(row);
+                    }
+
+                }
+            });
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Business biz = new Business(ctx);
+
+        }
+    } */
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

@@ -180,12 +180,13 @@ public class WebApi {
 
         @Override
         protected List<Object> doInBackground(Object... params) {
+
             HttpURLConnection httpcon;
             String urlString = (String) params[0];
             Context parentContext = (Context) params[1];
             CallbackInterface callback = (CallbackInterface) params[2];
             NotifyrObjects notifyrObjectType = (NotifyrObjects) params[3];
-
+            Log.d("URL_REQUEST", urlString);
             String result = "";
 
             try {
@@ -234,6 +235,7 @@ public class WebApi {
                     os.write( outputInBytes );
                     os.close();
                 }
+
 
                 conn.connect();
                 int statusCode = conn.getResponseCode();
@@ -318,10 +320,8 @@ public class WebApi {
                             JSONObject jsonItem = jsonArray.getJSONObject(i);
                             article.setId((!jsonItem.isNull( "Id" ) ?  jsonItem.getInt("Id") : -1));
 
-                            String pubDateStr = jsonItem.getString("PublishDate");
-                            String notifyrDateStr = jsonItem.getString("ArticleNotifiedDate");
-
-
+                            String pubDateStr = !jsonItem.isNull( "PublishDate" ) ?  jsonItem.getString("PublishDate") : "2000-01-01";
+                            String notifyrDateStr = !jsonItem.isNull( "ArticleNotifiedDate" ) ?  jsonItem.getString("ArticleNotifiedDate") : "2000-01-01";
 
                             Date pubDate = DateTime.parse(pubDateStr).toDate();
                             Date notifyrDate = DateTime.parse(notifyrDateStr).toDate();
@@ -341,7 +341,7 @@ public class WebApi {
                             article.setNotifiedTimeAgo(!jsonItem.isNull( "NotifiedTimeAgo" ) ?  jsonItem.getString("NotifiedTimeAgo") : "");
                             article.setRelatedInterestsURL(!jsonItem.isNull( "RelatedInterestsIURL" ) ?  jsonItem.getString("RelatedInterestsIURL") : "");
                             articles.add(article);
-                            Log.d("SAVE_ARTICLE", !jsonItem.isNull( "Title" ) ?  jsonItem.getString("Title") : "");
+                            Log.d("GOT_ARTICLE", !jsonItem.isNull( "Title" ) ?  jsonItem.getString("Title") : "");
                         }
                         callback.onCompleted(articles);
 
