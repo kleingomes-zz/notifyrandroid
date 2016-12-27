@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,8 @@ public class ArticleListFragment extends Fragment {
     private Activity act;
     private ListView mListView;
     private OnFragmentInteractionListener mListener;
+    private SwipeRefreshLayout swipeContainer;
+
 
     public ArticleListFragment() {
         // Required empty public constructor
@@ -83,15 +86,39 @@ public class ArticleListFragment extends Fragment {
         act.abTitle.setText("");
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
+        this.ctx = view.getContext();
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        mListView = (ListView) view.findViewById(R.id.article_list_view);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                getArticles();
+            }
+        });
+        getArticles();
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
-       // MainActivity act = (MainActivity)getActivity();
+        // MainActivity act = (MainActivity)getActivity();
         act.abTitle.setText("My Interests");
+
         // Init the Widgets
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
 
-        this.ctx = view.getContext();
-        mListView = (ListView) view.findViewById(R.id.article_list_view);
+        return view;
+    }
+
+    public void getArticles()
+    {
         Business business = new Business(ctx);
         business.getUserArticlesFromServer(0,100,"Score",-1, new CallbackInterface() {
             @Override
@@ -99,12 +126,10 @@ public class ArticleListFragment extends Fragment {
                 ArrayList<Article> articles = (ArrayList<Article>) data;
                 ArticleAdapter adapter = new ArticleAdapter(ctx, articles);
                 mListView.setAdapter(adapter);
+                swipeContainer.setRefreshing(false);
             }
         });
-
-        return view;
     }
-
    /* public class AsyncTest extends AsyncTask<String, Integer, String> {
 
         @Override
