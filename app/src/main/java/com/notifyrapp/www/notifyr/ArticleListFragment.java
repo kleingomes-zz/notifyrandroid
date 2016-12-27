@@ -5,35 +5,20 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ListView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
-import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
 import com.notifyrapp.www.notifyr.Model.Article;
-import com.notifyrapp.www.notifyr.Model.Item;
+import com.notifyrapp.www.notifyr.UI.ArticleAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static com.notifyrapp.www.notifyr.R.id.container;
 
 
 /**
@@ -50,6 +35,7 @@ public class ArticleListFragment extends Fragment {
 
     private Context ctx;
     private Activity act;
+    private ListView mListView;
     private OnFragmentInteractionListener mListener;
 
     public ArticleListFragment() {
@@ -97,14 +83,24 @@ public class ArticleListFragment extends Fragment {
         act.abTitle.setText("");
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
+
        // MainActivity act = (MainActivity)getActivity();
         act.abTitle.setText("My Interests");
         // Init the Widgets
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
 
-
         this.ctx = view.getContext();
+        mListView = (ListView) view.findViewById(R.id.article_list_view);
+        Business business = new Business(ctx);
+        business.getUserArticlesFromServer(0,100,"Score",-1, new CallbackInterface() {
+            @Override
+            public void onCompleted(Object data) {
+                ArrayList<Article> articles = (ArrayList<Article>) data;
+                ArticleAdapter adapter = new ArticleAdapter(ctx, articles);
+                mListView.setAdapter(adapter);
+            }
+        });
 
         return view;
     }

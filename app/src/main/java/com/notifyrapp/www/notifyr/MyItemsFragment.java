@@ -21,13 +21,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.notifyrapp.www.notifyr.Business.Business;
-import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
-import com.notifyrapp.www.notifyr.Business.OnRowLongClickListener;
 import com.notifyrapp.www.notifyr.Model.Item;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 

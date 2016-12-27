@@ -1,19 +1,13 @@
 package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,9 +17,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.widget.ActionMenuView;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,18 +28,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import com.notifyrapp.www.notifyr.Business.BottomNavigationViewHelper;
-import com.notifyrapp.www.notifyr.Business.Business;
-import com.notifyrapp.www.notifyr.Business.CallbackInterface;
-import com.notifyrapp.www.notifyr.Model.Article;
-import com.notifyrapp.www.notifyr.Model.Item;
-import com.notifyrapp.www.notifyr.UI.MyNotificationsFragment;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.notifyrapp.www.notifyr.UI.BottomNavigationViewHelper;
 
 
 public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener,

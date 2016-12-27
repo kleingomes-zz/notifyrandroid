@@ -1,15 +1,10 @@
 package com.notifyrapp.www.notifyr.Business;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.notifyrapp.www.notifyr.AppStartActivity;
 import com.notifyrapp.www.notifyr.Data.RepositoryBuilder;
-import com.notifyrapp.www.notifyr.MainActivity;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
@@ -18,11 +13,8 @@ import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 
 public class Business {

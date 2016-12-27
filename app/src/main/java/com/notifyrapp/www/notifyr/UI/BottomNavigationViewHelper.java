@@ -1,4 +1,4 @@
-package com.notifyrapp.www.notifyr.Business;
+package com.notifyrapp.www.notifyr.UI;
 
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;

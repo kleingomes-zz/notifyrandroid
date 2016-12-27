@@ -1,4 +1,4 @@
-package com.notifyrapp.www.notifyr.UI;
+package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
 import android.net.Uri;
@@ -13,15 +13,10 @@ import android.widget.TextView;
 import android.widget.ImageView;
 
 
-
-import com.notifyrapp.www.notifyr.ArticleListFragment;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Model.Article;
-import com.notifyrapp.www.notifyr.R;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
 
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 

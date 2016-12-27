@@ -46,7 +46,7 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
-            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()));
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()),db);
             if(!exists) {
                 // Insert the useritem
                 db.execSQL("INSERT INTO "
@@ -135,7 +135,7 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
-            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ArticleId",String.valueOf(article.getId()));
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ArticleId",String.valueOf(article.getId()),db);
             if(!exists) {
 
                 ContentValues param = new ContentValues();
@@ -396,7 +396,7 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
-            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ArticleId",String.valueOf(article.getId()));
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ArticleId",String.valueOf(article.getId()),db);
             if(!exists) {
                 // Insert the UserNotification
                 db.execSQL("INSERT INTO "
@@ -502,15 +502,16 @@ public class Repository {
 
     //region Helpers
     private boolean checkIsDataAlreadyInDBorNot(String TableName,
-                                                String dbfield, String fieldValue) {
-        SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+                                                String dbfield, String fieldValue, SQLiteDatabase sqldb) {
+        //SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         String Query = "Select * from " + TableName + " where " + dbfield + " = " + fieldValue;
         Cursor cursor = sqldb.rawQuery(Query, null);
         if(cursor.getCount() <= 0){
             cursor.close();
             return false;
         }
-        cursor.close();
+        cursor.moveToFirst();//
+        //cursor.close();
         return true;
     }
 

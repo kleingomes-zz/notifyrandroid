@@ -332,6 +332,7 @@ public class WebApi {
                             article.setAuthor(!jsonItem.isNull( "Author" ) ?  jsonItem.getString("Author") : "");
                             article.setDescription(!jsonItem.isNull( "Description" ) ?  jsonItem.getString("Description") : "");
                             article.setUrl(!jsonItem.isNull( "URL" ) ?  jsonItem.getString("URL") : "");
+                            article.setIurl(!jsonItem.isNull( "IURL" ) ?  jsonItem.getString("IURL") : "");
                             article.setArticleNotifiedDate(pubDate);
                             article.setPublishDate(notifyrDate);
                             article.setFavourite(!jsonItem.isNull( "IsFavourite" ) ?  jsonItem.getBoolean("IsFavourite") : false);
