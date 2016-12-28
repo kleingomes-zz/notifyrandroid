@@ -67,12 +67,15 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
+        int id = item.getItemId();
         switch (item.getItemId()) {
 
 
             case android.R.id.home:
                 FragmentManager fm = this.getSupportFragmentManager();
-                fm.popBackStack ("myitems_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                fm.popBackStack ("articlelist_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportActionBar().hide();
+                setAppBarVisibility(false);
                 return true;
 
             default:
@@ -167,16 +170,14 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         if(position == 0)
                         {
                             getSupportActionBar().hide();
-                            AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-                            appBar.setVisibility(View.VISIBLE);
+                            setAppBarVisibility(false);
                             abTitle.setText(R.string.empty);
                             viewPager.setVisibility(View.VISIBLE);
                         }
                         else
                         {
                             getSupportActionBar().show();
-                            AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-                            appBar.setVisibility(View.INVISIBLE);
+                            setAppBarVisibility(true);
                             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             viewPager.setVisibility(View.GONE);
                         }
@@ -208,6 +209,16 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     }
 
+    private void setAppBarVisibility(Boolean isHidden)
+    {
+        AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+        if(isHidden) {
+            appBar.setVisibility(View.INVISIBLE);
+        }
+        else{
+            appBar.setVisibility(View.VISIBLE);
+        }
+    }
 
 
     @Override
@@ -250,6 +261,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            abTitle =  (TextView)findViewById(R.id.abTitle);
+            abTitle.setText(R.string.empty);
             return ArticleListFragment.newInstance(position);
         }
 

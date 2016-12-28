@@ -6,12 +6,16 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -22,6 +26,7 @@ import com.notifyrapp.www.notifyr.UI.ArticleAdapter;
 import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -41,6 +46,11 @@ public class ArticleListFragment extends Fragment {
     private ListView mListView;
     private OnFragmentInteractionListener mListener;
     private SwipeRefreshLayout mSwipeContainer;
+    private WebViewFragment mWebViewFragment;
+    private List<Article> articleList;
+    private int currentPage = 0;
+    private final int pageSize = 20;
+    private String sortBy = "Score";
 
     public ArticleListFragment() {
         // Required empty public constructor
@@ -59,6 +69,7 @@ public class ArticleListFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt("pos", position);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -70,15 +81,27 @@ public class ArticleListFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getInt("pos");
         }
-
+        if(mParam1 == 0)
+        {
+            this.sortBy = "PublishDate";
+        }
+        else if(mParam1 == 1)
+        {
+            this.sortBy = "Score";
+        }
+        else
+        {
+            this.sortBy = "Favourite";
+        }
         // Init the Widgets
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
         upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
-       /* ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);*/
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
+        articleList = new ArrayList<>();
     }
 
     @Override
@@ -104,10 +127,11 @@ public class ArticleListFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call mSwipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                getArticles();
+                articleList.clear();
+                getArticles(0,pageSize,sortBy);
             }
         });
-        getArticles();
+        getArticles(0,pageSize,sortBy);
         // Configure the refreshing colors
         mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -126,18 +150,35 @@ public class ArticleListFragment extends Fragment {
             }
         });
 
+        // Add the onclick listener to open the web view
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
+                appBar.setVisibility(View.INVISIBLE);
+                String articleURL = articleList.get(position).getUrl();
+                mWebViewFragment = new WebViewFragment().newInstance(articleURL);
+                fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
+                fragmentTransaction.addToBackStack("articlelist_frag");
+                fragmentTransaction.commit();
+            }
+        });
+
         return view;
     }
 
-    public void getArticles()
+    public void getArticles(int skip,int take,String sortBy)
     {
         Business business = new Business(ctx);
         business.getUserArticlesFromServer(0,100,"Score",-1, new CallbackInterface() {
 
             @Override
             public void onCompleted(Object data) {
-                ArrayList<Article> articles = (ArrayList<Article>) data;
-                ArticleAdapter adapter = new ArticleAdapter(ctx, articles);
+                List<Article> articles = (List<Article>) data;
+                articleList.addAll(articles);
+                ArticleAdapter adapter = new ArticleAdapter(ctx, articleList);
                 mListView.setAdapter(adapter);
                 mSwipeContainer.setRefreshing(false);
             }

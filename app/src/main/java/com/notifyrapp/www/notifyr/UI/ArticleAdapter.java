@@ -14,6 +14,7 @@ import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by K on 12/27/2016.
@@ -22,10 +23,10 @@ import java.util.ArrayList;
 public class ArticleAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
-    private ArrayList<Article> mDataSource;
+    private List<Article> mDataSource;
     private ProgressBar mProgressBar;
 
-    public ArticleAdapter(Context context, ArrayList<Article> articles) {
+    public ArticleAdapter(Context context, List<Article> articles) {
         mContext = context;
         mDataSource = articles;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,6 +48,7 @@ public class ArticleAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+        //return mDataSource.get(position).getId();
     }
 
     //4
