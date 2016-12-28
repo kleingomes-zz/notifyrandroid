@@ -143,12 +143,10 @@ public class ArticleListFragment extends Fragment {
 
 
         // Add the scroll listener to know when we hit the bottom
-        mListView.setOnScrollListener(new InfiniteScrollListener(5) {
+        mListView.setOnScrollListener(new InfiniteScrollListener(10) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
-                //List<HashMap<String, String>> newData = loader.loadData();
-                //dataList.addAll(newData);
-                //adapter.notifyDataSetChanged();
+                getArticles(page*pageSize,pageSize,sortBy);
             }
         });
 
@@ -174,7 +172,7 @@ public class ArticleListFragment extends Fragment {
     public void getArticles(int skip, int take, final String sortBy)
     {
         final Business business = new Business(ctx);
-        business.getUserArticlesFromServer(0,100,"Score",-1, new CallbackInterface() {
+        business.getUserArticlesFromServer(skip,pageSize,"Score",-1, new CallbackInterface() {
 
             @Override
             public void onCompleted(Object data) {
@@ -182,7 +180,11 @@ public class ArticleListFragment extends Fragment {
                 List<Article> localArticles = business.getUserArticlesFromLocal(0,pageSize,sortBy,-1);
                 articleList.addAll(localArticles);
                 ArticleAdapter adapter = new ArticleAdapter(ctx, articleList);
-                mListView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                if(articleList.size() == pageSize) {
+                    mListView.setAdapter(adapter);
+                }
+
                 mSwipeContainer.setRefreshing(false);
             }
         });
