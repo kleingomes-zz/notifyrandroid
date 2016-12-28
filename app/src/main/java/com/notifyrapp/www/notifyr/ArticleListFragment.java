@@ -70,12 +70,15 @@ public class ArticleListFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getInt("pos");
         }
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
+
+        // Init the Widgets
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
         upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
+       /* ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);*/
     }
 
     @Override
@@ -122,11 +125,6 @@ public class ArticleListFragment extends Fragment {
                 //adapter.notifyDataSetChanged();
             }
         });
-        
-
-        // Init the Widgets
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
 
         return view;
     }

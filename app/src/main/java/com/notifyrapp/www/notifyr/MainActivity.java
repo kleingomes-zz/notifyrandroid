@@ -25,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -79,15 +81,25 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
+    //    getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
         // INIT
+
         setContentView(R.layout.activity_main);
+        //getSupportActionBar().hide();
+
         this.ctx = this;
+
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
-        abTitle =  (TextView)findViewById(R.id.abTitle);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorNotifyrLightBlue)));
+        getSupportActionBar().hide();
+
+        abTitle =  (TextView)findViewById(R.id.abTitle);
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -154,13 +166,15 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
                         {
+                            getSupportActionBar().hide();
                             AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
                             appBar.setVisibility(View.VISIBLE);
-                            abTitle.setText(R.string.menu_tab_0);
+                            abTitle.setText(R.string.empty);
                             viewPager.setVisibility(View.VISIBLE);
                         }
                         else
                         {
+                            getSupportActionBar().show();
                             AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
                             appBar.setVisibility(View.INVISIBLE);
                             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);

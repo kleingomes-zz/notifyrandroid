@@ -38,7 +38,7 @@ public class AppStartActivity extends AppCompatActivity{
         String userId = "";
         ctx = this;
         /* CHECK IF USER EXISTS  */
-
+        getSupportActionBar().hide();
 
         userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userid", "");
         // TODO: Remove this line (Hardcoded Klein account)
