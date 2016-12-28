@@ -1,32 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loadingPanel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-        <FrameLayout
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgArticle"
+
+            android:layout_width="fill_parent"
+            android:layout_height="155dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            />
+
+        <View
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="155dp"
+            android:background="@drawable/article_gradient_shape" />
 
-            <ImageView
-                android:id="@+id/imgArticle"
-
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/tigerwoods" />
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/article_gradient_shape"
-
-                />
-        </FrameLayout>
+        <TextView
+            android:id="@+id/txtImageArticleSubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom|start"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:shadowColor="#000000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="ESPN - an hour ago"
+            android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/txtImageArticleTitle"
@@ -36,44 +58,29 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="false"
-            android:layout_gravity="start"
+            android:layout_gravity="bottom|start"
             android:layout_marginBottom="30dp"
             android:layout_marginEnd="12dp"
             android:layout_marginStart="12dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:shadowColor="#000000"
             android:shadowDx="2"
             android:shadowDy="2"
             android:shadowRadius="3"
-            android:ellipsize="end"
-            android:maxLines="2"
             android:text="Tiger Woods playing golf with President-elect Donald Trump in Florida"
             android:textAlignment="viewStart"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="normal|bold" />
 
-        <TextView
-            android:id="@+id/txtImageArticleSubTitle"
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="false"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            android:shadowColor="#000000"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="1"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="ESPN - an hour ago"
-            android:textAlignment="viewStart"
-            android:textColor="@android:color/white"
-            android:textSize="13sp" />
+            android:layout_gravity = "center"
+            android:indeterminate="true"
+            android:id="@+id/pbHeaderProgress" />
+    </FrameLayout>
 
 
-    </RelativeLayout>
+</RelativeLayout>

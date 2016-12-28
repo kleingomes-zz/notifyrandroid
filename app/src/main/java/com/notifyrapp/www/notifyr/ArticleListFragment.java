@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
@@ -39,7 +41,7 @@ public class ArticleListFragment extends Fragment {
     private ListView mListView;
     private OnFragmentInteractionListener mListener;
     private SwipeRefreshLayout swipeContainer;
-
+    //private ProgressBar progressBar;
 
     public ArticleListFragment() {
         // Required empty public constructor
@@ -90,6 +92,10 @@ public class ArticleListFragment extends Fragment {
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         mListView = (ListView) view.findViewById(R.id.article_list_view);
+
+        //progressBar = (ProgressBar) view.findViewById(R.id.pbHeaderProgress);
+        //progressBar.setVisibility(View.VISIBLE);
+
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -121,14 +127,18 @@ public class ArticleListFragment extends Fragment {
     {
         Business business = new Business(ctx);
         business.getUserArticlesFromServer(0,100,"Score",-1, new CallbackInterface() {
+
+
             @Override
             public void onCompleted(Object data) {
                 ArrayList<Article> articles = (ArrayList<Article>) data;
                 ArticleAdapter adapter = new ArticleAdapter(ctx, articles);
                 mListView.setAdapter(adapter);
                 swipeContainer.setRefreshing(false);
+
             }
         });
+       // progressBar.setVisibility(View.GONE);
     }
    /* public class AsyncTest extends AsyncTask<String, Integer, String> {
 

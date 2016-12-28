@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.os.Handler;
 
 
 import com.notifyrapp.www.notifyr.Business.Business;
@@ -74,8 +76,31 @@ public class MyNotificationsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_my_notifications, container, false);
+        //set the swipeView
+        final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
+        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            @Override
+            public void onRefresh(){
+                swipeView.setRefreshing(true);
+                //Log.d("Swipe", "Refreshing Number");
+                (new Handler()).postDelayed (new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeView.setRefreshing(false);
+
+                    }
+
+                },1000);
+
+
+            }
+
+        });
+
         Business biz = new Business(view.getContext());
         List<Article> userNotificationsList = biz.getUserNotificationsLocal();
 
@@ -100,12 +125,12 @@ public class MyNotificationsFragment extends Fragment {
             //name of the source
             ((TextView)row.findViewById(R.id.txtNotificationSource)).setText(currentArticle.getSource());
             //name of the item the notification is associated with
-           // ((TextView)row.findViewById(R.id.txtNotificationItem)).setText(currentArticle)
+            ((TextView)row.findViewById(R.id.txtNotificationItem)).setText(currentArticle.getRelatedInterests());
             //time ago
             ((TextView)row.findViewById(R.id.txtNotificationTime)).setText(currentArticle.getNotifiedTimeAgo());//or gettimeago
             //image icon of the item the notification is associated with
             ImageView image = (ImageView) row.findViewById(R.id.imgNotification);
-            new DownloadImageTask(image).execute(currentArticle.getIurl());
+            new DownloadImageTask(image).execute(currentArticle.getRelatedInterestsURL());
             notificationTable.addView(row);
 
         }
