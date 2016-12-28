@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
@@ -40,8 +39,7 @@ public class ArticleListFragment extends Fragment {
     private Activity act;
     private ListView mListView;
     private OnFragmentInteractionListener mListener;
-    private SwipeRefreshLayout swipeContainer;
-    //private ProgressBar progressBar;
+    private SwipeRefreshLayout mSwipeContainer;
 
     public ArticleListFragment() {
         // Required empty public constructor
@@ -86,29 +84,29 @@ public class ArticleListFragment extends Fragment {
         MainActivity act = (MainActivity)getActivity();
         this.act = act;
         act.abTitle.setText("");
+
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
         this.ctx = view.getContext();
+
         // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         mListView = (ListView) view.findViewById(R.id.article_list_view);
 
-        //progressBar = (ProgressBar) view.findViewById(R.id.pbHeaderProgress);
-        //progressBar.setVisibility(View.VISIBLE);
 
         // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
+                // Make sure you call mSwipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 getArticles();
             }
         });
         getArticles();
         // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
@@ -134,52 +132,10 @@ public class ArticleListFragment extends Fragment {
                 ArrayList<Article> articles = (ArrayList<Article>) data;
                 ArticleAdapter adapter = new ArticleAdapter(ctx, articles);
                 mListView.setAdapter(adapter);
-                swipeContainer.setRefreshing(false);
-
+                mSwipeContainer.setRefreshing(false);
             }
         });
-       // progressBar.setVisibility(View.GONE);
     }
-   /* public class AsyncTest extends AsyncTask<String, Integer, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            final Business business = new Business(ctx);
-            business.getUserArticlesFromServer(0, 100, "Score", -1, new CallbackInterface() {
-                @Override
-                public void onCompleted(Object data) {
-
-                    ArrayList<Article> articles = (ArrayList<Article>) data;
-                    List<Article> articleList = business.getUserArticlesFromLocal(0,20,"Score",-1);
-
-                    TableLayout itemTable =  (TableLayout) view.findViewById(R.id.article_list_table);
-                    for (final Article currentArticle: articleList) {
-                        TableRow row = (TableRow)inflater.inflate(R.layout.article_image_row, null,false);//(TableRow) view.findViewById(R.id.item_row);
-                        row.setClickable(true);
-
-                        row.setBackgroundResource(R.drawable.row_border);
-
-                        ((TextView)row.findViewById(R.id.txtImageArticleTitle)).setText(currentArticle.getTitle());
-
-                        ImageView image = (ImageView) row.findViewById(R.id.imgArticle);
-
-                        new DownloadImageTask(image).execute(currentArticle.getIurl());
-
-                        itemTable.addView(row);
-                    }
-
-                }
-            });
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            Business biz = new Business(ctx);
-
-        }
-    } */
 
 
     // TODO: Rename method, update argument and hook method into UI event

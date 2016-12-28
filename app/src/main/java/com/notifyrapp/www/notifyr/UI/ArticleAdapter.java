@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
@@ -22,10 +23,11 @@ public class ArticleAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private ArrayList<Article> mDataSource;
+    private ProgressBar mProgressBar;
 
-    public ArticleAdapter(Context context, ArrayList<Article> items) {
+    public ArticleAdapter(Context context, ArrayList<Article> articles) {
         mContext = context;
-        mDataSource = items;
+        mDataSource = articles;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -55,19 +57,19 @@ public class ArticleAdapter extends BaseAdapter {
         View rowView = mInflater.inflate(R.layout.list_item_article_image, parent, false);
 
         // Get Title element
-        TextView titleTextView =
-                (TextView) rowView.findViewById(R.id.txtImageArticleTitle);
+        TextView titleTextView = (TextView) rowView.findViewById(R.id.txtImageArticleTitle);
 
         // Get Subtitle element
-        TextView subtitleTextView =
-                (TextView) rowView.findViewById(R.id.txtImageArticleSubTitle);
+        TextView subtitleTextView = (TextView) rowView.findViewById(R.id.txtImageArticleSubTitle);
 
         // Get image
-        ImageView imageView =
-                (ImageView) rowView.findViewById(R.id.imgArticle);
+        ImageView imageView = (ImageView) rowView.findViewById(R.id.imgArticle);
 
         // Get Article
         Article article = (Article) getItem(position);
+
+        // Get Progress Bar
+        mProgressBar =  (ProgressBar) rowView.findViewById(R.id.pbHeaderProgress);
 
         // Load the Elements with data
         titleTextView.setText(article.getTitle());
@@ -76,10 +78,8 @@ public class ArticleAdapter extends BaseAdapter {
         // Load the image element ( TODO: Image loads everytime articles are seen....need to cache this locally somehow??? )
         String imageUrl = article.getIurl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            new DownloadImageTask(imageView).execute(imageUrl);
+            new DownloadImageTask(imageView,mProgressBar).execute(imageUrl);
         }
-
-
 
         return rowView;
     }

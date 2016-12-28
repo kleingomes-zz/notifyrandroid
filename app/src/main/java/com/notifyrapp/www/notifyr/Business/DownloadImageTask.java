@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.notifyrapp.www.notifyr.R;
 
@@ -16,9 +18,21 @@ import java.io.InputStream;
 
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
+    CallbackInterface mCallback;
+    ProgressBar mProgressBar;
 
     public DownloadImageTask(ImageView bmImage) {
         this.bmImage = bmImage;
+    }
+
+    public DownloadImageTask(ImageView bmImage,CallbackInterface callback) {
+        this.bmImage = bmImage;
+        this.mCallback = callback;
+    }
+
+    public DownloadImageTask(ImageView bmImage, ProgressBar progressBar) {
+        this.bmImage = bmImage;
+        this.mProgressBar = progressBar;
     }
 
     protected Bitmap doInBackground(String... urls) {
@@ -41,6 +55,14 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         else
         {
             bmImage.setBackgroundResource(R.mipmap.ic_launcher);
+        }
+        if(mCallback != null)
+        {
+            mCallback.onCompleted(result);
+        }
+        if(mProgressBar != null)
+        {
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 }
