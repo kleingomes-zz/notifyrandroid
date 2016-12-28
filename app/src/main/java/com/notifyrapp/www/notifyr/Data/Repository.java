@@ -2,8 +2,10 @@ package com.notifyrapp.www.notifyr.Data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.notifyrapp.www.notifyr.Model.Article;
@@ -14,6 +16,7 @@ import com.notifyrapp.www.notifyr.Model.UserSetting;
 import org.joda.time.DateTime;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,8 +84,6 @@ public class Repository {
         SQLiteDatabase db = null;
         ArrayList<Item> items = new ArrayList<Item>();
 
-
-
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
@@ -147,7 +148,7 @@ public class Repository {
                 param.put("Description", article.getDescription());
                 param.put("URL", article.getUrl());
                 param.put("IURL",  article.getIurl());
-                param.put("ArticleNotifiedDate", article.getArticleNotifiedDate().toString());
+                param.put("ArticleNotifiedDate",  article.getArticleNotifiedDate().toString());
                 param.put("PublishDate", article.getPublishDate().toString());
                 param.put("IsFavourite",  article.getFavourite());
                 param.put("ShortLinkURL",  article.getShortLinkUrl());
@@ -216,9 +217,19 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
-
+            Cursor c = null;
             /* TODO: finish this query */
-            Cursor c =  db.rawQuery("SELECT * FROM " + TableName + " ORDER BY PublishDate DESC", null);
+            if(sortBy == "Favourite")
+            {
+                c =  db.rawQuery("SELECT * FROM ArticleFavourite"
+                        + "ORDER BY PublishDate DESC LIMIT "+take+" OFFSET " + skip, null);
+            }
+            else
+            {
+                c =  db.rawQuery("SELECT * FROM " + TableName
+                        + " ORDER BY "+sortBy+" DESC LIMIT "+take+" OFFSET " + skip, null);
+            }
+
 
             int col_articleid = c.getColumnIndex("ArticleId");
             int col_source = c.getColumnIndex("Source");
@@ -247,8 +258,9 @@ public class Repository {
                     /* Need to convert the strings to Date types */
                     String pubDateStr = c.getString(col_articleNotifiedDate);
                     String notifyrDateStr = c.getString(col_publishDate);
-                    Date pubDate = DateTime.parse(pubDateStr).toDate();
-                    Date notifyrDate = DateTime.parse(notifyrDateStr).toDate();
+
+                    DateTime pubDate =  DateTime.parse(pubDateStr);
+                    DateTime notifyrDate = DateTime.parse(notifyrDateStr);
 
                     Article article = new Article();
                     article.setScore(c.getInt(col_score));
@@ -270,7 +282,6 @@ public class Repository {
                     articles.add(article);
                 }while(c.moveToNext());
             }
-
         }
         catch(Exception e) {
             Log.e("exception", e.getMessage());

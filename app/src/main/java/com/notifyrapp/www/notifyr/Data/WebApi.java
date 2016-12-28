@@ -323,8 +323,8 @@ public class WebApi {
                             String pubDateStr = !jsonItem.isNull( "PublishDate" ) ?  jsonItem.getString("PublishDate") : "2000-01-01";
                             String notifyrDateStr = !jsonItem.isNull( "ArticleNotifiedDate" ) ?  jsonItem.getString("ArticleNotifiedDate") : "2000-01-01";
 
-                            Date pubDate = DateTime.parse(pubDateStr).toDate();
-                            Date notifyrDate = DateTime.parse(notifyrDateStr).toDate();
+                            DateTime pubDate = DateTime.parse(pubDateStr);
+                            DateTime notifyrDate = DateTime.parse(notifyrDateStr);
 
                             article.setScore((!jsonItem.isNull( "Score" ) ?  jsonItem.getInt("Score") : -1));
                             article.setSource(!jsonItem.isNull( "Source" ) ?  jsonItem.getString("Source") : "");

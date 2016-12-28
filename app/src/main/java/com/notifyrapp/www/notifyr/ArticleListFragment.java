@@ -119,6 +119,8 @@ public class ArticleListFragment extends Fragment {
         mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         mListView = (ListView) view.findViewById(R.id.article_list_view);
 
+        // Get the first batch of articles
+        getArticles(0,pageSize,sortBy);
 
         // Setup refresh listener which triggers new data loading
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -131,7 +133,7 @@ public class ArticleListFragment extends Fragment {
                 getArticles(0,pageSize,sortBy);
             }
         });
-        getArticles(0,pageSize,sortBy);
+
         // Configure the refreshing colors
         mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -169,15 +171,16 @@ public class ArticleListFragment extends Fragment {
         return view;
     }
 
-    public void getArticles(int skip,int take,String sortBy)
+    public void getArticles(int skip, int take, final String sortBy)
     {
-        Business business = new Business(ctx);
+        final Business business = new Business(ctx);
         business.getUserArticlesFromServer(0,100,"Score",-1, new CallbackInterface() {
 
             @Override
             public void onCompleted(Object data) {
                 List<Article> articles = (List<Article>) data;
-                articleList.addAll(articles);
+                List<Article> localArticles = business.getUserArticlesFromLocal(0,pageSize,sortBy,-1);
+                articleList.addAll(localArticles);
                 ArticleAdapter adapter = new ArticleAdapter(ctx, articleList);
                 mListView.setAdapter(adapter);
                 mSwipeContainer.setRefreshing(false);

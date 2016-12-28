@@ -3,6 +3,8 @@
  */
 package com.notifyrapp.www.notifyr.Model;
 
+import org.joda.time.DateTime;
+
 import java.util.Date;
 
 public class Article {
@@ -16,8 +18,8 @@ public class Article {
     private String description;
     private String url;
     private String iurl;
-    private Date articleNotifiedDate;
-    private Date publishDate;
+    private DateTime articleNotifiedDate;
+    private DateTime publishDate;
     private Boolean isFavourite;
     private String shortLinkUrl;
     private String relatedInterests;
@@ -60,19 +62,19 @@ public class Article {
         this.iurl = iurl;
     }
 
-    public Date getArticleNotifiedDate() {
+    public DateTime getArticleNotifiedDate() {
         return articleNotifiedDate;
     }
 
-    public void setArticleNotifiedDate(Date articleNotifiedDate) {
+    public void setArticleNotifiedDate(DateTime articleNotifiedDate) {
         this.articleNotifiedDate = articleNotifiedDate;
     }
 
-    public Date getPublishDate() {
+    public DateTime getPublishDate() {
         return publishDate;
     }
 
-    public void setPublishDate(Date publishDate) {
+    public void setPublishDate(DateTime publishDate) {
         this.publishDate = publishDate;
     }
 
