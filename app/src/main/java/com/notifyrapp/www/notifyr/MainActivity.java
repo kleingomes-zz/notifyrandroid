@@ -94,12 +94,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        // FETCH
-        // Prefetch articles and other data here
-        // This will only load once on MainActivityCreate
-
-
-
      /*   FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,16 +151,20 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         if(pos4 != null) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
 
                         // SHOW/HIDE the app bar depending on which menu tab you're on
+                        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
                         {
                             AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
                             appBar.setVisibility(View.VISIBLE);
                             abTitle.setText(R.string.menu_tab_0);
+                            viewPager.setVisibility(View.VISIBLE);
                         }
                         else
                         {
                             AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
                             appBar.setVisibility(View.INVISIBLE);
+                            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            viewPager.setVisibility(View.GONE);
                         }
 
                         // LOAD THE NEW FRAGMENT

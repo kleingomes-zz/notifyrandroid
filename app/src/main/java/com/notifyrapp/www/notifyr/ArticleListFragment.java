@@ -19,6 +19,7 @@ import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.UI.ArticleAdapter;
+import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
 
 import java.util.ArrayList;
 
@@ -83,7 +84,6 @@ public class ArticleListFragment extends Fragment {
         // Inflate the layout for this fragment
         MainActivity act = (MainActivity)getActivity();
         this.act = act;
-        act.abTitle.setText("");
 
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
@@ -111,8 +111,18 @@ public class ArticleListFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        // MainActivity act = (MainActivity)getActivity();
-        act.abTitle.setText("My Interests");
+
+
+        // Add the scroll listener to know when we hit the bottom
+        mListView.setOnScrollListener(new InfiniteScrollListener(5) {
+            @Override
+            public void loadMore(int page, int totalItemsCount) {
+                //List<HashMap<String, String>> newData = loader.loadData();
+                //dataList.addAll(newData);
+                //adapter.notifyDataSetChanged();
+            }
+        });
+        
 
         // Init the Widgets
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -125,7 +135,6 @@ public class ArticleListFragment extends Fragment {
     {
         Business business = new Business(ctx);
         business.getUserArticlesFromServer(0,100,"Score",-1, new CallbackInterface() {
-
 
             @Override
             public void onCompleted(Object data) {

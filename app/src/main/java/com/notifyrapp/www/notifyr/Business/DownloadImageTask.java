@@ -55,6 +55,8 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         else
         {
             bmImage.setBackgroundResource(R.mipmap.ic_launcher);
+            bmImage.setScaleType(ImageView.ScaleType.MATRIX);
+
         }
         if(mCallback != null)
         {
