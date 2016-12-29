@@ -2,6 +2,7 @@ package com.notifyrapp.www.notifyr.UI;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
+import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.R;
 
@@ -75,10 +78,10 @@ public class NotificationAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.imgNotification);
 
         // Get Article
-        Article article = (Article) getItem(position);
+        final Article article = (Article) getItem(position);
 
         // Get Progress Bar
-        //mProgressBar =  (ProgressBar) rowView.findViewById(R.id.pbHeaderProgress);
+        mProgressBar =  (ProgressBar) rowView.findViewById(R.id.pbHeaderProgress);
 
         // Load the Elements with data
         titleTextView.setText(article.getTitle());
@@ -86,10 +89,28 @@ public class NotificationAdapter extends BaseAdapter {
         itemTextView.setText(article.getRelatedInterests());
         timeAgoTextView.setText(article.getNotifiedTimeAgo());
 
-        // Load the image element ( TODO: Image loads everytime articles are seen....need to cache this locally somehow??? )
+        // Check if the image is in cache
         String imageUrl = article.getRelatedInterestsURL();
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            new DownloadImageTask(imageView).execute(imageUrl);
+        Bitmap image = ImageCacheManager.getImage("notification_"+String.valueOf(article.getId()), mContext);
+        if(image != null)
+        {
+            imageView.setImageBitmap(image);
+        }
+        else
+        {
+            if(mProgressBar != null) mProgressBar.setVisibility(View.VISIBLE);
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                new DownloadImageTask(imageView,mProgressBar, new CallbackInterface() {
+                    @Override
+                    public void onCompleted(Object data) {
+                        if(data != null) {
+                            Bitmap articleImage = (Bitmap) data;
+                            ImageCacheManager.saveImage("notification_"+String.valueOf(article.getId()), articleImage,mContext);
+                        }
+                        if(mProgressBar != null) mProgressBar.setVisibility(View.GONE);
+                    }
+                }).execute(imageUrl);
+            }
         }
 
         return rowView;

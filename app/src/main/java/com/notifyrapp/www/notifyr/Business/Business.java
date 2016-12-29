@@ -90,7 +90,7 @@ public class Business {
                 Log.d("CALLBACK_CHECK","GOT USER ARTICLES FROM SERVER... SAVING TO LOCAL NOW....");
                 final long startTime = System.currentTimeMillis();
                 List<Article> articles = (List<Article>) data;
-                b.saveArticlesLocal(articles);
+                b.saveArticlesLocalAsync(articles);
                 final long endTime = System.currentTimeMillis();
                 Log.d("OPERATION_TIME","Article Save execution time: " + (endTime - startTime));
                 if (callback != null) {
@@ -110,6 +110,23 @@ public class Business {
     {
         return new Repository(context).saveArticles(articles);
     }
+
+    public void saveArticlesLocalAsync(List<Article> articles)
+    {
+        if(saveUserNotificationLocalAsync.getStatus().equals(AsyncTask.Status.PENDING)) {
+            saveUserNotificationLocalAsync.execute(articles);
+        }
+    }
+
+    private AsyncTask<Object, Void, List<Object>> saveArticlesLocalAsync = new AsyncTask<Object, Void, List<Object>>() {
+
+        @Override
+        protected List<Object> doInBackground(Object... params) {
+            List<Article> articles = (List<Article>) params[0];
+            new Repository(context).saveArticles(articles);
+            return null;
+        }
+    };
     //endregion
 
     //region User Accounts
