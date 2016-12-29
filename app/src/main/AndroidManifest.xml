@@ -33,6 +33,12 @@
             </intent-filter>
             
         </activity>
+        <service
+            android:name=".Business.BackgroundService"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/service_name"
+            >
+        </service>
     </application>
 
 </manifest>

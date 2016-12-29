@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.content.Intent;
 
+import com.notifyrapp.www.notifyr.Business.BackgroundService;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
@@ -119,14 +120,8 @@ public class AppStartActivity extends AppCompatActivity{
                     {
                         @Override
                         public void onCompleted(Object data) {
-                            // Running callback
-                            Log.d("CALLBACK_CHECK","SAVED NOTIFIED ARTICLES TO LOCAL STORE");
-                            final long startTime = System.currentTimeMillis();
                             List<Article> articles = (List<Article>) data;
                             business.saveUserNotificationLocalAsync(articles);
-                            final long endTime = System.currentTimeMillis();
-                            Log.d("OPERATION_TIME","Notification Save execution time: " + (endTime - startTime));
-
                         }
                     });
 
@@ -137,7 +132,13 @@ public class AppStartActivity extends AppCompatActivity{
 
         /* HOUSE KEEPING  */
         // MAKE SURE CACHE IS CLEAR
-        ImageCacheManager.clearCache(ctx);
+        ImageCacheManager.clearCacheAsync(ctx);
+
+        /* BACKGROUND SERVICE **/
+        // START THE BACKGROUND SERVICE TO GET ARTICLES
+        // use this to start and trigger a service
+        Intent i = new Intent(ctx, BackgroundService.class);
+        ctx.startService(i);
 
         /* REGISTER FOR REMOTE NOTIFICATIONS */
 

@@ -206,10 +206,10 @@ public class ArticleListFragment extends Fragment {
 
             @Override
             public void onCompleted(Object data) {
-                List<Article> downloadedAricles = (List<Article>)data;
+                //List<Article> downloadedAricles = (List<Article>)data;
                 // At this point we know that the data was saved into the DB
-                //List<Article> localArticles = business.getUserArticlesFromLocal(0,pageSize,sortBy,-1);
-                articleList.addAll(downloadedAricles);
+                List<Article> localArticles = business.getUserArticlesFromLocal(0,pageSize,sortBy,-1);
+                articleList.addAll(localArticles);
                 adapter.notifyDataSetChanged();
                 mSwipeContainer.setRefreshing(false);
             }

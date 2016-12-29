@@ -74,11 +74,7 @@ public class Business {
     //endregion
 
     //region Articles
-    public List<Article> getArticles(int skip, int take,String sortBy,int itemTypeId) {
-        return webApi.GetArticles(skip,take,sortBy,itemTypeId);
-    }
-
-    public void getItemArticles(long itemId,int skip,int take,String sortBy, CallbackInterface callback){
+     public void getItemArticles(long itemId,int skip,int take,String sortBy, CallbackInterface callback){
         new WebApi(context).getItemArticles(itemId,skip,take,sortBy,callback);
     }
 
@@ -90,7 +86,7 @@ public class Business {
                 Log.d("CALLBACK_CHECK","GOT USER ARTICLES FROM SERVER... SAVING TO LOCAL NOW....");
                 final long startTime = System.currentTimeMillis();
                 List<Article> articles = (List<Article>) data;
-                b.saveArticlesLocalAsync(articles);
+                b.saveArticlesLocal(articles);
                 final long endTime = System.currentTimeMillis();
                 Log.d("OPERATION_TIME","Article Save execution time: " + (endTime - startTime));
                 if (callback != null) {

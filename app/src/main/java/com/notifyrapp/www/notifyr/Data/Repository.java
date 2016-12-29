@@ -481,11 +481,12 @@ public class Repository {
             if (c != null) {
                 // Loop through all Results
                 do {
-                       /* Need to convert the strings to Date types */
-//                    String pubDateStr = c.getString(col_articleNotifiedDate);
-//                    String notifyrDateStr = c.getString(col_publishDate);
-//                    Date pubDate = DateTime.parse(pubDateStr).toDate();
-//                    Date notifyrDate = DateTime.parse(notifyrDateStr).toDate();
+                    /* Need to convert the strings to Date types */
+                    String pubDateStr = c.getString(col_articleNotifiedDate);
+                    String notifyrDateStr = c.getString(col_publishDate);
+
+                    DateTime pubDate =  DateTime.parse(pubDateStr);
+                    DateTime notifyrDate = DateTime.parse(notifyrDateStr);
 
                     Article article = new Article();
                     article.setId(c.getInt(col_articleid)); //article id
@@ -496,8 +497,8 @@ public class Repository {
                     article.setDescription(c.getString(col_description));
                     article.setUrl(c.getString(col_url));
                     article.setIurl(c.getString(col_iurl)); //image url
-//                    article.setArticleNotifiedDate(notifyrDate);
-//                    article.setPublishDate(pubDate);
+                    article.setArticleNotifiedDate(notifyrDate);
+                    article.setPublishDate(pubDate);
                     article.setFavourite(c.getInt(col_isFavourite) == 1 ? true : false);
                     article.setShortLinkUrl(c.getString(col_shortLinkURL));
                     article.setRelatedInterests(c.getString(col_relatedInterests));

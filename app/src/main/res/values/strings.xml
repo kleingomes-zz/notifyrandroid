@@ -8,6 +8,7 @@
     <string name="menu_tab_3">Inbox</string>
     <string name="menu_tab_4">Settings</string>
     <string name="empty"></string>
+    <string name="service_name">Notifyr Background Service</string>
 
     <string name="section_format">Hello World from section: %1$d</string>
 

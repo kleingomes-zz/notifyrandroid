@@ -4,12 +4,17 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
+
+import com.notifyrapp.www.notifyr.Data.Repository;
+import com.notifyrapp.www.notifyr.Model.Article;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -102,4 +107,20 @@ public final class ImageCacheManager {
             }
         }
     }
+
+    public static void clearCacheAsync(Context ctx)
+    {
+        if(clearCacheAsync.getStatus().equals(AsyncTask.Status.PENDING)) {
+            clearCacheAsync.execute(ctx);
+        }
+    }
+    private static AsyncTask<Object, Void, List<Object>> clearCacheAsync = new AsyncTask<Object, Void, List<Object>>() {
+
+        @Override
+        protected List<Object> doInBackground(Object... params) {
+            Context ctx = (Context) params[0];
+            clearCache(ctx);
+            return null;
+        }
+    };
 }

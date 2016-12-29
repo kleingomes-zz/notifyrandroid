@@ -136,18 +136,6 @@ public class WebApi {
     //endregion
 
     //region Articles
-    public List<Article> GetArticles(int skip, int take,String sortBy, int itemTypeId )
-    {
-     //   Map<String,Object> map = new ObjectMapper().readValue(new URL("http://dot.com/api/?customerId=1234").openStream(), Map.class);
-        List<Article> articles = new ArrayList<Article>();
-        Article a = new Article();
-        a.setId(2321);
-        a.setTitle("Apple Releases new iPhone");
-        a.setSource("CNN");
-        articles.add(a);
-        return articles;
-    }
-
     public void  getUserArticles(int skip, int take,String sortBy, int itemTypeId, CallbackInterface callback)
     {
         String urlPath = "Item/GetUserArticles?skip="+skip+"&take="+take+"&sortBy="+sortBy+"&itemTypeId="+itemTypeId;
@@ -252,7 +240,7 @@ public class WebApi {
 
                 InputStream stream = conn.getInputStream();
                 result = streamToString(stream);
-                System.out.println("JSON: " + result);
+//.out.println("JSON: " + result);
 
             } catch (IOException e) {
                 e.printStackTrace();
