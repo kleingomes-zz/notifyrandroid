@@ -60,6 +60,7 @@ public class MyNotificationsFragment extends Fragment {
     private List<Article> notificationList;
     private WebViewFragment mWebViewFragment;
     private final int pageSize = 20;
+    private NotificationAdapter adapter;
     // private String sortBy = "ArticleNotifiedDate";
 
 
@@ -93,7 +94,6 @@ public class MyNotificationsFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         notificationList = new ArrayList<>();
-
     }
 
     @Override
@@ -117,6 +117,7 @@ public class MyNotificationsFragment extends Fragment {
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 notificationList.clear();
+                adapter.notifyDataSetChanged();
                 getNotifications(0, pageSize);
             }
         });
@@ -126,7 +127,7 @@ public class MyNotificationsFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         //add the scroll listener to know when we hit the bottom
-        mListView.setOnScrollListener(new InfiniteScrollListener(10) {
+        mListView.setOnScrollListener(new InfiniteScrollListener(5) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
                 getNotifications(page * pageSize, pageSize);
@@ -157,12 +158,9 @@ public class MyNotificationsFragment extends Fragment {
         final Business business = new Business(ctx);
         List<Article> localNotifications = business.getUserNotificationsLocal(skip, take);
         notificationList.addAll(localNotifications);
-        NotificationAdapter adapter = new NotificationAdapter(ctx, notificationList);
+        adapter = new NotificationAdapter(ctx, notificationList);
         adapter.notifyDataSetChanged();
-        if (notificationList.size() == pageSize) //should this be changed to <= pageSize? what if there are only 9 notifications?
-        {
-            mListView.setAdapter(adapter);
-        }
+        mListView.setAdapter(adapter);
         mSwipeNotificationContainer.setRefreshing(false);
 
     }

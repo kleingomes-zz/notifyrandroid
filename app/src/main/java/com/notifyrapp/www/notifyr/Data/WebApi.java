@@ -314,7 +314,7 @@ public class WebApi {
                     }
                     else if (notifyrType == NotifyrObjects.Article) {
 
-                            ArrayList<Article> articles = new ArrayList<Article>();
+                            List<Article> articles = new ArrayList<Article>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Article article = new Article();
                             JSONObject jsonItem = jsonArray.getJSONObject(i);
@@ -342,8 +342,9 @@ public class WebApi {
                             article.setNotifiedTimeAgo(!jsonItem.isNull( "NotifiedTimeAgo" ) ?  jsonItem.getString("NotifiedTimeAgo") : "");
                             article.setRelatedInterestsURL(!jsonItem.isNull( "RelatedInterestsIURL" ) ?  jsonItem.getString("RelatedInterestsIURL") : "");
                             articles.add(article);
-                            Log.d("GOT_ARTICLE", !jsonItem.isNull( "Title" ) ?  jsonItem.getString("Title") : "");
+
                         }
+                        Log.d("ARTICLE_COUNT", String.valueOf(articles.size()));
                         callback.onCompleted(articles);
 
                     }

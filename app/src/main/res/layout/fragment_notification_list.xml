@@ -15,5 +15,5 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         />
-
+    <!--    android:scrollbars="none" -->
   </android.support.v4.widget.SwipeRefreshLayout>

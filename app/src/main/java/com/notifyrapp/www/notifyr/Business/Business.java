@@ -1,6 +1,7 @@
 package com.notifyrapp.www.notifyr.Business;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -87,13 +88,16 @@ public class Business {
             public void onCompleted(Object data) {
                 Business b = new Business(context);
                 Log.d("CALLBACK_CHECK","GOT USER ARTICLES FROM SERVER... SAVING TO LOCAL NOW....");
-                ArrayList<Article> articles = (ArrayList<Article>) data;
-                for (Article currentArticle: articles) {
-                    b.saveArticleLocal(currentArticle);
-                }
+                final long startTime = System.currentTimeMillis();
+                List<Article> articles = (List<Article>) data;
+                b.saveArticlesLocal(articles);
+                final long endTime = System.currentTimeMillis();
+                Log.d("OPERATION_TIME","Article Save execution time: " + (endTime - startTime));
                 if (callback != null) {
                     callback.onCompleted(data);
                 }
+
+
             }
         });
     }
@@ -102,9 +106,9 @@ public class Business {
         return new Repository(context).getUserArticles(skip,take,sortBy,itemTypeId);
     }
 
-    public Boolean saveArticleLocal(Article article)
+    public Boolean saveArticlesLocal(List<Article> articles)
     {
-        return new Repository(context).saveArticle(article);
+        return new Repository(context).saveArticles(articles);
     }
     //endregion
 
@@ -142,16 +146,14 @@ public class Business {
     //endregion
 
     //region Notifications
-    public void getUserNotifications(String fromDate, final CallbackInterface callback)
+    public void getUserNotificationsFromServer(String fromDate, final CallbackInterface callback)
     {
         new WebApi(context).getUserNotifications(fromDate,new CallbackInterface() {
             @Override
             public void onCompleted(Object data) {
-
                 org.joda.time.DateTime now = new org.joda.time.DateTime(); // Default time zone.
                 org.joda.time.DateTime zulu = now.toDateTime( org.joda.time.DateTimeZone.UTC );
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putString("LastUpdateUserNotifiedArticles", zulu.toString()).commit();
-                Log.d("PRINTTIME:",zulu.toString());
                 if (callback != null) {
                     callback.onCompleted(data);
                 }
@@ -159,17 +161,44 @@ public class Business {
         });
     }
 
-    public Boolean saveUserNotificationLocal(Article article)
+    public Boolean saveUserNotificationLocal(List<Article> articles)
     {
-        return new Repository(context).saveUserNotification(article);
+        return new Repository(context).saveUserNotifications(articles);
     }
+
+    public void saveUserNotificationLocalAsync(List<Article> articles)
+    {
+        if(saveUserNotificationLocalAsync.getStatus().equals(AsyncTask.Status.PENDING)) {
+            saveUserNotificationLocalAsync.execute(articles);
+        }
+    }
+
+    private AsyncTask<Object, Void, List<Object>> saveUserNotificationLocalAsync = new AsyncTask<Object, Void, List<Object>>() {
+
+        @Override
+        protected List<Object> doInBackground(Object... params) {
+            List<Article> articles = (List<Article>) params[0];
+            new Repository(context).saveUserNotifications(articles);
+            return null;
+        }
+    };
 
     public List<Article> getUserNotificationsLocal(int skip, int take) /* TODO ADD PARAMS FOR PAGING) */
     {
         return new Repository(context).getUserNotifications(skip, take);
     }
-    //endregions
+    //endregion
 
+    //region ENUM
+    public enum MenuTab
+    {
+        Home,
+        Interests,
+        Discover,
+        Notifications,
+        Settings
+    }
 
+    //endregion
 
 }

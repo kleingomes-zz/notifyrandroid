@@ -7,14 +7,17 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -51,6 +54,8 @@ public class ArticleListFragment extends Fragment {
     private int currentPage = 0;
     private final int pageSize = 20;
     private String sortBy = "Score";
+    private FloatingActionButton upFab;
+    private ArticleAdapter adapter;
 
     public ArticleListFragment() {
         // Required empty public constructor
@@ -118,8 +123,18 @@ public class ArticleListFragment extends Fragment {
         // Lookup the swipe container view
         mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         mListView = (ListView) view.findViewById(R.id.article_list_view);
+        upFab = (FloatingActionButton) view.findViewById(R.id.fab);
+        upFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListView.setSelectionAfterHeaderView();
+            }
+        });
+        upFab.setVisibility(View.INVISIBLE);
 
-        // Get the first batch of articles
+        // Config adapter and get the first batch of articles
+        adapter = new ArticleAdapter(ctx, articleList);
+        mListView.setAdapter(adapter);
         getArticles(0,pageSize,sortBy);
 
         // Setup refresh listener which triggers new data loading
@@ -141,12 +156,25 @@ public class ArticleListFragment extends Fragment {
                 android.R.color.holo_red_light);
 
 
-
         // Add the scroll listener to know when we hit the bottom
         mListView.setOnScrollListener(new InfiniteScrollListener(10) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
+                Log.d("PAGE",String.valueOf(page));
                 getArticles(page*pageSize,pageSize,sortBy);
+                currentPage = page;
+            }
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if(currentPage > 1)
+                {
+                    upFab.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    upFab.setVisibility(View.INVISIBLE);
+                }
             }
         });
 
@@ -176,15 +204,10 @@ public class ArticleListFragment extends Fragment {
 
             @Override
             public void onCompleted(Object data) {
-                List<Article> articles = (List<Article>) data;
+                // At this point we know that the data was saved into the DB
                 List<Article> localArticles = business.getUserArticlesFromLocal(0,pageSize,sortBy,-1);
                 articleList.addAll(localArticles);
-                ArticleAdapter adapter = new ArticleAdapter(ctx, articleList);
                 adapter.notifyDataSetChanged();
-                if(articleList.size() == pageSize) {
-                    mListView.setAdapter(adapter);
-                }
-
                 mSwipeContainer.setRefreshing(false);
             }
         });

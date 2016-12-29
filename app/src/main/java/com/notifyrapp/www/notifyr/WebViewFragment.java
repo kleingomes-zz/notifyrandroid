@@ -69,7 +69,8 @@ public class WebViewFragment extends Fragment {
         upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
-
+        MainActivity act = (MainActivity)getActivity();
+        act.abTitle.setText(R.string.empty);
     }
 
     @Override

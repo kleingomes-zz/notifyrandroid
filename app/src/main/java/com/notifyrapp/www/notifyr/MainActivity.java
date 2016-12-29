@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -32,6 +33,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
+import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.UI.BottomNavigationViewHelper;
 
 
@@ -59,10 +61,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
      */
     private ViewPager mViewPager;
     private Context ctx;
-    SettingsFragment settingsFragment;
-    MyItemsFragment myItemsFragment;
-    MyNotificationsFragment myNotificationsFragment;
-    TextView abTitle;
+    private SettingsFragment settingsFragment;
+    private MyItemsFragment myItemsFragment;
+    private MyNotificationsFragment myNotificationsFragment;
+    public TextView abTitle;
+    public Business.MenuTab currentMenu = Business.MenuTab.Home;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -70,12 +73,17 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         int id = item.getItemId();
         switch (item.getItemId()) {
 
-
             case android.R.id.home:
                 FragmentManager fm = this.getSupportFragmentManager();
-                fm.popBackStack ("articlelist_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                getSupportActionBar().hide();
-                setAppBarVisibility(false);
+                if(currentMenu == Business.MenuTab.Notifications) {
+                    fm.popBackStack("notificationlist_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+                else if (currentMenu == Business.MenuTab.Home){
+                    fm.popBackStack("articlelist_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    getSupportActionBar().hide();
+                    setAppBarVisibility(false);
+                }
+
                 return true;
 
             default:
@@ -109,14 +117,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-     /*   FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
                         {
+                            currentMenu = Business.MenuTab.Home;
                             getSupportActionBar().hide();
                             setAppBarVisibility(false);
                             abTitle.setText(R.string.empty);
@@ -186,18 +187,24 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         if(position == 1)
                         {
                             abTitle.setText(R.string.menu_tab_1);
+                            currentMenu = Business.MenuTab.Interests;
                             myItemsFragment = new MyItemsFragment();
                             fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
                             fragmentTransaction.commit();
                         }
                         else if(position == 3) {   abTitle.setText(R.string.menu_tab_3);
+                            currentMenu = Business.MenuTab.Notifications;
                             myNotificationsFragment = new MyNotificationsFragment();
                             fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
                             fragmentTransaction.commit();
                         }
-                        else if(position == 2) {   abTitle.setText(R.string.menu_tab_2); }
+                        else if(position == 2) {
+                            currentMenu = Business.MenuTab.Discover;
+                            abTitle.setText(R.string.menu_tab_2);
+                        }
                         else if(position == 4)
                         {
+                            currentMenu = Business.MenuTab.Settings;
                             abTitle.setText(R.string.menu_tab_4);
                             settingsFragment = new SettingsFragment();
                             fragmentTransaction.add(R.id.fragment_container, settingsFragment,"settings_frag");

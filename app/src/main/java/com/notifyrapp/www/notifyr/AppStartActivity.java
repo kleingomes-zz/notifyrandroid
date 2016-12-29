@@ -16,6 +16,7 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Thread.sleep;
 
@@ -111,16 +112,18 @@ public class AppStartActivity extends AppCompatActivity{
                     // TODO: remove this
                     PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("LastUpdateUserNotifiedArticles", "").commit();
                     String lastUpdate = PreferenceManager.getDefaultSharedPreferences(ctx).getString("LastUpdateUserNotifiedArticles", "");
-                    business.getUserNotifications(lastUpdate,new CallbackInterface()
+                    business.getUserNotificationsFromServer(lastUpdate,new CallbackInterface()
                     {
                         @Override
                         public void onCompleted(Object data) {
                             // Running callback
                             Log.d("CALLBACK_CHECK","SAVED NOTIFIED ARTICLES TO LOCAL STORE");
-                            ArrayList<Article> articles = (ArrayList<Article>) data;
-                            for (Article currentArticle: articles) {
-                                business.saveUserNotificationLocal(currentArticle);
-                            }
+                            final long startTime = System.currentTimeMillis();
+                            List<Article> articles = (List<Article>) data;
+                            business.saveUserNotificationLocalAsync(articles);
+                            final long endTime = System.currentTimeMillis();
+                            Log.d("OPERATION_TIME","Notification Save execution time: " + (endTime - startTime));
+
                         }
                     });
 

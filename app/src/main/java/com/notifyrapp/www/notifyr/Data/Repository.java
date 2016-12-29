@@ -128,7 +128,7 @@ public class Repository {
     //endregion
 
     //region Article
-    public Boolean saveArticle(Article article)
+    public Boolean saveArticles(List<Article> articles)
     {
         String tableName = "Article";
         SQLiteDatabase db = null;
@@ -136,27 +136,30 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
-            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ArticleId",String.valueOf(article.getId()),db);
-            if(!exists) {
+            for (Article article : articles) {
 
-                ContentValues param = new ContentValues();
-                param.put("ArticleId",  article.getId());
-                param.put("Source", article.getSource());
-                param.put("Score", article.getScore() );
-                param.put("Title", article.getTitle());
-                param.put("Author",  article.getAuthor() );
-                param.put("Description", article.getDescription());
-                param.put("URL", article.getUrl());
-                param.put("IURL",  article.getIurl());
-                param.put("ArticleNotifiedDate",  article.getArticleNotifiedDate().toString());
-                param.put("PublishDate", article.getPublishDate().toString());
-                param.put("IsFavourite",  article.getFavourite());
-                param.put("ShortLinkURL",  article.getShortLinkUrl());
-                param.put("RelatedInterests", article.getRelatedInterests());
-                param.put("TimeAgo", article.getTimeAgo() );
-                param.put("NotifiedTimeAgo", article.getNotifiedTimeAgo());
-                param.put("RelatedInterestsURL", article.getRelatedInterestsURL());
-                db.insert(tableName, null, param);
+                Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ArticleId", String.valueOf(article.getId()), db);
+                if (!exists) {
+
+                    ContentValues param = new ContentValues();
+                    param.put("ArticleId", article.getId());
+                    param.put("Source", article.getSource());
+                    param.put("Score", article.getScore());
+                    param.put("Title", article.getTitle());
+                    param.put("Author", article.getAuthor());
+                    param.put("Description", article.getDescription());
+                    param.put("URL", article.getUrl());
+                    param.put("IURL", article.getIurl());
+                    param.put("ArticleNotifiedDate", article.getArticleNotifiedDate().toString());
+                    param.put("PublishDate", article.getPublishDate().toString());
+                    param.put("IsFavourite", article.getFavourite());
+                    param.put("ShortLinkURL", article.getShortLinkUrl());
+                    param.put("RelatedInterests", article.getRelatedInterests());
+                    param.put("TimeAgo", article.getTimeAgo());
+                    param.put("NotifiedTimeAgo", article.getNotifiedTimeAgo());
+                    param.put("RelatedInterestsURL", article.getRelatedInterestsURL());
+                    db.insert(tableName, null, param);
+                }
             }
         }
         catch(Exception e) {
@@ -399,7 +402,7 @@ public class Repository {
     //endregion
 
     //region Notifications
-    public Boolean saveUserNotification(Article article){
+    public Boolean saveUserNotifications(List<Article> articles){
 
         String tableName = "UserNotification";
         SQLiteDatabase db = null;
@@ -407,27 +410,30 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
-            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ArticleId",String.valueOf(article.getId()),db);
-            if(!exists) {
-                // Insert the UserNotification
-                ContentValues param = new ContentValues();
-                param.put("ArticleId", article.getId());
-                param.put("Source", article.getSource());
-                param.put("Score", article.getScore());
-                param.put("Title", article.getTitle());
-                param.put("Author", article.getAuthor());
-                param.put("Description", article.getDescription());
-                param.put("URL", article.getUrl());
-                param.put("IURL", article.getIurl());
-                param.put("ArticleNotifiedDate", article.getArticleNotifiedDate().toString());
-                param.put("PublishDate", article.getPublishDate().toString());
-                param.put("IsFavourite", article.getFavourite());
-                param.put("ShortLinkURL", article.getShortLinkUrl());
-                param.put("RelatedInterests", article.getRelatedInterests());
-                param.put("TimeAgo", article.getTimeAgo());
-                param.put("NotifiedTimeAgo", article.getNotifiedTimeAgo());
-                param.put("RelatedInterestsURL", article.getRelatedInterestsURL());
-                db.insert(tableName, null, param);
+            for (Article article : articles) {
+
+                Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ArticleId", String.valueOf(article.getId()), db);
+                if (!exists) {
+                    // Insert the UserNotification
+                    ContentValues param = new ContentValues();
+                    param.put("ArticleId", article.getId());
+                    param.put("Source", article.getSource());
+                    param.put("Score", article.getScore());
+                    param.put("Title", article.getTitle());
+                    param.put("Author", article.getAuthor());
+                    param.put("Description", article.getDescription());
+                    param.put("URL", article.getUrl());
+                    param.put("IURL", article.getIurl());
+                    param.put("ArticleNotifiedDate", article.getArticleNotifiedDate().toString());
+                    param.put("PublishDate", article.getPublishDate().toString());
+                    param.put("IsFavourite", article.getFavourite());
+                    param.put("ShortLinkURL", article.getShortLinkUrl());
+                    param.put("RelatedInterests", article.getRelatedInterests());
+                    param.put("TimeAgo", article.getTimeAgo());
+                    param.put("NotifiedTimeAgo", article.getNotifiedTimeAgo());
+                    param.put("RelatedInterestsURL", article.getRelatedInterestsURL());
+                    db.insert(tableName, null, param);
+                }
             }
         }
         catch(Exception e) {
