@@ -222,7 +222,7 @@ public class Repository {
             if(sortBy == "Favourite")
             {
                 c =  db.rawQuery("SELECT * FROM ArticleFavourite"
-                        + "ORDER BY PublishDate DESC LIMIT "+take+" OFFSET " + skip, null);
+                        + " ORDER BY PublishDate DESC LIMIT "+take+" OFFSET " + skip, null);
             }
             else
             {
@@ -441,7 +441,7 @@ public class Repository {
         return isSuccess;
     }
 
-    public List<Article> getUserNotifications() /* TODO ADD PARAMS FOR PAGING) */
+    public List<Article> getUserNotifications(int skip, int take) /* TODO ADD PARAMS FOR PAGING) */
     {
         String TableName = "UserNotification";
         String Data="";
@@ -450,7 +450,8 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
-            Cursor c =  db.rawQuery("SELECT * FROM " + TableName + " ORDER BY ArticleNotifiedDate DESC", null);
+            Cursor c =  db.rawQuery("SELECT * FROM UserNotification"
+                    + " ORDER BY ArticleNotifiedDate DESC LIMIT "+take+" OFFSET " + skip, null);
 
             int col_articleid = c.getColumnIndex("ArticleId");
             int col_source = c.getColumnIndex("Source");

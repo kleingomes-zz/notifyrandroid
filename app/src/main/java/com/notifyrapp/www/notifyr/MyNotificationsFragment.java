@@ -1,13 +1,20 @@
 package com.notifyrapp.www.notifyr;
 
+import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -16,10 +23,15 @@ import android.os.Handler;
 
 
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
+import com.notifyrapp.www.notifyr.UI.ArticleAdapter;
+import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
+import com.notifyrapp.www.notifyr.UI.NotificationAdapter;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +52,16 @@ public class MyNotificationsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private Context ctx;
+    private Activity act;
+    private ListView mListView;
     private OnFragmentInteractionListener mListener;
+    private SwipeRefreshLayout mSwipeNotificationContainer;
+    private List<Article> notificationList;
+    private WebViewFragment mWebViewFragment;
+    private final int pageSize = 20;
+    // private String sortBy = "ArticleNotifiedDate";
+
 
     public MyNotificationsFragment() {
         // Required empty public constructor
@@ -71,6 +92,8 @@ public class MyNotificationsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        notificationList = new ArrayList<>();
+
     }
 
     @Override
@@ -79,67 +102,69 @@ public class MyNotificationsFragment extends Fragment {
 
 
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_my_notifications, container, false);
-        //set the swipeView
-        final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
-        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+        final View view = inflater.inflate(R.layout.fragment_notification_list, container, false);
+        this.ctx = view.getContext();
+        // Lookup the swipe container view
+        mSwipeNotificationContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeNotificationContainer);
+        mListView = (ListView) view.findViewById(R.id.notification_list_view);
+        //Get the first batch of articles
+        getNotifications(0, pageSize);
+        //Setup refresh listener which triggers new data loading
+        mSwipeNotificationContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh(){
-                swipeView.setRefreshing(true);
-                //Log.d("Swipe", "Refreshing Number");
-                (new Handler()).postDelayed (new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeView.setRefreshing(false);
-
-                    }
-
-                },1000);
-
-
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                notificationList.clear();
+                getNotifications(0, pageSize);
             }
-
+        });
+        // Configure the refreshing colors
+        mSwipeNotificationContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        //add the scroll listener to know when we hit the bottom
+        mListView.setOnScrollListener(new InfiniteScrollListener(10) {
+            @Override
+            public void loadMore(int page, int totalItemsCount) {
+                getNotifications(page * pageSize, pageSize);
+            }
+        });
+        //Add the onclick listener to open the web view
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
+                appBar.setVisibility(View.INVISIBLE);
+                String articleURL = notificationList.get(position).getUrl();
+                mWebViewFragment = new WebViewFragment().newInstance(articleURL);
+                fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
+                fragmentTransaction.addToBackStack("notificationlist_frag");
+                fragmentTransaction.commit();
+            }
         });
 
-        Business biz = new Business(view.getContext());
-        List<Article> userNotificationsList = biz.getUserNotificationsLocal();
 
-        TableLayout notificationTable = (TableLayout) view.findViewById(R.id.my_notifications_table);
-        for (final Article currentArticle: userNotificationsList) {
-
-            TableRow row = (TableRow) inflater.inflate (R.layout.notification_row, null, false);
-            row.setClickable(true);
-            /*
-            row.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v) {
-                    Fragment newFragment = new ArticleListFragment()
-                }
-            }
-            */
-            //set the border on the backgroud
-            row.setBackgroundResource(R.drawable.row_border);
-            //title of the notification article
-            ((TextView)row.findViewById(R.id.txtNotificationArticle)).setText(currentArticle.getTitle());
-            //name of the source
-            ((TextView)row.findViewById(R.id.txtNotificationSource)).setText(currentArticle.getSource());
-            //name of the item the notification is associated with
-            ((TextView)row.findViewById(R.id.txtNotificationItem)).setText(currentArticle.getRelatedInterests());
-            //time ago
-            ((TextView)row.findViewById(R.id.txtNotificationTime)).setText(currentArticle.getNotifiedTimeAgo());//or gettimeago
-            //image icon of the item the notification is associated with
-            ImageView image = (ImageView) row.findViewById(R.id.imgNotification);
-            new DownloadImageTask(image).execute(currentArticle.getRelatedInterestsURL());
-            notificationTable.addView(row);
-
-        }
         return view;
 
-        //make an array list of articles, and make two or three of them.
-        //for loop through each one of the three.
-        //make an array of Articles from the article class
-        //paging
+    }
+
+    public void getNotifications(int skip, int take) {
+        final Business business = new Business(ctx);
+        List<Article> localNotifications = business.getUserNotificationsLocal(skip, take);
+        notificationList.addAll(localNotifications);
+        NotificationAdapter adapter = new NotificationAdapter(ctx, notificationList);
+        adapter.notifyDataSetChanged();
+        if (notificationList.size() == pageSize) //should this be changed to <= pageSize? what if there are only 9 notifications?
+        {
+            mListView.setAdapter(adapter);
+        }
+        mSwipeNotificationContainer.setRefreshing(false);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

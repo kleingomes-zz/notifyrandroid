@@ -164,9 +164,9 @@ public class Business {
         return new Repository(context).saveUserNotification(article);
     }
 
-    public List<Article> getUserNotificationsLocal() /* TODO ADD PARAMS FOR PAGING) */
+    public List<Article> getUserNotificationsLocal(int skip, int take) /* TODO ADD PARAMS FOR PAGING) */
     {
-        return new Repository(context).getUserNotifications();
+        return new Repository(context).getUserNotifications(skip, take);
     }
     //endregions
 
