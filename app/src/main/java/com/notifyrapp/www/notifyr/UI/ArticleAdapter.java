@@ -1,6 +1,7 @@
 package com.notifyrapp.www.notifyr.UI;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
+import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.R;
 
@@ -24,7 +27,7 @@ public class ArticleAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private List<Article> mDataSource;
-    private ProgressBar mProgressBar;
+
 
     public ArticleAdapter(Context context, List<Article> articles) {
         mContext = context;
@@ -53,7 +56,7 @@ public class ArticleAdapter extends BaseAdapter {
 
     //4
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, final View convertView, ViewGroup parent) {
 
         // Get view for row item
         View rowView = mInflater.inflate(R.layout.list_item_article_image, parent, false);
@@ -68,10 +71,10 @@ public class ArticleAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.imgArticle);
 
         // Get Article
-        Article article = (Article) getItem(position);
+        final Article article = (Article) getItem(position);
 
         // Get Progress Bar
-        mProgressBar =  (ProgressBar) rowView.findViewById(R.id.pbHeaderProgress);
+        final ProgressBar mProgressBar =  (ProgressBar) rowView.findViewById(R.id.pbHeaderProgress);
 
         // Load the Elements with data
         titleTextView.setText(article.getTitle());
@@ -79,8 +82,28 @@ public class ArticleAdapter extends BaseAdapter {
 
         // Load the image element ( TODO: Image loads everytime articles are seen....need to cache this locally somehow??? )
         String imageUrl = article.getIurl();
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            new DownloadImageTask(imageView,mProgressBar).execute(imageUrl);
+
+        // Check if the image is in cache
+        Bitmap image = ImageCacheManager.getImage(String.valueOf(article.getId()), mContext);
+        if(image != null)
+        {
+            imageView.setImageBitmap(image);
+        }
+        else
+        {
+            mProgressBar.setVisibility(View.VISIBLE);
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                new DownloadImageTask(imageView,mProgressBar, new CallbackInterface() {
+                    @Override
+                    public void onCompleted(Object data) {
+                        if(data != null) {
+                            Bitmap articleImage = (Bitmap) data;
+                            ImageCacheManager.saveImage(String.valueOf(article.getId()), articleImage,mContext);
+                        }
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                }).execute(imageUrl);
+            }
         }
 
         return rowView;

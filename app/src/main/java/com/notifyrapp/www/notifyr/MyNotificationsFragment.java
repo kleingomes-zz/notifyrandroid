@@ -108,6 +108,8 @@ public class MyNotificationsFragment extends Fragment {
         mSwipeNotificationContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeNotificationContainer);
         mListView = (ListView) view.findViewById(R.id.notification_list_view);
         //Get the first batch of articles
+        adapter = new NotificationAdapter(ctx, notificationList);
+        mListView.setAdapter(adapter);
         getNotifications(0, pageSize);
         //Setup refresh listener which triggers new data loading
         mSwipeNotificationContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -158,11 +160,8 @@ public class MyNotificationsFragment extends Fragment {
         final Business business = new Business(ctx);
         List<Article> localNotifications = business.getUserNotificationsLocal(skip, take);
         notificationList.addAll(localNotifications);
-        adapter = new NotificationAdapter(ctx, notificationList);
         adapter.notifyDataSetChanged();
-        mListView.setAdapter(adapter);
         mSwipeNotificationContainer.setRefreshing(false);
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event

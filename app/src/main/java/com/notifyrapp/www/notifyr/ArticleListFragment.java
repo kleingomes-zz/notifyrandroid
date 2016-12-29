@@ -160,9 +160,11 @@ public class ArticleListFragment extends Fragment {
         mListView.setOnScrollListener(new InfiniteScrollListener(10) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
-                Log.d("PAGE",String.valueOf(page));
-                getArticles(page*pageSize,pageSize,sortBy);
-                currentPage = page;
+                //Log.d("PAGE",String.valueOf(page));
+                if(articleList.size() > 10) {
+                    getArticles(page * pageSize, pageSize, sortBy);
+                    currentPage = page;
+                }
             }
 
             @Override
@@ -204,9 +206,10 @@ public class ArticleListFragment extends Fragment {
 
             @Override
             public void onCompleted(Object data) {
+                List<Article> downloadedAricles = (List<Article>)data;
                 // At this point we know that the data was saved into the DB
-                List<Article> localArticles = business.getUserArticlesFromLocal(0,pageSize,sortBy,-1);
-                articleList.addAll(localArticles);
+                //List<Article> localArticles = business.getUserArticlesFromLocal(0,pageSize,sortBy,-1);
+                articleList.addAll(downloadedAricles);
                 adapter.notifyDataSetChanged();
                 mSwipeContainer.setRefreshing(false);
             }

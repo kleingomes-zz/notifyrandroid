@@ -89,7 +89,7 @@ public class NotificationAdapter extends BaseAdapter {
         // Load the image element ( TODO: Image loads everytime articles are seen....need to cache this locally somehow??? )
         String imageUrl = article.getRelatedInterestsURL();
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            new DownloadImageTask(imageView, mProgressBar).execute(imageUrl);
+            new DownloadImageTask(imageView).execute(imageUrl);
         }
 
         return rowView;

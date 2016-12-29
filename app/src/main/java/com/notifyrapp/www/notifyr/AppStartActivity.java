@@ -1,6 +1,7 @@
 package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,10 +12,12 @@ import android.content.Intent;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
+import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,6 +134,10 @@ public class AppStartActivity extends AppCompatActivity{
                 }
             });
         }
+
+        /* HOUSE KEEPING  */
+        // MAKE SURE CACHE IS CLEAR
+        ImageCacheManager.clearCache(ctx);
 
         /* REGISTER FOR REMOTE NOTIFICATIONS */
 
