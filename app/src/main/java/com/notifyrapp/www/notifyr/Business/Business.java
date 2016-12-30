@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.notifyrapp.www.notifyr.Data.RepositoryBuilder;
+import com.notifyrapp.www.notifyr.Data.DatabaseBuilder;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
@@ -14,7 +14,6 @@ import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,7 +29,7 @@ public class Business {
     Repository repo;
 
     /* Builds Databases and Tables */
-    RepositoryBuilder repoBuilder;
+    DatabaseBuilder repoBuilder;
 
     public Business(Context context)
     {
@@ -42,7 +41,7 @@ public class Business {
     //region Data Access
     public Boolean createNotifyrDatabase(String userId)
     {
-        return new RepositoryBuilder(context,userId).createNotifyrDatabase();
+        return new DatabaseBuilder(context,userId).createNotifyrDatabase();
     }
     //endregion
 
@@ -205,6 +204,22 @@ public class Business {
     {
         return new Repository(context).getUserNotifications(skip, take);
     }
+    //endregion
+
+    //region Bookmark
+    public Boolean saveBookmark(Article article)
+    {
+        return new Repository(context).saveBookmark(article);
+    }
+    public Boolean deleteBookmark(Article article)
+    {
+        return new Repository(context).deleteBookmark(article);
+    }
+    public List<Article> getBookmarks(int skip, int take)
+    {
+        return new Repository(context).getBookmarks(skip,take);
+    }
+
     //endregion
 
     //region ENUM

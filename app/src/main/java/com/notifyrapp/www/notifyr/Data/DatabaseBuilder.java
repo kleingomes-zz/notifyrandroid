@@ -9,7 +9,7 @@ import com.notifyrapp.www.notifyr.Model.UserProfile;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class RepositoryBuilder {
+public class DatabaseBuilder {
 
     private Context context;
     private String dbName = "NotifyrLocal.db";
@@ -17,7 +17,7 @@ public class RepositoryBuilder {
     private SQLiteDatabase notifyrDB;
 
     /* Constructor */
-    public RepositoryBuilder(Context context,String userId)
+    public DatabaseBuilder(Context context, String userId)
     {
         this.context = context;
         this.userId = userId;
@@ -40,7 +40,7 @@ public class RepositoryBuilder {
             createUserProfileTable();
             createArticleTable();
             createUserNotificationTable();
-            createArticleFavouriteTable();
+            createArticleBookmarkTable();
             createItemTable();
             createUserItemTable();
             createUserSettingsTable();
@@ -145,9 +145,9 @@ public class RepositoryBuilder {
                 + ");");
     }
 
-    private void createArticleFavouriteTable()
+    private void createArticleBookmarkTable()
     {
-        String TableName = "ArticleFavourite";
+        String TableName = "ArticleBookmark";
 
         this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
                 + TableName

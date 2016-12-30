@@ -140,25 +140,7 @@ public class Repository {
 
                 Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ArticleId", String.valueOf(article.getId()), db);
                 if (!exists) {
-
-                    ContentValues param = new ContentValues();
-                    param.put("ArticleId", article.getId());
-                    param.put("Source", article.getSource());
-                    param.put("Score", article.getScore());
-                    param.put("Title", article.getTitle());
-                    param.put("Author", article.getAuthor());
-                    param.put("Description", article.getDescription());
-                    param.put("URL", article.getUrl());
-                    param.put("IURL", article.getIurl());
-                    param.put("ArticleNotifiedDate", article.getArticleNotifiedDate().toString());
-                    param.put("PublishDate", article.getPublishDate().toString());
-                    param.put("IsFavourite", article.getFavourite());
-                    param.put("ShortLinkURL", article.getShortLinkUrl());
-                    param.put("RelatedInterests", article.getRelatedInterests());
-                    param.put("TimeAgo", article.getTimeAgo());
-                    param.put("NotifiedTimeAgo", article.getNotifiedTimeAgo());
-                    param.put("RelatedInterestsURL", article.getRelatedInterestsURL());
-                    db.insert(tableName, null, param);
+                    db.insert(tableName, null, getArticleParams(article));
                 }
             }
         }
@@ -216,7 +198,7 @@ public class Repository {
         String TableName = "Article";
         String Data="";
         SQLiteDatabase db = null;
-        ArrayList<Article> articles = new ArrayList<Article>();
+        List<Article> articles = new ArrayList<Article>();
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
@@ -233,58 +215,7 @@ public class Repository {
                         + " ORDER BY "+sortBy+" DESC LIMIT "+take+" OFFSET " + skip, null);
             }
 
-
-            int col_articleid = c.getColumnIndex("ArticleId");
-            int col_source = c.getColumnIndex("Source");
-            int col_score = c.getColumnIndex("Score");
-            int col_title = c.getColumnIndex("Title");
-            int col_author = c.getColumnIndex("Author");
-            int col_description = c.getColumnIndex("Description");
-            int col_url = c.getColumnIndex("URL");
-            int col_iurl = c.getColumnIndex("IURL");
-            int col_articleNotifiedDate = c.getColumnIndex("ArticleNotifiedDate");
-            int col_publishDate = c.getColumnIndex("PublishDate");
-            int col_isFavourite = c.getColumnIndex("IsFavourite");
-            int col_shortLinkURL = c.getColumnIndex("ShortLinkURL");
-            int col_relatedInterests = c.getColumnIndex("RelatedInterests");
-            int col_timeAgo = c.getColumnIndex("TimeAgo");
-            int col_notifiedTimeAgo = c.getColumnIndex("NotifiedTimeAgo");
-            int col_realtedInterestsURL = c.getColumnIndex("RelatedInterestsURL");
-
-
-            // Check if our result was valid.
-            c.moveToFirst();
-            if (c != null) {
-                // Loop through all Results
-                do {
-
-                    /* Need to convert the strings to Date types */
-                    String pubDateStr = c.getString(col_articleNotifiedDate);
-                    String notifyrDateStr = c.getString(col_publishDate);
-
-                    DateTime pubDate =  DateTime.parse(pubDateStr);
-                    DateTime notifyrDate = DateTime.parse(notifyrDateStr);
-
-                    Article article = new Article();
-                    article.setScore(c.getInt(col_score));
-                    article.setId(c.getInt(col_articleid));
-                    article.setTitle(c.getString(col_title));
-                    article.setTimeAgo(c.getString(col_author));
-                    article.setDescription(c.getString(col_description));
-                    article.setUrl(c.getString(col_url));
-                    article.setSource(c.getString(col_source));
-                    article.setTimeAgo(c.getString(col_timeAgo));
-                    article.setIurl(c.getString(col_iurl));
-                    article.setArticleNotifiedDate(notifyrDate);
-                    article.setPublishDate(pubDate);
-                    article.setFavourite(c.getInt(col_isFavourite) == 1 ? true : false);
-                    article.setShortLinkUrl(c.getString(col_shortLinkURL));
-                    article.setRelatedInterests(c.getString(col_relatedInterests));
-                    article.setNotifiedTimeAgo(c.getString(col_notifiedTimeAgo));
-                    article.setRelatedInterestsURL(c.getString(col_realtedInterestsURL));
-                    articles.add(article);
-                }while(c.moveToNext());
-            }
+            articles = getArticles(c);
         }
         catch(Exception e) {
             Log.e("exception", e.getMessage());
@@ -415,24 +346,7 @@ public class Repository {
                 Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ArticleId", String.valueOf(article.getId()), db);
                 if (!exists) {
                     // Insert the UserNotification
-                    ContentValues param = new ContentValues();
-                    param.put("ArticleId", article.getId());
-                    param.put("Source", article.getSource());
-                    param.put("Score", article.getScore());
-                    param.put("Title", article.getTitle());
-                    param.put("Author", article.getAuthor());
-                    param.put("Description", article.getDescription());
-                    param.put("URL", article.getUrl());
-                    param.put("IURL", article.getIurl());
-                    param.put("ArticleNotifiedDate", article.getArticleNotifiedDate().toString());
-                    param.put("PublishDate", article.getPublishDate().toString());
-                    param.put("IsFavourite", article.getFavourite());
-                    param.put("ShortLinkURL", article.getShortLinkUrl());
-                    param.put("RelatedInterests", article.getRelatedInterests());
-                    param.put("TimeAgo", article.getTimeAgo());
-                    param.put("NotifiedTimeAgo", article.getNotifiedTimeAgo());
-                    param.put("RelatedInterestsURL", article.getRelatedInterestsURL());
-                    db.insert(tableName, null, param);
+                    db.insert(tableName, null, getArticleParams(article));
                 }
             }
         }
@@ -452,64 +366,14 @@ public class Repository {
         String TableName = "UserNotification";
         String Data="";
         SQLiteDatabase db = null;
-        ArrayList<Article> articles = new ArrayList<Article>();
+        List<Article> articles = new ArrayList<Article>();
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
-            Cursor c =  db.rawQuery("SELECT * FROM UserNotification"
+            Cursor c =  db.rawQuery("SELECT * FROM " + TableName
                     + " ORDER BY ArticleNotifiedDate DESC LIMIT "+take+" OFFSET " + skip, null);
 
-            int col_articleid = c.getColumnIndex("ArticleId");
-            int col_source = c.getColumnIndex("Source");
-            int col_score = c.getColumnIndex("Score");
-            int col_title = c.getColumnIndex("Title");
-            int col_author = c.getColumnIndex("Author");
-            int col_description = c.getColumnIndex("Description");
-            int col_url = c.getColumnIndex("URL");
-            int col_iurl = c.getColumnIndex("IURL");
-            int col_articleNotifiedDate = c.getColumnIndex("ArticleNotifiedDate");
-            int col_publishDate = c.getColumnIndex("PublishDate");
-            int col_isFavourite = c.getColumnIndex("IsFavourite");
-            int col_shortLinkURL = c.getColumnIndex("ShortLinkURL");
-            int col_relatedInterests = c.getColumnIndex("RelatedInterests");
-            int col_timeAgo = c.getColumnIndex("TimeAgo");
-            int col_notifiedTimeAgo = c.getColumnIndex("NotifiedTimeAgo");
-            int col_realtedInterestsURL = c.getColumnIndex("RelatedInterestsURL");
-
-            // Check if our result was valid.
-            c.moveToFirst();
-            if (c != null) {
-                // Loop through all Results
-                do {
-                    /* Need to convert the strings to Date types */
-                    String pubDateStr = c.getString(col_articleNotifiedDate);
-                    String notifyrDateStr = c.getString(col_publishDate);
-
-                    DateTime pubDate =  DateTime.parse(pubDateStr);
-                    DateTime notifyrDate = DateTime.parse(notifyrDateStr);
-
-                    Article article = new Article();
-                    article.setId(c.getInt(col_articleid)); //article id
-                    article.setSource(c.getString(col_source)); //source
-                    article.setScore(c.getInt(col_score));
-                    article.setTitle(c.getString(col_title)); //title
-                    article.setTimeAgo(c.getString(col_author));
-                    article.setDescription(c.getString(col_description));
-                    article.setUrl(c.getString(col_url));
-                    article.setIurl(c.getString(col_iurl)); //image url
-                    article.setArticleNotifiedDate(notifyrDate);
-                    article.setPublishDate(pubDate);
-                    article.setFavourite(c.getInt(col_isFavourite) == 1 ? true : false);
-                    article.setShortLinkUrl(c.getString(col_shortLinkURL));
-                    article.setRelatedInterests(c.getString(col_relatedInterests));
-                    article.setTimeAgo(c.getString(col_timeAgo)); //time ago
-                    article.setNotifiedTimeAgo(c.getString(col_notifiedTimeAgo));
-                    article.setRelatedInterestsURL(c.getString(col_realtedInterestsURL));
-
-
-                    articles.add(article);
-                }while(c.moveToNext());
-            }
+            articles = getArticles(c);
 
         }
         catch(Exception e) {
@@ -524,7 +388,166 @@ public class Repository {
 
     //endregion
 
+
+
+    //region Bookmarks
+
+
+    public List<Article> getBookmarks(int skip, int take)
+    {
+        String TableName = "ArticleBookmark";
+        String Data="";
+        SQLiteDatabase db = null;
+        List<Article> articles = new ArrayList<Article>();
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Cursor c =  db.rawQuery("SELECT * FROM " + TableName
+                    + " ORDER BY ArticleNotifiedDate DESC LIMIT "+take+" OFFSET " + skip, null);
+
+            articles = getArticles(c);
+
+        }
+        catch(Exception e) {
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return articles;
+    }
+
+    public boolean saveBookmark(Article article)
+    {
+        Log.d("saveBookmark",article.getTitle());
+        String tableName = "ArticleBookmark";
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ArticleId", String.valueOf(article.getId()), db);
+            if (!exists) {
+                    db.insert(tableName, null, getArticleParams(article));
+            }
+        }
+        catch(Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        Log.d("saveBookmark","Status("+isSuccess+") " + article.getTitle());
+        return isSuccess;
+    }
+
+    public boolean deleteBookmark(Article article)
+    {
+        String tableName = "ArticleBookmark";
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db.execSQL("DELETE FROM "
+                        + tableName
+                        + " WHERE ArticleId =" + article.getId());
+        }
+        catch(Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return isSuccess;
+    }
+    //endregion
+
     //region Helpers
+    private List<Article> getArticles(Cursor c)
+    {
+        List<Article> articles = new ArrayList<Article>();
+        int col_articleid = c.getColumnIndex("ArticleId");
+        int col_source = c.getColumnIndex("Source");
+        int col_score = c.getColumnIndex("Score");
+        int col_title = c.getColumnIndex("Title");
+        int col_author = c.getColumnIndex("Author");
+        int col_description = c.getColumnIndex("Description");
+        int col_url = c.getColumnIndex("URL");
+        int col_iurl = c.getColumnIndex("IURL");
+        int col_articleNotifiedDate = c.getColumnIndex("ArticleNotifiedDate");
+        int col_publishDate = c.getColumnIndex("PublishDate");
+        int col_isFavourite = c.getColumnIndex("IsFavourite");
+        int col_shortLinkURL = c.getColumnIndex("ShortLinkURL");
+        int col_relatedInterests = c.getColumnIndex("RelatedInterests");
+        int col_timeAgo = c.getColumnIndex("TimeAgo");
+        int col_notifiedTimeAgo = c.getColumnIndex("NotifiedTimeAgo");
+        int col_realtedInterestsURL = c.getColumnIndex("RelatedInterestsURL");
+
+
+        // Check if our result was valid.
+        c.moveToFirst();
+        if (c != null) {
+            // Loop through all Results
+            do {
+
+                    /* Need to convert the strings to Date types */
+                String pubDateStr = c.getString(col_articleNotifiedDate);
+                String notifyrDateStr = c.getString(col_publishDate);
+
+                DateTime pubDate =  DateTime.parse(pubDateStr);
+                DateTime notifyrDate = DateTime.parse(notifyrDateStr);
+
+                Article article = new Article();
+                article.setScore(c.getInt(col_score));
+                article.setId(c.getInt(col_articleid));
+                article.setTitle(c.getString(col_title));
+                article.setTimeAgo(c.getString(col_author));
+                article.setDescription(c.getString(col_description));
+                article.setUrl(c.getString(col_url));
+                article.setSource(c.getString(col_source));
+                article.setTimeAgo(c.getString(col_timeAgo));
+                article.setIurl(c.getString(col_iurl));
+                article.setArticleNotifiedDate(notifyrDate);
+                article.setPublishDate(pubDate);
+                article.setFavourite(c.getInt(col_isFavourite) == 1 ? true : false);
+                article.setShortLinkUrl(c.getString(col_shortLinkURL));
+                article.setRelatedInterests(c.getString(col_relatedInterests));
+                article.setNotifiedTimeAgo(c.getString(col_notifiedTimeAgo));
+                article.setRelatedInterestsURL(c.getString(col_realtedInterestsURL));
+                articles.add(article);
+            }while(c.moveToNext());
+        }
+        return articles;
+    }
+
+
+    private ContentValues getArticleParams(Article article)
+    {
+        ContentValues param = new ContentValues();
+        param.put("ArticleId", article.getId());
+        param.put("Source", article.getSource());
+        param.put("Score", article.getScore());
+        param.put("Title", article.getTitle());
+        param.put("Author", article.getAuthor());
+        param.put("Description", article.getDescription());
+        param.put("URL", article.getUrl());
+        param.put("IURL", article.getIurl());
+        param.put("ArticleNotifiedDate", article.getArticleNotifiedDate().toString());
+        param.put("PublishDate", article.getPublishDate().toString());
+        param.put("IsFavourite", article.getFavourite());
+        param.put("ShortLinkURL", article.getShortLinkUrl());
+        param.put("RelatedInterests", article.getRelatedInterests());
+        param.put("TimeAgo", article.getTimeAgo());
+        param.put("NotifiedTimeAgo", article.getNotifiedTimeAgo());
+        param.put("RelatedInterestsURL", article.getRelatedInterestsURL());
+        return param;
+    }
     private boolean checkIsDataAlreadyInDBorNot(String TableName,
                                                 String dbfield, String fieldValue, SQLiteDatabase sqldb) {
         //SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
@@ -564,5 +587,6 @@ public class Repository {
         }
         return checkDB != null;
     }
+
     //endregion
 }

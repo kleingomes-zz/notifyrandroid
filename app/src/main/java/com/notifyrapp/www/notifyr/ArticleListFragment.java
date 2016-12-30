@@ -2,10 +2,12 @@ package com.notifyrapp.www.notifyr;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -64,6 +66,8 @@ public class ArticleListFragment extends Fragment {
     public ArticleListFragment() {
         // Required empty public constructor
     }
+
+
 
     /**
      * Use this factory method to create a new instance of
@@ -161,6 +165,7 @@ public class ArticleListFragment extends Fragment {
 
 
         // Add the scroll listener to know when we hit the bottom
+
         mListView.setOnScrollListener(new InfiniteScrollListener(10) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
@@ -204,27 +209,96 @@ public class ArticleListFragment extends Fragment {
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, final View v,
-                                           int pos, long id) {
-                BubbleActions.on(v)
-                        .addAction("Bookmark", R.drawable.bubble_star, new Callback() {
-                            @Override
-                            public void doAction() {
-                                Toast.makeText(v.getContext(), "Star pressed!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addAction("Share", R.drawable.bubble_share, new Callback() {
-                            @Override
-                            public void doAction() {
-                                Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addAction("Hide", R.drawable.bubble_hide, new Callback() {
-                            @Override
-                            public void doAction() {
-                                Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .show();
+                                           final int pos, long id) {
+                final Business business = new Business(ctx);
+                final Article article = articleList.get(pos);
+                // bookmark buttonss
+                if(mParam1 == 2)
+                {
+                    BubbleActions.on(v)
+                            .addAction("Remove All", R.drawable.bubble_star, new Callback() {
+                                @Override
+                                public void doAction() {
+                                    Boolean isSuccess = business.deleteBookmark(article);
+                                    if(isSuccess){
+                                        articleList.clear();
+                                        adapter.notifyDataSetChanged();
+                                        Toast.makeText(v.getContext(), "Removed All Bookmarks!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        Toast.makeText(v.getContext(), "Error Removing Bookmarks!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+                            .addAction("Remove", R.drawable.bubble_star, new Callback() {
+                                @Override
+                                public void doAction() {
+                                    Boolean isSuccess = business.deleteBookmark(article);
+                                    if(isSuccess) {
+                                        articleList.remove(pos);
+                                        adapter.notifyDataSetChanged();
+                                        Toast.makeText(v.getContext(), "Removed Bookmarked!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else{
+                                        Toast.makeText(v.getContext(), "Error Removing Bookmark!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+                            .addAction("Share", R.drawable.bubble_share, new Callback() {
+                                @Override
+                                public void doAction() {
+                                    Intent i=new Intent(android.content.Intent.ACTION_SEND);
+                                    i.setType("text/plain");
+                                    i.putExtra(android.content.Intent.EXTRA_SUBJECT,"Subject test");
+                                    i.putExtra(android.content.Intent.EXTRA_TEXT, "extra text that you want to put");
+                                    startActivity(Intent.createChooser(i,"Share via"));
+                                    //Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addAction("Hide", R.drawable.bubble_hide, new Callback() {
+                                @Override
+                                public void doAction() {
+                                    Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .show();
+                }
+                else
+                {
+                    BubbleActions.on(v)
+                            .addAction("Share", R.drawable.bubble_share, new Callback() {
+                                @Override
+                                public void doAction() {
+                                    Intent i=new Intent(android.content.Intent.ACTION_SEND);
+                                    i.setType("text/plain");
+                                    i.putExtra(android.content.Intent.EXTRA_SUBJECT,"Subject test");
+                                    i.putExtra(android.content.Intent.EXTRA_TEXT, "extra text that you want to put");
+                                    startActivity(Intent.createChooser(i,"Share via"));
+                                    //Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addAction("Bookmark", R.drawable.bubble_star, new Callback() {
+                                @Override
+                                public void doAction() {
+                                    Boolean isSuccess = business.saveBookmark(article);
+                                    if(isSuccess)
+                                    {
+                                        Toast.makeText(v.getContext(), "Bookmarked!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(v.getContext(), "Error Saving Bookmark!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+                            .addAction("Hide", R.drawable.bubble_hide, new Callback() {
+                                @Override
+                                public void doAction() {
+                                    Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .show();
+                }
                 return true;
 
             }
@@ -233,7 +307,8 @@ public class ArticleListFragment extends Fragment {
         return view;
     }
 
-    public void getArticles(int skip, int take, final String sortBy)
+
+    public void getArticles(final int skip, int take, final String sortBy)
     {
         final Business business = new Business(ctx);
         business.getUserArticlesFromServer(skip,pageSize,"Score",-1, new CallbackInterface() {
@@ -242,7 +317,13 @@ public class ArticleListFragment extends Fragment {
             public void onCompleted(Object data) {
                 //List<Article> downloadedAricles = (List<Article>)data;
                 // At this point we know that the data was saved into the DB
-                List<Article> localArticles = business.getUserArticlesFromLocal(0,pageSize,sortBy,-1);
+                List<Article> localArticles = new ArrayList<Article>();
+                if(mParam1 == 2) {
+                    localArticles = business.getBookmarks(skip, pageSize);
+                }
+                else {
+                    localArticles = business.getUserArticlesFromLocal(skip, pageSize, sortBy, -1);
+                }
                 articleList.addAll(localArticles);
                 adapter.notifyDataSetChanged();
                 mSwipeContainer.setRefreshing(false);
