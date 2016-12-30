@@ -21,6 +21,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
@@ -30,6 +31,9 @@ import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.samthompson.bubbleactions.BubbleActions;
+import me.samthompson.bubbleactions.Callback;
 
 
 /**
@@ -181,6 +185,7 @@ public class ArticleListFragment extends Fragment {
         });
 
         // Add the onclick listener to open the web view
+        mListView.setClickable(true);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
@@ -193,6 +198,35 @@ public class ArticleListFragment extends Fragment {
                 fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
                 fragmentTransaction.addToBackStack("articlelist_frag");
                 fragmentTransaction.commit();
+            }
+        });
+        mListView.setLongClickable(true);
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, final View v,
+                                           int pos, long id) {
+                BubbleActions.on(v)
+                        .addAction("Bookmark", R.drawable.bubble_star, new Callback() {
+                            @Override
+                            public void doAction() {
+                                Toast.makeText(v.getContext(), "Star pressed!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addAction("Share", R.drawable.bubble_share, new Callback() {
+                            @Override
+                            public void doAction() {
+                                Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addAction("Hide", R.drawable.bubble_hide, new Callback() {
+                            @Override
+                            public void doAction() {
+                                Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .show();
+                return true;
+
             }
         });
 

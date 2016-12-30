@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
@@ -18,6 +19,9 @@ import com.notifyrapp.www.notifyr.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.samthompson.bubbleactions.BubbleActions;
+import me.samthompson.bubbleactions.Callback;
 
 /**
  * Created by K on 12/27/2016.
@@ -105,6 +109,35 @@ public class ArticleAdapter extends BaseAdapter {
                 }).execute(imageUrl);
             }
         }
+
+     /*   // Hook the "Force touch" menu
+        rowView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(final View v) {
+                BubbleActions.on(v)
+                        .addAction("Bookmark", R.drawable.bubble_star, new Callback() {
+                            @Override
+                            public void doAction() {
+                                Toast.makeText(v.getContext(), "Star pressed!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addAction("Share", R.drawable.bubble_share, new Callback() {
+                            @Override
+                            public void doAction() {
+                                Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addAction("Hide", R.drawable.bubble_hide, new Callback() {
+                            @Override
+                            public void doAction() {
+                                Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .show();
+                return true;
+            }
+
+        });*/
 
         return rowView;
     }

@@ -107,7 +107,7 @@ public class AppStartActivity extends AppCompatActivity{
                         public void onCompleted(Object data) {
                             // Running callback
                             Log.d("CALLBACK_CHECK","SAVED ITEMS TO LOCAL STORE");
-                            ArrayList<Item> items = (ArrayList<Item>) data;
+                            List<Item> items = (List<Item>) data;
                             for (Item currentItem: items) {
                                 business.saveUserItemLocal(currentItem);
                             }

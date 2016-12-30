@@ -71,6 +71,11 @@ public class Business {
     {
         return new Repository(context).saveUserItemLocal(userItem);
     }
+
+    public void syncUserItems()
+    {
+
+    }
     //endregion
 
     //region Articles
