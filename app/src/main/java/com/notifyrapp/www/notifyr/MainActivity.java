@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -77,8 +78,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         int id = item.getItemId();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         switch (item.getItemId()) {
-
+           // case android.R.id.context_menu:
+          //      mMenuDialogFragment.show(fragmentManager, "ContextMenuDialogFragment");
+           //     break;
             case android.R.id.home:
                 FragmentManager fm = this.getSupportFragmentManager();
                 if(currentMenu == Business.MenuTab.Notifications) {
@@ -319,6 +323,10 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         }
     }
 
+    //region Context Menu
+
+
+    //endregion
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {

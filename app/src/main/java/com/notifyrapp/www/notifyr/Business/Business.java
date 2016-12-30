@@ -232,6 +232,27 @@ public class Business {
         Settings
     }
 
+    public enum SortBy
+    {
+        Newest("PublishDate"),
+        Popular("Score"),
+        Bookmark("Bookmark");
+
+        private final String text;
+
+        private SortBy(final String text) {
+            this.text = text;
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Enum#toString()
+         */
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
     //endregion
 
 }

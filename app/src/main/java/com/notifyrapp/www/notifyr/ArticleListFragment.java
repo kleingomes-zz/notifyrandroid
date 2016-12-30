@@ -7,25 +7,20 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Article;
@@ -60,7 +55,7 @@ public class ArticleListFragment extends Fragment {
     private List<Article> articleList;
     private int currentPage = 0;
     private final int pageSize = 20;
-    private String sortBy = "Score";
+    private Business.SortBy sortBy = Business.SortBy.Newest;
     private FloatingActionButton upFab;
     private ArticleAdapter adapter;
 
@@ -93,13 +88,16 @@ public class ArticleListFragment extends Fragment {
             mParam1 = getArguments().getInt("pos");
         }
         if(mParam1 == 0)  {
-            this.sortBy = "PublishDate";
+            this.sortBy = Business.SortBy.Newest;
+            //this.sortBy = "PublishDate";
         }
         else if(mParam1 == 1)  {
-            this.sortBy = "Score";
+            this.sortBy = Business.SortBy.Popular;
+            //this.sortBy = "Score";
         }
         else  {
-            this.sortBy = "Favourite";
+            this.sortBy = Business.SortBy.Bookmark;
+            //this.sortBy = "Favourite";
         }
         // Init the Widgets
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
@@ -136,7 +134,7 @@ public class ArticleListFragment extends Fragment {
         // Config adapter and get the first batch of articles
         adapter = new ArticleAdapter(ctx, articleList);
         mListView.setAdapter(adapter);
-        getArticles(0,pageSize,sortBy);
+        getArticles(0,pageSize,sortBy.toString());
 
         // Setup refresh listener which triggers new data loading
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -146,7 +144,7 @@ public class ArticleListFragment extends Fragment {
                 // Make sure you call mSwipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 articleList.clear();
-                getArticles(0,pageSize,sortBy);
+                getArticles(0,pageSize,sortBy.toString());
             }
         });
 
@@ -164,7 +162,7 @@ public class ArticleListFragment extends Fragment {
             public void loadMore(int page, int totalItemsCount) {
                 //Log.d("PAGE",String.valueOf(page));
                 if(articleList.size() > 10) {
-                    getArticles(page * pageSize, pageSize, sortBy);
+                    getArticles(page * pageSize, pageSize, sortBy.toString());
                     currentPage = page;
                 }
             }
@@ -191,8 +189,8 @@ public class ArticleListFragment extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
                 appBar.setVisibility(View.INVISIBLE);
-                String articleURL = articleList.get(position).getUrl();
-                mWebViewFragment = new WebViewFragment().newInstance(articleURL);
+                Article article = articleList.get(position);
+                mWebViewFragment = new WebViewFragment().newInstance(article);
                 fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
                 fragmentTransaction.addToBackStack("articlelist_frag");
                 fragmentTransaction.commit();

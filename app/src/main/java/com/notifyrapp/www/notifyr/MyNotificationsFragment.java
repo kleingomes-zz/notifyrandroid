@@ -143,8 +143,8 @@ public class MyNotificationsFragment extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
                 appBar.setVisibility(View.INVISIBLE);
-                String articleURL = notificationList.get(position).getUrl();
-                mWebViewFragment = new WebViewFragment().newInstance(articleURL);
+                Article article = notificationList.get(position);
+                mWebViewFragment = new WebViewFragment().newInstance(article);
                 fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
                 fragmentTransaction.addToBackStack("notificationlist_frag");
                 fragmentTransaction.commit();

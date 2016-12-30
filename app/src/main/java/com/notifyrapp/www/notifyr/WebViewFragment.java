@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.notifyrapp.www.notifyr.Model.Article;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,11 +27,11 @@ import android.webkit.WebViewClient;
 public class WebViewFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "url_param";
+    private static final String ARG_PARAM1 = "article";
 
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Article article;
 
 
     private OnFragmentInteractionListener mListener;
@@ -47,14 +49,12 @@ public class WebViewFragment extends Fragment {
      * @return A new instance of fragment WebViewFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WebViewFragment newInstance(String url) {
+    public static WebViewFragment newInstance(Article article) {
         WebViewFragment fragment = new WebViewFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, url);
+        args.putSerializable(ARG_PARAM1, article);
         //args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
-        // Init the Widgets
-
         return fragment;
     }
 
@@ -63,7 +63,7 @@ public class WebViewFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ((MainActivity)getActivity()).getSupportActionBar().show();
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            article = (Article) getArguments().getSerializable(ARG_PARAM1);
         }
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
         upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
@@ -80,7 +80,7 @@ public class WebViewFragment extends Fragment {
         WebView webView =  (WebView) view.findViewById(R.id.web_view);
         webView.setWebViewClient(new WebViewClient());
         webView.getSettings().getBuiltInZoomControls();
-        webView.loadUrl(mParam1);
+        webView.loadUrl(article.getUrl());
 
         // Inflate the layout for this fragment
         return view;

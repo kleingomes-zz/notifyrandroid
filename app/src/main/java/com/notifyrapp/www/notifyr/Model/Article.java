@@ -5,9 +5,10 @@ package com.notifyrapp.www.notifyr.Model;
 
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Article {
+public class Article implements Serializable {
 
     /* Private Fields */
     private long id;
