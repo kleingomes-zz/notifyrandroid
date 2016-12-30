@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -67,8 +68,6 @@ public class ArticleListFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -86,24 +85,20 @@ public class ArticleListFragment extends Fragment {
         return fragment;
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getInt("pos");
         }
-        if(mParam1 == 0)
-        {
+        if(mParam1 == 0)  {
             this.sortBy = "PublishDate";
         }
-        else if(mParam1 == 1)
-        {
+        else if(mParam1 == 1)  {
             this.sortBy = "Score";
         }
-        else
-        {
+        else  {
             this.sortBy = "Favourite";
         }
         // Init the Widgets
@@ -113,7 +108,6 @@ public class ArticleListFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
         articleList = new ArrayList<>();
     }
 
@@ -123,7 +117,6 @@ public class ArticleListFragment extends Fragment {
         // Inflate the layout for this fragment
         MainActivity act = (MainActivity)getActivity();
         this.act = act;
-
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
         this.ctx = view.getContext();
@@ -249,13 +242,13 @@ public class ArticleListFragment extends Fragment {
                                 public void doAction() {
                                     Intent i=new Intent(android.content.Intent.ACTION_SEND);
                                     i.setType("text/plain");
-                                    i.putExtra(android.content.Intent.EXTRA_SUBJECT,"Subject test");
-                                    i.putExtra(android.content.Intent.EXTRA_TEXT, "extra text that you want to put");
-                                    startActivity(Intent.createChooser(i,"Share via"));
+                                    i.putExtra(android.content.Intent.EXTRA_SUBJECT, article.getTitle());
+                                    i.putExtra(android.content.Intent.EXTRA_TEXT, article.getUrl());
+                                    startActivity(Intent.createChooser(i,"Sent From www.notifyrapp.com"));
                                     //Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
                                 }
                             })
-                            .addAction("Hide", R.drawable.bubble_hide, new Callback() {
+                            .addAction("Close", R.drawable.bubble_hide, new Callback() {
                                 @Override
                                 public void doAction() {
                                     Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
@@ -271,9 +264,9 @@ public class ArticleListFragment extends Fragment {
                                 public void doAction() {
                                     Intent i=new Intent(android.content.Intent.ACTION_SEND);
                                     i.setType("text/plain");
-                                    i.putExtra(android.content.Intent.EXTRA_SUBJECT,"Subject test");
-                                    i.putExtra(android.content.Intent.EXTRA_TEXT, "extra text that you want to put");
-                                    startActivity(Intent.createChooser(i,"Share via"));
+                                    i.putExtra(android.content.Intent.EXTRA_SUBJECT, article.getTitle());
+                                    i.putExtra(android.content.Intent.EXTRA_TEXT, article.getUrl());
+                                    startActivity(Intent.createChooser(i,"Sent From www.notifyrapp.com"));
                                     //Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
                                 }
                             })
@@ -281,17 +274,16 @@ public class ArticleListFragment extends Fragment {
                                 @Override
                                 public void doAction() {
                                     Boolean isSuccess = business.saveBookmark(article);
-                                    if(isSuccess)
-                                    {
+                                    if(isSuccess)                                    {
                                         Toast.makeText(v.getContext(), "Bookmarked!", Toast.LENGTH_SHORT).show();
+                                       ((MainActivity) getActivity()).isBookmarkDirty = true;
                                     }
-                                    else
-                                    {
+                                    else                                    {
                                         Toast.makeText(v.getContext(), "Error Saving Bookmark!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             })
-                            .addAction("Hide", R.drawable.bubble_hide, new Callback() {
+                            .addAction("Close", R.drawable.bubble_hide, new Callback() {
                                 @Override
                                 public void doAction() {
                                     Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
@@ -324,6 +316,9 @@ public class ArticleListFragment extends Fragment {
                 else {
                     localArticles = business.getUserArticlesFromLocal(skip, pageSize, sortBy, -1);
                 }
+                if(skip == 0){
+                    articleList.clear();
+                }
                 articleList.addAll(localArticles);
                 adapter.notifyDataSetChanged();
                 mSwipeContainer.setRefreshing(false);
@@ -336,12 +331,14 @@ public class ArticleListFragment extends Fragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
+
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

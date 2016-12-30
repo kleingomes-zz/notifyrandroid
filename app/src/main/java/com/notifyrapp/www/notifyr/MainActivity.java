@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.notifyrapp.www.notifyr.Business.Business;
@@ -64,8 +66,12 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private SettingsFragment settingsFragment;
     private MyItemsFragment myItemsFragment;
     private MyNotificationsFragment myNotificationsFragment;
+    private ArticleListFragment bookmarksFrag;
+    private ArticleListFragment newestFrag;
+    private ArticleListFragment popularFrag;
     public TextView abTitle;
     public Business.MenuTab currentMenu = Business.MenuTab.Home;
+    public boolean isBookmarkDirty;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -90,15 +96,13 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
 
         super.onCreate(savedInstanceState);
-    //    getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-
         // INIT
-
         setContentView(R.layout.activity_main);
         //getSupportActionBar().hide();
 
@@ -116,6 +120,24 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        // without this listener the tabs would still get updated when fragments are swiped, but ....  (read the next comment)
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(isBookmarkDirty && tab.getPosition() == 2 && bookmarksFrag != null) {
+                    bookmarksFrag.getArticles(0, 20, "");
+                }
+                mViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
+
 
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -240,20 +262,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     }
 
-    /** @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();
 
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-    return true;
-    }
 
-    return super.onOptionsItemSelected(item);
-    }*/
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -270,7 +281,22 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             // Return a PlaceholderFragment (defined as a static inner class below).
             abTitle =  (TextView)findViewById(R.id.abTitle);
             abTitle.setText(R.string.empty);
-            return ArticleListFragment.newInstance(position);
+
+            if(position == 0)
+            {
+                newestFrag = ArticleListFragment.newInstance(position);
+                return newestFrag;
+            }
+            else if (position == 1)
+            {
+                popularFrag = ArticleListFragment.newInstance(position);
+                return popularFrag;
+            }
+            else
+            {
+                bookmarksFrag = ArticleListFragment.newInstance(position);
+                return bookmarksFrag;
+            }
         }
 
         @Override
@@ -288,52 +314,12 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                     return "Popular";
                 case 2:
                     return "Bookmarks";
-
             }
             return null;
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_article, container, false);
-            //  TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            //   textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
-
-    //region My Interests
-
-
-
-    //endregion
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
