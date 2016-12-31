@@ -56,6 +56,10 @@ public class Article implements Serializable {
     }
 
     public String getIurl() {
+        if (iurl.contains("notifyr"))
+        {
+            return iurl.replace("http","https");
+        }
         return iurl;
     }
 

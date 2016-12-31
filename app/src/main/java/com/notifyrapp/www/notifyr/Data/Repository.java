@@ -15,6 +15,7 @@ import com.notifyrapp.www.notifyr.Model.UserProfile;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -500,8 +501,8 @@ public class Repository {
                 String pubDateStr = c.getString(col_articleNotifiedDate);
                 String notifyrDateStr = c.getString(col_publishDate);
 
-                DateTime pubDate =  DateTime.parse(pubDateStr);
-                DateTime notifyrDate = DateTime.parse(notifyrDateStr);
+                DateTime pubDate = ISODateTimeFormat.dateTimeParser().parseDateTime(pubDateStr);
+                DateTime notifyrDate =ISODateTimeFormat.dateTimeParser().parseDateTime(notifyrDateStr);
 
                 Article article = new Article();
                 article.setScore(c.getInt(col_score));
@@ -521,6 +522,7 @@ public class Repository {
                 article.setNotifiedTimeAgo(c.getString(col_notifiedTimeAgo));
                 article.setRelatedInterestsURL(c.getString(col_realtedInterestsURL));
                 articles.add(article);
+
             }while(c.moveToNext());
         }
         return articles;

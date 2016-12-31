@@ -307,20 +307,23 @@ public class ArticleListFragment extends Fragment {
             public void onCompleted(Object data) {
                 List<Article> downloadedAricles = (List<Article>)data;
                 // At this point we know that the data was saved into the DB
-                List<Article> localArticles = new ArrayList<Article>();
+              /*  List<Article> localArticles = new ArrayList<Article>();
                 if(mParam1 == 2) {
                     localArticles = business.getBookmarks(skip, take);
+                    mParam1 = 2;
                 }
                 else if(mParam1 == 1) {
                     localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Popular.toString(), -1);
+                    mParam1 =1;
                 }
                 else if(mParam1 == 0) {
                     localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Newest.toString(), -1);
-                }
+                    mParam1 = 0;
+                } */
                 //if(skip == 0){
                 //    articleList.clear();
                // }
-                articleList.addAll(localArticles);
+                articleList.addAll(downloadedAricles);
                 adapter.notifyDataSetChanged();
                 mSwipeContainer.setRefreshing(false);
             }
@@ -332,7 +335,6 @@ public class ArticleListFragment extends Fragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
-
         }
     }
 

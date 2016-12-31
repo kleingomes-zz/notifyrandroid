@@ -2,6 +2,8 @@ package com.notifyrapp.www.notifyr.UI;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
 import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +75,7 @@ public class ArticleAdapter extends BaseAdapter {
         TextView subtitleTextView = (TextView) rowView.findViewById(R.id.txtImageArticleSubTitle);
 
         // Get image
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.imgArticle);
+        final ImageView imageView = (ImageView) rowView.findViewById(R.id.imgArticle);
 
         // Get Article
         final Article article = (Article) getItem(position);
@@ -96,7 +99,22 @@ public class ArticleAdapter extends BaseAdapter {
         else
         {
             mProgressBar.setVisibility(View.VISIBLE);
-            if (imageUrl != null && !imageUrl.isEmpty()) {
+            Picasso.with(mContext).load(article.getIurl()).into(imageView, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    //do smth when picture is loaded successfully
+                    mProgressBar.setVisibility(View.GONE);
+                    Bitmap image=((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                    ImageCacheManager.saveImage("article_"+String.valueOf(article.getId()),image,mContext);
+                }
+
+                @Override
+                public void onError() {
+                    Log.d("FAILED",article.getTitle() + " " + article.getIurl());
+                }
+            });
+
+          /*  if (imageUrl != null && !imageUrl.isEmpty()) {
                 new DownloadImageTask(imageView,mProgressBar, new CallbackInterface() {
                     @Override
                     public void onCompleted(Object data) {
@@ -107,37 +125,10 @@ public class ArticleAdapter extends BaseAdapter {
                         mProgressBar.setVisibility(View.GONE);
                     }
                 }).execute(imageUrl);
-            }
+            }**/
         }
 
-     /*   // Hook the "Force touch" menu
-        rowView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(final View v) {
-                BubbleActions.on(v)
-                        .addAction("Bookmark", R.drawable.bubble_star, new Callback() {
-                            @Override
-                            public void doAction() {
-                                Toast.makeText(v.getContext(), "Star pressed!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addAction("Share", R.drawable.bubble_share, new Callback() {
-                            @Override
-                            public void doAction() {
-                                Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addAction("Hide", R.drawable.bubble_hide, new Callback() {
-                            @Override
-                            public void doAction() {
-                                Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .show();
-                return true;
-            }
 
-        });*/
 
         return rowView;
     }

@@ -34,6 +34,7 @@ import com.notifyrapp.www.notifyr.Model.UserProfile;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -308,11 +309,12 @@ public class WebApi {
                             JSONObject jsonItem = jsonArray.getJSONObject(i);
                             article.setId((!jsonItem.isNull( "Id" ) ?  jsonItem.getInt("Id") : -1));
 
-                            String pubDateStr = !jsonItem.isNull( "PublishDate" ) ?  jsonItem.getString("PublishDate") : "2000-01-01";
-                            String notifyrDateStr = !jsonItem.isNull( "ArticleNotifiedDate" ) ?  jsonItem.getString("ArticleNotifiedDate") : "2000-01-01";
+                            String pubDateStr = !jsonItem.isNull( "PublishDate" ) ?  jsonItem.getString("PublishDate") : "2000-01-01T00:00.000";
+                            String notifyrDateStr = !jsonItem.isNull( "ArticleNotifiedDate" ) ?  jsonItem.getString("ArticleNotifiedDate") : "2000-01-01T00:00.000";
 
-                            DateTime pubDate = DateTime.parse(pubDateStr);
-                            DateTime notifyrDate = DateTime.parse(notifyrDateStr);
+                            DateTime pubDate = ISODateTimeFormat.dateTimeParser().parseDateTime(pubDateStr);
+                            DateTime notifyrDate =ISODateTimeFormat.dateTimeParser().parseDateTime(notifyrDateStr);
+
 
                             article.setScore((!jsonItem.isNull( "Score" ) ?  jsonItem.getInt("Score") : -1));
                             article.setSource(!jsonItem.isNull( "Source" ) ?  jsonItem.getString("Source") : "");
@@ -330,9 +332,12 @@ public class WebApi {
                             article.setNotifiedTimeAgo(!jsonItem.isNull( "NotifiedTimeAgo" ) ?  jsonItem.getString("NotifiedTimeAgo") : "");
                             article.setRelatedInterestsURL(!jsonItem.isNull( "RelatedInterestsIURL" ) ?  jsonItem.getString("RelatedInterestsIURL") : "");
                             articles.add(article);
+                         //   Log.d("Article_Drawn","CLS Date:" + article.getPublishDate() + " Title:"+ article.getTitle());
+                    //       Log.d("Article_Drawn","ZZZ Date:" + dateTime +" Title:"+ article.getTitle());
+                      //      Log.d("Article_Drawn","STR Date:" + pubDateStr + " Title:"+ article.getTitle());
 
                         }
-                        Log.d("ARTICLE_COUNT", String.valueOf(articles.size()));
+
                         callback.onCompleted(articles);
 
                     }
