@@ -157,7 +157,7 @@ public class ArticleListFragment extends Fragment {
 
         // Add the scroll listener to know when we hit the bottom
 
-        mListView.setOnScrollListener(new InfiniteScrollListener(10) {
+        mListView.setOnScrollListener(new InfiniteScrollListener(5) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
                 //Log.d("PAGE",String.valueOf(page));
