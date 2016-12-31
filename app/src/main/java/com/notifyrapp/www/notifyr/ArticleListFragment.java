@@ -298,10 +298,10 @@ public class ArticleListFragment extends Fragment {
     }
 
 
-    public void getArticles(final int skip, int take, final String sortBy)
+    public void getArticles(final int skip, final int take, final String sortBy)
     {
         final Business business = new Business(ctx);
-        business.getUserArticlesFromServer(skip,pageSize,"Score",-1, new CallbackInterface() {
+        business.getUserArticlesFromServer(skip,pageSize,sortBy,-1, new CallbackInterface() {
 
             @Override
             public void onCompleted(Object data) {
@@ -309,10 +309,13 @@ public class ArticleListFragment extends Fragment {
                 // At this point we know that the data was saved into the DB
                 List<Article> localArticles = new ArrayList<Article>();
                 if(mParam1 == 2) {
-                    localArticles = business.getBookmarks(skip, pageSize);
+                    localArticles = business.getBookmarks(skip, take);
                 }
-                else {
-                    localArticles = business.getUserArticlesFromLocal(skip, pageSize, sortBy, -1);
+                else if(mParam1 == 1) {
+                    localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Popular.toString(), -1);
+                }
+                else if(mParam1 == 0) {
+                    localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Newest.toString(), -1);
                 }
                 //if(skip == 0){
                 //    articleList.clear();

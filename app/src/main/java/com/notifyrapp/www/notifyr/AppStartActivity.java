@@ -47,7 +47,9 @@ public class AppStartActivity extends AppCompatActivity{
 
         userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userid", "");
         // TODO: Remove this line (Hardcoded Klein account)
-        PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "6e43f43b-b86d-4eca-ae98-78938fa239af").commit();
+        //PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "6e43f43b-b86d-4eca-ae98-78938fa239af").commit();
+        PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "77dbbcbf-ef0d-42b6-91c8-5d830b6b004b").commit();
+
         if(userId.equals(""))
         {
             Log.d("ACCOUNT_CHECK","No Account Found... Contacting Server to create one " + userId);

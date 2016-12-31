@@ -70,105 +70,24 @@ public class DatabaseBuilder {
                     + TableName
                     + " (Id, Email,Password,AccountType)"
                     + " VALUES ('"+this.userId+"',null, null,null);");
-
-        ///////////////////////// PRINT ROWS ///////////////////////////////
-        /* Retrieve data from database */
-        Cursor c =  this.notifyrDB.rawQuery("SELECT * FROM " + TableName , null);
-
-        int col_userId = c.getColumnIndex("Id");
-        int col_email = c.getColumnIndex("Email");
-        int col_accountType = c.getColumnIndex("AccountType");
-
-        // Check if our result was valid.
-        c.moveToFirst();
-        if (c != null) {
-            // Loop through all Results
-            do {
-                String Id = c.getString(col_userId);
-                String Name = c.getString(col_email);
-                PrintToConsole = PrintToConsole + Id +"/"+Name+"\n";
-                Log.e("CreateUserProfileTable", PrintToConsole);
-            }while(c.moveToNext());
-        }
-        ///////////////////////// END PRINT ROWS ///////////////////////////////
     }
 
     private void createArticleTable()
     {
         String TableName = "Article";
-
-        this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
-                + TableName
-                + "("
-                + "ArticleId INTEGER PRIMARY KEY,"
-                + "Source VARCHAR,"
-                + "Score INTEGER,"
-                + "Title VARCHAR,"
-                + "Author VARCHAR,"
-                + "Description VARCHAR,"
-                + "URL VARCHAR,"
-                + "IURL VARCHAR,"
-                + "ArticleNotifiedDate DATETIME,"
-                + "PublishDate DATETIME,"
-                + "IsFavourite BIT,"
-                + "ShortLinkURL VARCHAR,"
-                + "RelatedInterests VARCHAR,"
-                + "TimeAgo VARCHAR,"
-                + "NotifiedTimeAgo VARCHAR,"
-                + "RelatedInterestsURL VARCHAR"
-                + ");");
+        this.notifyrDB.execSQL(getCreateArticleTableString(TableName));
     }
 
     private void createUserNotificationTable()
     {
         String TableName = "UserNotification";
-
-        this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
-                + TableName
-                + "("
-                + "ArticleId INTEGER PRIMARY KEY,"
-                + "Source VARCHAR,"
-                + "Score INTEGER,"
-                + "Title VARCHAR,"
-                + "Author VARCHAR,"
-                + "Description VARCHAR,"
-                + "URL VARCHAR,"
-                + "IURL VARCHAR,"
-                + "ArticleNotifiedDate DATETIME,"
-                + "PublishDate DATETIME,"
-                + "IsFavourite BIT,"
-                + "ShortLinkURL VARCHAR,"
-                + "RelatedInterests VARCHAR,"
-                + "TimeAgo VARCHAR,"
-                + "NotifiedTimeAgo VARCHAR,"
-                + "RelatedInterestsURL VARCHAR"
-                + ");");
+        this.notifyrDB.execSQL(getCreateArticleTableString(TableName));
     }
 
     private void createArticleBookmarkTable()
     {
         String TableName = "ArticleBookmark";
-
-        this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
-                + TableName
-                + "("
-                + "ArticleId INTEGER PRIMARY KEY,"
-                + "Source VARCHAR,"
-                + "Score INTEGER,"
-                + "Title VARCHAR,"
-                + "Author VARCHAR,"
-                + "Description VARCHAR,"
-                + "URL VARCHAR,"
-                + "IURL VARCHAR,"
-                + "ArticleNotifiedDate DATETIME,"
-                + "PublishDate DATETIME,"
-                + "IsFavourite BIT,"
-                + "ShortLinkURL VARCHAR,"
-                + "RelatedInterests VARCHAR,"
-                + "TimeAgo VARCHAR,"
-                + "NotifiedTimeAgo VARCHAR,"
-                + "RelatedInterestsURL VARCHAR"
-                + ");");
+        this.notifyrDB.execSQL(getCreateArticleTableString(TableName));
     }
 
     private void createItemTable()
@@ -215,6 +134,31 @@ public class DatabaseBuilder {
                 + " VALUES (3,2,0);");
     }
 
+    public String getCreateArticleTableString(String tableName)
+    {
+        return "CREATE TABLE IF NOT EXISTS "
+                + tableName
+                + "("
+                + "ArticleId INTEGER PRIMARY KEY,"
+                + "Source VARCHAR,"
+                + "Score INTEGER,"
+                + "Title VARCHAR,"
+                + "Author VARCHAR,"
+                + "Description VARCHAR,"
+                + "URL VARCHAR,"
+                + "IURL VARCHAR,"
+                + "ArticleNotifiedDate DATETIME,"
+                + "PublishDate DATETIME,"
+                + "IsFavourite BIT,"
+                + "ShortLinkURL VARCHAR,"
+                + "RelatedInterests VARCHAR,"
+                + "TimeAgo VARCHAR,"
+                + "NotifiedTimeAgo VARCHAR,"
+                + "RelatedInterestsURL VARCHAR,"
+                + "PublishDateUnix INTEGER,"
+                + "ArticleNotifiedDateUnix INTEGER"
+                + ");";
+    }
 
     //endregion
 
@@ -222,8 +166,28 @@ public class DatabaseBuilder {
     private void printTable(String tableName)
     {
         Log.e("Printing Table:", tableName);
-
+        String PrintToConsole = "";
         // Print Code Here
+        ///////////////////////// PRINT ROWS ///////////////////////////////
+        /* Retrieve data from database */
+        Cursor c =  this.notifyrDB.rawQuery("SELECT * FROM " + tableName , null);
+
+        int col_userId = c.getColumnIndex("Id");
+        int col_email = c.getColumnIndex("Email");
+        int col_accountType = c.getColumnIndex("AccountType");
+
+        // Check if our result was valid.
+        c.moveToFirst();
+        if (c != null) {
+            // Loop through all Results
+            do {
+                String Id = c.getString(col_userId);
+                String Name = c.getString(col_email);
+                PrintToConsole = PrintToConsole + Id +"/"+Name+"\n";
+                Log.e("CreateUserProfileTable", PrintToConsole);
+            }while(c.moveToNext());
+        }
+        ///////////////////////// END PRINT ROWS ///////////////////////////////
 
     }
     //endregion

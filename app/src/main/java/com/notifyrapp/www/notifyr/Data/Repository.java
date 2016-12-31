@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteException;
 import android.text.format.DateFormat;
 import android.util.Log;
 
+import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
@@ -205,15 +206,15 @@ public class Repository {
             Cursor c = null;
             /* TODO: finish this query */
 
-            if(sortBy == "Favourite")
+            if(sortBy == Business.SortBy.Newest.toString())
             {
-                c =  db.rawQuery("SELECT * FROM ArticleFavourite"
-                        + " ORDER BY PublishDate DESC LIMIT "+take+" OFFSET " + skip, null);
+                c =  db.rawQuery("SELECT * FROM " + TableName
+                        + " ORDER BY PublishDateUnix DESC LIMIT "+take+" OFFSET " + skip, null);
             }
             else
             {
                 c =  db.rawQuery("SELECT * FROM " + TableName
-                        + " ORDER BY "+sortBy+" DESC LIMIT "+take+" OFFSET " + skip, null);
+                        + " ORDER BY Score DESC LIMIT "+take+" OFFSET " + skip, null);
             }
 
             articles = getArticles(c);
@@ -372,7 +373,7 @@ public class Repository {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
             Cursor c =  db.rawQuery("SELECT * FROM " + TableName
-                    + " ORDER BY ArticleNotifiedDate DESC LIMIT "+take+" OFFSET " + skip, null);
+                    + " ORDER BY ArticleNotifiedDateUnix DESC LIMIT "+take+" OFFSET " + skip, null);
 
             articles = getArticles(c);
 
@@ -388,8 +389,6 @@ public class Repository {
     }
 
     //endregion
-
-
 
     //region Bookmarks
 
@@ -547,6 +546,8 @@ public class Repository {
         param.put("TimeAgo", article.getTimeAgo());
         param.put("NotifiedTimeAgo", article.getNotifiedTimeAgo());
         param.put("RelatedInterestsURL", article.getRelatedInterestsURL());
+        param.put("PublishDateUnix", article.getPublishDate().getMillis());
+        param.put("ArticleNotifiedDateUnix", article.getArticleNotifiedDate().getMillis());
         return param;
     }
     private boolean checkIsDataAlreadyInDBorNot(String TableName,
