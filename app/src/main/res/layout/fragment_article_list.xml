@@ -18,7 +18,6 @@
                 android:layout_alignParentTop="true"
                 android:divider="#000000"
                 android:dividerHeight="1dp"
-                android:footerDividersEnabled="false"
                 />
     <!--    android:scrollbars="none" -->
 

@@ -124,6 +124,9 @@ public class ArticleListFragment extends Fragment {
         // Lookup the swipe container view
         mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         mListView = (ListView) view.findViewById(R.id.article_list_view);
+        mListView.setFooterDividersEnabled(false);
+        mListView.setHeaderDividersEnabled(false);
+        mListView.addFooterView(new View(ctx, null, 0));
         upFab = (FloatingActionButton) view.findViewById(R.id.fab);
         upFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,13 +159,13 @@ public class ArticleListFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-
         // Add the scroll listener to know when we hit the bottom
         mListView.setOnScrollListener(new InfiniteScrollListener(5) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
                 //Log.d("PAGE",String.valueOf(page));
                 if(totalItemsCount > 10) {
+                    pbFooter.setVisibility(View.VISIBLE);
                     getArticles((page-1) * pageSize, pageSize, sortBy.toString());
                 }
                 currentPage = page;
@@ -180,7 +183,6 @@ public class ArticleListFragment extends Fragment {
                 }
             }
         });
-
 
         View progressView = inflater.inflate(R.layout.progress_circle, null);
         pbFooter = (ProgressBar) progressView.findViewById(R.id.pb_main);
