@@ -91,7 +91,7 @@ public class ArticleAdapter extends BaseAdapter {
         String imageUrl = article.getIurl();
 
         // Check if the image is in cache
-        Bitmap image = ImageCacheManager.getImage("article_"+String.valueOf(article.getId()), mContext);
+        Bitmap image = ImageCacheManager.getImageFromMemoryCache("article_"+String.valueOf(article.getId()));
         if(image != null)
         {
             imageView.setImageBitmap(image);
@@ -105,7 +105,7 @@ public class ArticleAdapter extends BaseAdapter {
                     //do smth when picture is loaded successfully
                     mProgressBar.setVisibility(View.GONE);
                     Bitmap image=((BitmapDrawable)imageView.getDrawable()).getBitmap();
-                    ImageCacheManager.saveImage("article_"+String.valueOf(article.getId()),image,mContext);
+                    ImageCacheManager.saveImageToMemoryCache("article_"+String.valueOf(article.getId()),image);
                 }
 
                 @Override
@@ -113,10 +113,7 @@ public class ArticleAdapter extends BaseAdapter {
                     Log.d("FAILED",article.getTitle() + " " + article.getIurl());
                 }
             });
-
         }
-
-
 
         return rowView;
     }

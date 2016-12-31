@@ -13,6 +13,7 @@ import com.notifyrapp.www.notifyr.Model.Article;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,38 @@ public final class ImageCacheManager {
 
     private ImageCacheManager () {  }
 
+    private static Map<String, Bitmap> imageCache = new HashMap<String, Bitmap>();
+
+
+    public static void saveImageToMemoryCache(String key,Bitmap image)
+    {
+        if(!imageCache.containsKey(key))
+        {
+            if(imageCache.size() > 100)
+            {
+                List<String> list = new ArrayList<String>(imageCache.keySet());
+                imageCache.remove(list.get(0));
+            }
+            imageCache.put(key,image);
+        }
+    }
+
+    public static Bitmap getImageFromMemoryCache(String key)
+    {
+        if(imageCache.containsKey(key))
+        {
+            Log.d("CACHE_HIT",key);
+            return imageCache.get(key);
+        }
+        Log.d("CACHE_MISS",key);
+        return null;
+    }
+
+    public static void clearImageMemoryCache()
+    {
+        imageCache.clear();
+    }
+
     /**
      * Method inserts an image into the cache
      * @param key Unique key which will be used to access the cache item.
@@ -34,7 +67,7 @@ public final class ImageCacheManager {
      * @exception IOException On save error.
      * @see IOException
      */
-    public static void saveImage(String key,Bitmap image,Context ctx)
+    public static void saveImageToDiskCache(String key,Bitmap image,Context ctx)
     {
         ContextWrapper cw = new ContextWrapper(ctx.getApplicationContext());
 
@@ -70,7 +103,7 @@ public final class ImageCacheManager {
      * @param ctx The Application Context.
      * @return Bitmap image.
      */
-    public static Bitmap getImage(String key,Context ctx)
+    public static Bitmap getImageFromDiskCache(String key,Context ctx)
     {
         Bitmap bMap = null;
         ContextWrapper cw = new ContextWrapper(ctx.getApplicationContext());

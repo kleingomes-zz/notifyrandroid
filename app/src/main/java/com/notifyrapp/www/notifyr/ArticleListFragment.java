@@ -158,12 +158,11 @@ public class ArticleListFragment extends Fragment {
 
 
         // Add the scroll listener to know when we hit the bottom
-
         mListView.setOnScrollListener(new InfiniteScrollListener(5) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
                 //Log.d("PAGE",String.valueOf(page));
-                if(articleList.size() > 10) {
+                if(totalItemsCount > 10) {
                     getArticles((page-1) * pageSize, pageSize, sortBy.toString());
                 }
                 currentPage = page;
@@ -298,7 +297,6 @@ public class ArticleListFragment extends Fragment {
                             .show();
                 }
                 return true;
-
             }
         });
 
@@ -312,8 +310,10 @@ public class ArticleListFragment extends Fragment {
 
         if(mParam1 == 2) {
             List<Article> bookmarks = business.getBookmarks(skip, take);
-            articleList.addAll(bookmarks);
-            adapter.notifyDataSetChanged();
+            if(bookmarks.size() > 0) {
+                articleList.addAll(bookmarks);
+                adapter.notifyDataSetChanged();
+            }
             mSwipeContainer.setRefreshing(false);
         }
         else {
@@ -321,7 +321,6 @@ public class ArticleListFragment extends Fragment {
 
                 @Override
                 public void onCompleted(Object data) {
-
                     List<Article> articles = (List<Article>) data;
                     // At this point we know that the data was saved into the DB
                     //  List<Article> localArticles = new ArrayList<Article>();
@@ -343,9 +342,10 @@ public class ArticleListFragment extends Fragment {
                     } else {
                         pbFooter.setVisibility(View.VISIBLE);
                     }
-
-                    articleList.addAll(articles);
-                    adapter.notifyDataSetChanged();
+                    if(articles.size() > 0) {
+                        articleList.addAll(articles);
+                        adapter.notifyDataSetChanged();
+                    }
                     mSwipeContainer.setRefreshing(false);
                 }
             });

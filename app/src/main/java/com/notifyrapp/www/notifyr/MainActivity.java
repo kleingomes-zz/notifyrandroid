@@ -328,6 +328,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     protected void onDestroy() {
         super.onDestroy();
         ImageCacheManager.clearCache(ctx);
+        ImageCacheManager.clearImageMemoryCache();
     }
 
     @Override
