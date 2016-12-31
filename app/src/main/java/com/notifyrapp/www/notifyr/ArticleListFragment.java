@@ -162,9 +162,9 @@ public class ArticleListFragment extends Fragment {
             public void loadMore(int page, int totalItemsCount) {
                 //Log.d("PAGE",String.valueOf(page));
                 if(articleList.size() > 10) {
-                    getArticles(page * pageSize, pageSize, sortBy.toString());
-                    currentPage = page;
+                    getArticles((page-1) * pageSize, pageSize, sortBy.toString());
                 }
+                currentPage = page;
             }
 
             @Override
@@ -305,7 +305,7 @@ public class ArticleListFragment extends Fragment {
 
             @Override
             public void onCompleted(Object data) {
-                //List<Article> downloadedAricles = (List<Article>)data;
+                List<Article> downloadedAricles = (List<Article>)data;
                 // At this point we know that the data was saved into the DB
                 List<Article> localArticles = new ArrayList<Article>();
                 if(mParam1 == 2) {
@@ -314,9 +314,9 @@ public class ArticleListFragment extends Fragment {
                 else {
                     localArticles = business.getUserArticlesFromLocal(skip, pageSize, sortBy, -1);
                 }
-                if(skip == 0){
-                    articleList.clear();
-                }
+                //if(skip == 0){
+                //    articleList.clear();
+               // }
                 articleList.addAll(localArticles);
                 adapter.notifyDataSetChanged();
                 mSwipeContainer.setRefreshing(false);

@@ -96,8 +96,6 @@ public class Business {
                 if (callback != null) {
                     callback.onCompleted(data);
                 }
-
-
             }
         });
     }

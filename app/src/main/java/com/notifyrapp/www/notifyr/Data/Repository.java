@@ -204,6 +204,7 @@ public class Repository {
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
             Cursor c = null;
             /* TODO: finish this query */
+
             if(sortBy == "Favourite")
             {
                 c =  db.rawQuery("SELECT * FROM ArticleFavourite"
