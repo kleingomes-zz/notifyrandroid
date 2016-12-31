@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,17 +164,19 @@ public class ArticleListFragment extends Fragment {
         mListView.setOnScrollListener(new InfiniteScrollListener(5) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
-                //Log.d("PAGE",String.valueOf(page));
+
                 if(totalItemsCount > 10) {
                     pbFooter.setVisibility(View.VISIBLE);
                     getArticles((page-1) * pageSize, pageSize, sortBy.toString());
+                    currentPage = page;
                 }
-                currentPage = page;
+
             }
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if(articleList.size() > 15)
+                Log.d("PAGE",String.valueOf(currentPage));
+                if(currentPage > 2)
                 {
                     upFab.setVisibility(View.VISIBLE);
                 }
@@ -212,7 +215,7 @@ public class ArticleListFragment extends Fragment {
                                            final int pos, long id) {
                 final Business business = new Business(ctx);
                 final Article article = articleList.get(pos);
-                // bookmark buttonss
+                // bookmark buttons
                 if(mParam1 == 2)
                 {
                     BubbleActions.on(v)

@@ -7,24 +7,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.notifyrapp.www.notifyr.Business.CallbackInterface;
-import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
 import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.R;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import me.samthompson.bubbleactions.BubbleActions;
-import me.samthompson.bubbleactions.Callback;
 
 /**
  * Created by K on 12/27/2016.
@@ -34,7 +29,6 @@ public class ArticleAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private List<Article> mDataSource;
-
 
     public ArticleAdapter(Context context, List<Article> articles) {
         mContext = context;
