@@ -114,18 +114,6 @@ public class ArticleAdapter extends BaseAdapter {
                 }
             });
 
-          /*  if (imageUrl != null && !imageUrl.isEmpty()) {
-                new DownloadImageTask(imageView,mProgressBar, new CallbackInterface() {
-                    @Override
-                    public void onCompleted(Object data) {
-                        if(data != null) {
-                            Bitmap articleImage = (Bitmap) data;
-                            ImageCacheManager.saveImage("article_"+String.valueOf(article.getId()), articleImage,mContext);
-                        }
-                        mProgressBar.setVisibility(View.GONE);
-                    }
-                }).execute(imageUrl);
-            }**/
         }
 
 

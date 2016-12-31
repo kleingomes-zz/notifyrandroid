@@ -65,7 +65,8 @@
             app:itemBackground="@color/lightGray"
             app:itemIconTint="@drawable/nav_item_color_state"
             app:itemTextColor="@drawable/nav_item_color_state"
-            app:menu="@menu/bottom_tab_menu" />
+            app:menu="@menu/bottom_tab_menu"
+            />
 
     </RelativeLayout>
     <!--

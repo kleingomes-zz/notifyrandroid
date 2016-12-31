@@ -149,6 +149,15 @@ public class WebApi {
     //endregion
 
     //region Notifications
+    public void getUserNotifications(int skip,int take, CallbackInterface callback)
+    {
+        String urlPath = "Article/GetUserNotifiedArticles?skip="+skip+"&take="+take;
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, NotifyrObjects.Article);
+        }
+    }
+
     public void getUserNotifications(String fromDate, CallbackInterface callback)
     {
         if(fromDate == null || fromDate.isEmpty())

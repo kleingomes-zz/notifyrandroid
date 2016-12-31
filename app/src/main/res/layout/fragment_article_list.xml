@@ -16,16 +16,17 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-
-                android:layout_marginBottom="100dp" />
+                android:divider="#000000"
+                android:dividerHeight="1dp"
+                android:footerDividersEnabled="false"
+                />
     <!--    android:scrollbars="none" -->
 
 
 </android.support.v4.widget.SwipeRefreshLayout>
 
 
-
-<android.support.design.widget.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
 android:id="@+id/fab"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"

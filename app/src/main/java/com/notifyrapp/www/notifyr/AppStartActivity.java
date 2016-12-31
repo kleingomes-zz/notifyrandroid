@@ -118,7 +118,7 @@ public class AppStartActivity extends AppCompatActivity{
                     // TODO: remove this
                     PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("LastUpdateUserNotifiedArticles", "").commit();
                     String lastUpdate = PreferenceManager.getDefaultSharedPreferences(ctx).getString("LastUpdateUserNotifiedArticles", "");
-                    business.getUserNotificationsFromServer(lastUpdate,new CallbackInterface()
+                    business.getUserNotificationsFromServer(0,20,new CallbackInterface()
                     {
                         @Override
                         public void onCompleted(Object data) {
@@ -139,8 +139,8 @@ public class AppStartActivity extends AppCompatActivity{
         /* BACKGROUND SERVICE **/
         // START THE BACKGROUND SERVICE TO GET ARTICLES
         // use this to start and trigger a service
-        Intent i = new Intent(ctx, BackgroundService.class);
-        ctx.startService(i);
+       // Intent i = new Intent(ctx, BackgroundService.class);
+      //  ctx.startService(i);
 
         /* REGISTER FOR REMOTE NOTIFICATIONS */
 

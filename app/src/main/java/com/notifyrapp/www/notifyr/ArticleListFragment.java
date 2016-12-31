@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
@@ -58,6 +59,7 @@ public class ArticleListFragment extends Fragment {
     private Business.SortBy sortBy = Business.SortBy.Newest;
     private FloatingActionButton upFab;
     private ArticleAdapter adapter;
+    private ProgressBar pbFooter;
 
     public ArticleListFragment() {
         // Required empty public constructor
@@ -169,7 +171,7 @@ public class ArticleListFragment extends Fragment {
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if(currentPage > 1)
+                if(articleList.size() > 15)
                 {
                     upFab.setVisibility(View.VISIBLE);
                 }
@@ -179,6 +181,12 @@ public class ArticleListFragment extends Fragment {
                 }
             }
         });
+
+
+        View progressView = inflater.inflate(R.layout.progress_circle, null);
+        pbFooter = (ProgressBar) progressView.findViewById(R.id.pb_main);
+        pbFooter.setVisibility(View.GONE);
+        mListView.addFooterView(progressView);
 
         // Add the onclick listener to open the web view
         mListView.setClickable(true);
@@ -301,33 +309,47 @@ public class ArticleListFragment extends Fragment {
     public void getArticles(final int skip, final int take, final String sortBy)
     {
         final Business business = new Business(ctx);
-        business.getUserArticlesFromServer(skip,pageSize,sortBy,-1, new CallbackInterface() {
 
-            @Override
-            public void onCompleted(Object data) {
-                List<Article> downloadedAricles = (List<Article>)data;
-                // At this point we know that the data was saved into the DB
-              /*  List<Article> localArticles = new ArrayList<Article>();
-                if(mParam1 == 2) {
-                    localArticles = business.getBookmarks(skip, take);
-                    mParam1 = 2;
+        if(mParam1 == 2) {
+            List<Article> bookmarks = business.getBookmarks(skip, take);
+            articleList.addAll(bookmarks);
+            adapter.notifyDataSetChanged();
+            mSwipeContainer.setRefreshing(false);
+        }
+        else {
+            business.getUserArticlesFromServer(skip, pageSize, sortBy, -1, new CallbackInterface() {
+
+                @Override
+                public void onCompleted(Object data) {
+
+                    List<Article> articles = (List<Article>) data;
+                    // At this point we know that the data was saved into the DB
+                    //  List<Article> localArticles = new ArrayList<Article>();
+                  /*  if (mParam1 == 2) {
+                        localArticles = business.getBookmarks(skip, take);
+                        mParam1 = 2;
+                    } else if (mParam1 == 1) {
+                        //  localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Popular.toString(), -1);
+                        mParam1 = 1;
+                    } else if (mParam1 == 0) {
+                        //  localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Newest.toString(), -1);
+                        mParam1 = 0;
+                    } */
+                    //if(skip == 0){
+                    //    articleList.clear();
+                    // }
+                    if (articleList.size() == 0) {
+                        pbFooter.setVisibility(View.GONE);
+                    } else {
+                        pbFooter.setVisibility(View.VISIBLE);
+                    }
+
+                    articleList.addAll(articles);
+                    adapter.notifyDataSetChanged();
+                    mSwipeContainer.setRefreshing(false);
                 }
-                else if(mParam1 == 1) {
-                    localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Popular.toString(), -1);
-                    mParam1 =1;
-                }
-                else if(mParam1 == 0) {
-                    localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Newest.toString(), -1);
-                    mParam1 = 0;
-                } */
-                //if(skip == 0){
-                //    articleList.clear();
-               // }
-                articleList.addAll(downloadedAricles);
-                adapter.notifyDataSetChanged();
-                mSwipeContainer.setRefreshing(false);
-            }
-        });
+            });
+        }
     }
 
 

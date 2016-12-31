@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
 import com.notifyrapp.www.notifyr.UI.BottomNavigationViewHelper;
 
 
@@ -323,10 +324,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         }
     }
 
-    //region Context Menu
-
-
-    //endregion
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ImageCacheManager.clearCache(ctx);
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {

@@ -86,13 +86,15 @@ public class Business {
         new WebApi(context).getUserArticles(skip,take,sortBy,itemTypeId,new CallbackInterface() {
             @Override
             public void onCompleted(Object data) {
-                Business b = new Business(context);
+
+              /**  Business b = new Business(context);
                 Log.d("CALLBACK_CHECK","GOT USER ARTICLES FROM SERVER... SAVING TO LOCAL NOW....");
                 final long startTime = System.currentTimeMillis();
                 List<Article> articles = (List<Article>) data;
                 b.saveArticlesLocal(articles);
                 final long endTime = System.currentTimeMillis();
                 Log.d("OPERATION_TIME","Article Save execution time: " + (endTime - startTime));
+               */
                 if (callback != null) {
                     callback.onCompleted(data);
                 }
@@ -161,6 +163,18 @@ public class Business {
     //endregion
 
     //region Notifications
+    public void getUserNotificationsFromServer(int skip,int take, final CallbackInterface callback)
+    {
+        new WebApi(context).getUserNotifications(skip,take,new CallbackInterface() {
+          @Override
+          public void onCompleted(Object data) {
+          if (callback != null) {
+                    callback.onCompleted(data);
+                }
+            }
+        });
+    }
+
     public void getUserNotificationsFromServer(String fromDate, final CallbackInterface callback)
     {
         new WebApi(context).getUserNotifications(fromDate,new CallbackInterface() {
