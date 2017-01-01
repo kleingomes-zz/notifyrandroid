@@ -11,6 +11,7 @@ import android.util.Log;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
+import com.notifyrapp.www.notifyr.Model.ItemType;
 import com.notifyrapp.www.notifyr.Model.UserProfile;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
@@ -21,7 +22,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -41,7 +44,8 @@ public class Repository {
 
     /* Member Functions */
     //region Items
-    public Boolean saveUserItemLocal(Item userItem){
+    public Boolean saveUserItemLocal(Item userItem)
+    {
 
         String tableName = "UserItem";
         SQLiteDatabase db = null;
@@ -123,6 +127,46 @@ public class Repository {
             }
         }
         return items;
+    }
+
+    public List<ItemType> getItemCategories()
+    {
+        String TableName = "UserItem";
+        SQLiteDatabase db = null;
+        List<ItemType> itemCategories = new ArrayList<ItemType>();
+
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Cursor c =  db.rawQuery("SELECT" +
+                    " ItemTypeId, ItemTypeName" +
+                    " FROM " + TableName +
+                    " GROUP BY ItemTypeId,ItemTypeName" +
+                    " ORDER BY ItemTypeName", null);
+
+            int col_itemtypeid = c.getColumnIndex("ItemTypeId");
+            int col_itemtypename = c.getColumnIndex("ItemTypeName");
+
+            // Check if our result was valid.
+            if( c != null && c.moveToFirst() ){
+                // Loop through all Results
+                do {
+                    ItemType itemType = new ItemType();
+                    itemType.setId(c.getInt(col_itemtypeid));
+                    itemType.setItemTypeName(c.getString(col_itemtypename));
+                    itemCategories.add(itemType);
+
+                }while(c.moveToNext());
+            }
+        }
+        catch(Exception e) {
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return itemCategories;
     }
 
     //endregion

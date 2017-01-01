@@ -3,6 +3,7 @@ package com.notifyrapp.www.notifyr.Business;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
 import com.notifyrapp.www.notifyr.Data.DatabaseBuilder;
@@ -10,11 +11,13 @@ import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Data.WebApi;
 import com.notifyrapp.www.notifyr.Data.Repository;
 import com.notifyrapp.www.notifyr.Model.Item;
+import com.notifyrapp.www.notifyr.Model.ItemType;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.List;
+import java.util.Map;
 
 
 public class Business {
@@ -74,6 +77,15 @@ public class Business {
     public void syncUserItems()
     {
 
+    }
+
+    /**
+     * Get the item type categories (i.e. company, product) that the user
+     * follows.
+     */
+    public List<ItemType> getItemCategories()
+    {
+        return new Repository(context).getItemCategories();
     }
     //endregion
 

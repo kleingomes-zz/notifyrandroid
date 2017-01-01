@@ -86,7 +86,7 @@ public class AppStartActivity extends AppCompatActivity{
         else
         {
             // TODO: remove this
-            this.deleteDatabase("NotifyrLocal.db");
+            //this.deleteDatabase("NotifyrLocal.db");
             final Business business = new Business(ctx);
             if(!business.checkIfDatabaseExists()) {
                 business.createNotifyrDatabase(userId);

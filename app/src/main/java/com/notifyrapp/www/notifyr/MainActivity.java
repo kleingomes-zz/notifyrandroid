@@ -38,7 +38,11 @@ import android.widget.Toast;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
+import com.notifyrapp.www.notifyr.Model.ItemType;
 import com.notifyrapp.www.notifyr.UI.BottomNavigationViewHelper;
+
+import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener,
@@ -279,9 +283,18 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        private Business business;
+        private int categoryCount = 1;
+        List<ItemType> itemCategories;
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            business = new Business(ctx);
+            itemCategories = business.getItemCategories();
+            categoryCount = itemCategories.size() > 0 ? itemCategories.size() : 1;
+
         }
+
 
         @Override
         public Fragment getItem(int position) {
@@ -310,14 +323,26 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 8;
+            return categoryCount+1;
         }
 
 
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
+
+            if (itemCategories.size() > 1)
+            {
+                if(position ==0) {
+                    return "All";
+                }
+                return itemCategories.get(position-1).getItemTypeName();
+            }
+            else
+            {
+                return "All";
+            }
+          /*  switch (position) {
                 case 0:
                     return "Newest";
                 case 1:
@@ -337,8 +362,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 case 8:
                     return "Bookmarks";
 
-            }
-            return null;
+            }*/
         }
     }
 
