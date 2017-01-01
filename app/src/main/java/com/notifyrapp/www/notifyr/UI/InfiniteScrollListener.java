@@ -1,5 +1,6 @@
 package com.notifyrapp.www.notifyr.UI;
 
+import android.util.Log;
 import android.widget.AbsListView;
 
 /**
@@ -14,6 +15,7 @@ public abstract class InfiniteScrollListener implements AbsListView.OnScrollList
 
     public InfiniteScrollListener(int bufferItemCount) {
         this.bufferItemCount = bufferItemCount;
+        this.currentPage = 0;
     }
 
     public abstract void loadMore(int page, int totalItemsCount);
@@ -29,7 +31,8 @@ public abstract class InfiniteScrollListener implements AbsListView.OnScrollList
         if (totalItemCount < itemCount) {
             this.itemCount = totalItemCount;
             if (totalItemCount == 0) {
-                this.isLoading = true; }
+                this.isLoading = true;
+            }
         }
 
         if (isLoading && (totalItemCount > itemCount)) {
@@ -42,5 +45,10 @@ public abstract class InfiniteScrollListener implements AbsListView.OnScrollList
             loadMore(currentPage + 1, totalItemCount);
             isLoading = true;
         }
+    }
+
+    public void setCurrentPage(int page)
+    {
+        this.currentPage = page;
     }
 }

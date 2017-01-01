@@ -31,7 +31,6 @@ public class Repository {
     /* Private Fields */
     private Context context;
     private String dbName = "NotifyrLocal.db";
-    private String userId;
     private SQLiteDatabase notifyrDB;
 
     /* Constructor */
@@ -41,7 +40,6 @@ public class Repository {
     }
 
     /* Member Functions */
-
     //region Items
     public Boolean saveUserItemLocal(Item userItem){
 
@@ -196,7 +194,8 @@ public class Repository {
         return new ArrayList<Article>();
     }
 
-    public List<Article> getUserArticles(int skip, int take,String sortBy, int itemTypeId)    {
+    public List<Article> getUserArticles(int skip, int take,String sortBy, int itemTypeId)
+    {
         String TableName = "Article";
         String Data="";
         SQLiteDatabase db = null;
@@ -497,12 +496,12 @@ public class Repository {
             // Loop through all Results
             do {
 
-                    /* Need to convert the strings to Date types */
+                /* Need to convert the strings to Date types */
                 String pubDateStr = c.getString(col_articleNotifiedDate);
                 String notifyrDateStr = c.getString(col_publishDate);
 
                 DateTime pubDate = ISODateTimeFormat.dateTimeParser().parseDateTime(pubDateStr);
-                DateTime notifyrDate =ISODateTimeFormat.dateTimeParser().parseDateTime(notifyrDateStr);
+                DateTime notifyrDate = ISODateTimeFormat.dateTimeParser().parseDateTime(notifyrDateStr);
 
                 Article article = new Article();
                 article.setScore(c.getInt(col_score));

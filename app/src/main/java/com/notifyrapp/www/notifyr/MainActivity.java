@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 FragmentManager fm = this.getSupportFragmentManager();
                 if(currentMenu == Business.MenuTab.Notifications) {
                     fm.popBackStack("notificationlist_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    abTitle.setText(R.string.menu_tab_3);
                 }
                 else if (currentMenu == Business.MenuTab.Home){
                     fm.popBackStack("articlelist_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -219,7 +221,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                             fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
                             fragmentTransaction.commit();
                         }
-                        else if(position == 3) {   abTitle.setText(R.string.menu_tab_3);
+                        else if(position == 3) {
+                            abTitle.setText(R.string.menu_tab_3);
                             currentMenu = Business.MenuTab.Notifications;
                             myNotificationsFragment = new MyNotificationsFragment();
                             fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");

@@ -91,7 +91,6 @@ public class MyItemsFragment extends Fragment {
         act.abTitle.setText("My Interests");
         // Init the Widgets
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
         Business biz = new Business(view.getContext());
         List<Item> userItemsList = biz.getUserItemsFromLocal();
 

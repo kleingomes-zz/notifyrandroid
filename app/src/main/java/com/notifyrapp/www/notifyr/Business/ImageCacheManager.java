@@ -26,6 +26,7 @@ public final class ImageCacheManager {
 
     private ImageCacheManager () {  }
 
+    private static final int cacheSize = 100;
     private static Map<String, Bitmap> imageCache = new HashMap<String, Bitmap>();
 
 
@@ -33,7 +34,7 @@ public final class ImageCacheManager {
     {
         if(!imageCache.containsKey(key))
         {
-            if(imageCache.size() > 100)
+            if(imageCache.size() > cacheSize)
             {
                 List<String> list = new ArrayList<String>(imageCache.keySet());
                 imageCache.remove(list.get(0));

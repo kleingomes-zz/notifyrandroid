@@ -61,7 +61,7 @@ public class ArticleListFragment extends Fragment {
     private FloatingActionButton upFab;
     private ArticleAdapter adapter;
     private ProgressBar pbFooter;
-
+    private InfiniteScrollListener mInfiniteScrollListener;
     public ArticleListFragment() {
         // Required empty public constructor
     }
@@ -150,6 +150,7 @@ public class ArticleListFragment extends Fragment {
                 // Make sure you call mSwipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 articleList.clear();
+                mInfiniteScrollListener.setCurrentPage(0);
                 getArticles(0,pageSize,sortBy.toString());
             }
         });
@@ -161,21 +162,20 @@ public class ArticleListFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         // Add the scroll listener to know when we hit the bottom
-        mListView.setOnScrollListener(new InfiniteScrollListener(5) {
+        mInfiniteScrollListener = new InfiniteScrollListener(1) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
 
                 if(totalItemsCount > 10) {
                     pbFooter.setVisibility(View.VISIBLE);
-                    getArticles((page-1) * pageSize, pageSize, sortBy.toString());
+                    getArticles((page) * pageSize, pageSize, sortBy.toString());
                     currentPage = page;
                 }
-
             }
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                Log.d("PAGE",String.valueOf(currentPage));
+
                 if(currentPage > 2)
                 {
                     upFab.setVisibility(View.VISIBLE);
@@ -185,7 +185,10 @@ public class ArticleListFragment extends Fragment {
                     upFab.setVisibility(View.INVISIBLE);
                 }
             }
-        });
+        };
+
+        mListView.setOnScrollListener(mInfiniteScrollListener);
+        mInfiniteScrollListener.setCurrentPage(0);
 
         View progressView = inflater.inflate(R.layout.progress_circle, null);
         pbFooter = (ProgressBar) progressView.findViewById(R.id.pb_main);

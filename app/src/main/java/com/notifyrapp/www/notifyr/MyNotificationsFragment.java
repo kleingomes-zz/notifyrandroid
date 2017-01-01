@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,14 +104,19 @@ public class MyNotificationsFragment extends Fragment {
 
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_notification_list, container, false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         this.ctx = view.getContext();
+
         // Lookup the swipe container view
         mSwipeNotificationContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeNotificationContainer);
         mListView = (ListView) view.findViewById(R.id.notification_list_view);
+
         //Get the first batch of articles
         adapter = new NotificationAdapter(ctx, notificationList);
         mListView.setAdapter(adapter);
         getNotifications(0, pageSize);
+
         //Setup refresh listener which triggers new data loading
         mSwipeNotificationContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -123,11 +129,13 @@ public class MyNotificationsFragment extends Fragment {
                 getNotifications(0, pageSize);
             }
         });
+
         // Configure the refreshing colors
         mSwipeNotificationContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
         //add the scroll listener to know when we hit the bottom
         mListView.setOnScrollListener(new InfiniteScrollListener(5) {
             @Override
@@ -135,6 +143,7 @@ public class MyNotificationsFragment extends Fragment {
                 getNotifications(page * pageSize, pageSize);
             }
         });
+
         //Add the onclick listener to open the web view
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -151,9 +160,7 @@ public class MyNotificationsFragment extends Fragment {
             }
         });
 
-
         return view;
-
     }
 
     public void getNotifications(int skip, int take) {
