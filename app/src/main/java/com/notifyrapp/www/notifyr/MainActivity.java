@@ -72,9 +72,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private SettingsFragment settingsFragment;
     private MyItemsFragment myItemsFragment;
     private MyNotificationsFragment myNotificationsFragment;
-    private ArticleListFragment bookmarksFrag;
-    private ArticleListFragment newestFrag;
-    private ArticleListFragment popularFrag;
     public TextView abTitle;
     public Business.MenuTab currentMenu = Business.MenuTab.Home;
     public boolean isBookmarkDirty;
@@ -135,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(isBookmarkDirty && tab.getPosition() == 2 && bookmarksFrag != null) {
-                    bookmarksFrag.getArticles(0, 20, "");
-                }
+               // if(isBookmarkDirty && tab.getPosition() == 2 && bookmarksFrag != null) {
+               //     bookmarksFrag.getArticles(0, 20, "");
+               // }
                 mViewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -302,27 +299,19 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             // Return a PlaceholderFragment (defined as a static inner class below).
             abTitle =  (TextView)findViewById(R.id.abTitle);
             abTitle.setText(R.string.empty);
+            int itemTypeId = -1;
+            if(position ==0) {
+                itemTypeId = -1;
+            } else {
+                itemTypeId = itemCategories.get(position-1).getId();
+            }
 
-            if(position == 0)
-            {
-                newestFrag = ArticleListFragment.newInstance(position);
-                return newestFrag;
-            }
-            else if (position == 1)
-            {
-                popularFrag = ArticleListFragment.newInstance(position);
-                return popularFrag;
-            }
-            else
-            {
-                bookmarksFrag = ArticleListFragment.newInstance(position);
-                return bookmarksFrag;
-            }
+            return ArticleListFragment.newInstance(position,itemTypeId);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show All Categories PLUS the ALL category
             return categoryCount+1;
         }
 

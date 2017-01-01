@@ -571,7 +571,6 @@ public class Repository {
         return articles;
     }
 
-
     private ContentValues getArticleParams(Article article)
     {
         ContentValues param = new ContentValues();
@@ -595,6 +594,7 @@ public class Repository {
         param.put("ArticleNotifiedDateUnix", article.getArticleNotifiedDate().getMillis());
         return param;
     }
+
     private boolean checkIsDataAlreadyInDBorNot(String TableName,
                                                 String dbfield, String fieldValue, SQLiteDatabase sqldb) {
         //SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);

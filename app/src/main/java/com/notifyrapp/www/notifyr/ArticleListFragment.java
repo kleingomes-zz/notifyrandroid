@@ -47,7 +47,7 @@ import me.samthompson.bubbleactions.Callback;
 public class ArticleListFragment extends Fragment {
 
     private int mParam1;
-
+    private int itemTypeId;
     private Context ctx;
     private Activity act;
     private ListView mListView;
@@ -74,10 +74,11 @@ public class ArticleListFragment extends Fragment {
      * @return A new instance of fragment ArticleListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ArticleListFragment newInstance(int position) {
+    public static ArticleListFragment newInstance(int position,int itemTypeId) {
         ArticleListFragment fragment = new ArticleListFragment();
         Bundle args = new Bundle();
         args.putInt("pos", position);
+        args.putInt("itemTypeId", itemTypeId);
         fragment.setArguments(args);
 
         return fragment;
@@ -89,6 +90,7 @@ public class ArticleListFragment extends Fragment {
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getInt("pos");
+            itemTypeId = getArguments().getInt("itemTypeId");
         }
         if(mParam1 == 0)  {
             this.sortBy = Business.SortBy.Newest;
@@ -325,7 +327,7 @@ public class ArticleListFragment extends Fragment {
             mSwipeContainer.setRefreshing(false);
         }
         else {
-            business.getUserArticlesFromServer(skip, pageSize, sortBy, -1, new CallbackInterface() {
+            business.getUserArticlesFromServer(skip, pageSize, Business.SortBy.Popular.toString(), itemTypeId, new CallbackInterface() {
 
                 @Override
                 public void onCompleted(Object data) {
@@ -345,12 +347,12 @@ public class ArticleListFragment extends Fragment {
                     //if(skip == 0){
                     //    articleList.clear();
                     // }
-                    if (articleList.size() == 0) {
+                    if (pbFooter != null && articleList.size() == 0) {
                         pbFooter.setVisibility(View.GONE);
                     } else {
                         pbFooter.setVisibility(View.VISIBLE);
                     }
-                    if(articles.size() > 0) {
+                    if(pbFooter != null && articles.size() > 0) {
                         articleList.addAll(articles);
                         adapter.notifyDataSetChanged();
                     }
