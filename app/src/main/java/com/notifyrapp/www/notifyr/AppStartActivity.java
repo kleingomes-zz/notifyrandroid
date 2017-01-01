@@ -118,7 +118,7 @@ public class AppStartActivity extends AppCompatActivity{
                     // TODO: remove this
                     PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("LastUpdateUserNotifiedArticles", "").commit();
                     String lastUpdate = PreferenceManager.getDefaultSharedPreferences(ctx).getString("LastUpdateUserNotifiedArticles", "");
-                    business.getUserNotificationsFromServer(0,20,new CallbackInterface()
+                    business.getUserNotificationsFromServer(lastUpdate,new CallbackInterface()
                     {
                         @Override
                         public void onCompleted(Object data) {

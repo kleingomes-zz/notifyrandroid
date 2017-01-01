@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="-100dp"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:background="@color/colorWhite">
+        android:background="@color/colorWhite"
+       >
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
@@ -22,6 +23,7 @@
             android:background="@color/colorWhite"
             app:tabTextColor="@color/colorNotifyrLightBlue"
             app:tabSelectedTextColor="@color/colorNotifyrLightBlue"
+            app:tabMode="scrollable"
             />
 
     </android.support.design.widget.AppBarLayout>
@@ -48,6 +50,7 @@
             >
 
         </RelativeLayout>
+
     </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -69,18 +72,5 @@
             />
 
     </RelativeLayout>
-    <!--
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-
-        <com.ashokvarma.bottomnavigation.BottomNavigationBar
-            android:layout_gravity="bottom"
-            android:id="@+id/bottom_navigation_bar"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-    </RelativeLayout>-->
 </android.support.design.widget.CoordinatorLayout>

@@ -110,11 +110,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
         super.onCreate(savedInstanceState);
         // INIT
-        setContentView(R.layout.activity_main);
-        //getSupportActionBar().hide();
-
         this.ctx = this;
-
+        setContentView(R.layout.activity_main);
+        getSupportActionBar().setShowHideAnimationEnabled(false);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorNotifyrLightBlue)));
@@ -127,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.canScrollHorizontally(2);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         // without this listener the tabs would still get updated when fragments are swiped, but ....  (read the next comment)
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -198,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
                         {
+                            getSupportActionBar().setShowHideAnimationEnabled(false);
                             currentMenu = Business.MenuTab.Home;
                             getSupportActionBar().hide();
                             setAppBarVisibility(false);
@@ -310,8 +310,10 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 8;
         }
+
+
 
         @Override
         public CharSequence getPageTitle(int position) {
@@ -322,6 +324,19 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                     return "Popular";
                 case 2:
                     return "Bookmarks";
+                case 3:
+                    return "Bookmarks";
+                case 4:
+                    return "Bookmarks";
+                case 5:
+                    return "Bookmarks";
+                case 6:
+                    return "Bookmarks";
+                case 7:
+                    return "Bookmarks";
+                case 8:
+                    return "Bookmarks";
+
             }
             return null;
         }
