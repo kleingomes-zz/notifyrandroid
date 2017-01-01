@@ -75,13 +75,18 @@ public class WebViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         final View view = inflater.inflate(R.layout.fragment_web_view, container, false);
+
+        // INIT WEB VIEW
         WebView webView =  (WebView) view.findViewById(R.id.web_view);
         webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         webView.getSettings().getBuiltInZoomControls();
         webView.loadUrl(article.getUrl());
 
-        // Inflate the layout for this fragment
         return view;
     }
 

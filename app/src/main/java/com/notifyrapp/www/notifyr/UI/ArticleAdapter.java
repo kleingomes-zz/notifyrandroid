@@ -39,7 +39,10 @@ public class ArticleAdapter extends BaseAdapter {
     //1
     @Override
     public int getCount() {
-        return mDataSource.size();
+        if(mDataSource != null || mDataSource.size()>0)
+            return mDataSource.size();
+        else
+            return 0;
     }
 
     //2

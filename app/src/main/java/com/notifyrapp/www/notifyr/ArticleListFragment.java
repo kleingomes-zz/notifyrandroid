@@ -124,12 +124,6 @@ public class ArticleListFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
         this.ctx = view.getContext();
 
-        // Lookup the swipe container view
-        mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        mListView = (ListView) view.findViewById(R.id.article_list_view);
-        mListView.setFooterDividersEnabled(false);
-        mListView.setHeaderDividersEnabled(false);
-        mListView.addFooterView(new View(ctx, null, 0));
         upFab = (FloatingActionButton) view.findViewById(R.id.fab);
         upFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,6 +133,12 @@ public class ArticleListFragment extends Fragment {
         });
         upFab.setVisibility(View.INVISIBLE);
 
+        // Lookup the swipe container view
+        mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        mListView = (ListView) view.findViewById(R.id.article_list_view);
+        mListView.setFooterDividersEnabled(false);
+        mListView.setHeaderDividersEnabled(false);
+        mListView.addFooterView(new View(ctx, null, 0));
         // Config adapter and get the first batch of articles
         adapter = new ArticleAdapter(ctx, articleList);
         mListView.setAdapter(adapter);
@@ -151,6 +151,7 @@ public class ArticleListFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call mSwipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
+                mListView.setAdapter(adapter);
                 articleList.clear();
                 mInfiniteScrollListener.setCurrentPage(0);
                 getArticles(0,pageSize,sortBy.toString());
