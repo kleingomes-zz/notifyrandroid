@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         this.ctx = this;
         setContentView(R.layout.activity_main);
         getSupportActionBar().setShowHideAnimationEnabled(false);
+        getSupportActionBar().setElevation(0);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorNotifyrLightBlue)));

@@ -1,17 +1,23 @@
 package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import com.notifyrapp.www.notifyr.Model.Article;
 
 
@@ -70,6 +76,9 @@ public class WebViewFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
         MainActivity act = (MainActivity)getActivity();
         act.abTitle.setText(R.string.empty);
+
+
+
     }
 
     @Override
@@ -80,7 +89,23 @@ public class WebViewFragment extends Fragment {
 
         // INIT WEB VIEW
         WebView webView =  (WebView) view.findViewById(R.id.web_view);
-        webView.setWebViewClient(new WebViewClient());
+        final ProgressBar Pbar;
+        Pbar = (ProgressBar) view.findViewById(R.id.progressBar);
+        Pbar.setVisibility(ProgressBar.VISIBLE);
+        Pbar.getProgressDrawable().setColorFilter(
+                Color.argb(255,0,157,255), android.graphics.PorterDuff.Mode.SRC_IN);
+        webView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress) {
+                Log.d("PROGRESS",String.valueOf(progress));
+                if(progress < 100 && Pbar.getVisibility() == ProgressBar.GONE){
+                    Pbar.setVisibility(ProgressBar.VISIBLE);
+                }
+                Pbar.setProgress(progress);
+                if(progress < 0 || progress >= 100) {
+                    Pbar.setVisibility(ProgressBar.GONE);
+                }
+            }
+        });
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
