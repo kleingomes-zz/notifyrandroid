@@ -2,12 +2,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/discover_layout"
     tools:context="com.notifyrapp.www.notifyr.DiscoverFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text=""
+            android:gravity="center_horizontal"
+            android:hint="Search"
+            android:padding="5dp"
+            android:ems="10"
+            android:id="@+id/textSearchItems"
+            android:background="@color/colorNotifyrLightBlue" />
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.example.javier.recyclerviewhorizontallistviewtwo.MainActivity">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/discover_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/activity_main_height"
+                android:background="@android:color/darker_gray" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 </FrameLayout>

@@ -4,9 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Model.Item;
+import com.notifyrapp.www.notifyr.UI.DiscoverRecyclerAdapter;
+import com.notifyrapp.www.notifyr.UI.DividerItemDecoration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,6 +36,10 @@ public class DiscoverFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private static String LOG_TAG = "RecyclerViewActivity";
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,7 +78,26 @@ public class DiscoverFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_discover, container, false);
+        final View view = inflater.inflate(R.layout.fragment_discover, container, false);
+        Business business = new Business(getContext());
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.discover_recyclerview);
+        mRecyclerView.setHasFixedSize(true);
+
+
+        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        ArrayList<Item> items = (ArrayList)business.getUserItemsFromLocal();
+
+        mAdapter = new DiscoverRecyclerAdapter(items);
+        mRecyclerView.setAdapter(mAdapter);
+        RecyclerView.ItemDecoration itemDecoration =
+                new DividerItemDecoration(getActivity(), LinearLayoutManager.HORIZONTAL);
+        mRecyclerView.addItemDecoration(itemDecoration);
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

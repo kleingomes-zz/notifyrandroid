@@ -128,14 +128,14 @@ public class ArticleListFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
         this.ctx = view.getContext();
 
-        upFab = (FloatingActionButton) view.findViewById(R.id.fab);
+        /*upFab = (FloatingActionButton) view.findViewById(R.id.fab);
         upFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mListView.setSelectionAfterHeaderView();
             }
         });
-        upFab.setVisibility(View.INVISIBLE);
+        upFab.setVisibility(View.INVISIBLE);*/
 
         // Lookup the swipe container view
         mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
@@ -185,7 +185,7 @@ public class ArticleListFragment extends Fragment {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-                if(currentPage > 2)
+             /*  if(currentPage > 2)
                 {
                     upFab.setVisibility(View.VISIBLE);
                 }
@@ -193,9 +193,8 @@ public class ArticleListFragment extends Fragment {
                 {
                     upFab.setVisibility(View.INVISIBLE);
                 }
+                */
             }
-
-
         };
 
         mListView.setOnScrollListener(mInfiniteScrollListener);
