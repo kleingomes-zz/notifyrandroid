@@ -190,13 +190,14 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                             getSupportActionBar().hide();
                             setAppBarVisibility(false);
                             abTitle.setText(R.string.empty);
-                            // NEED TO REDRAW THE APPBar incase the user added categories
+                            // NEED TO REDRAW THE APP BAR (in case the user added categories)
                             mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
                             mViewPager.setAdapter(mSectionsPagerAdapter);
                             viewPager.setVisibility(View.VISIBLE);
                         }
                         else
                         {
+                            getSupportActionBar().setShowHideAnimationEnabled(false);
                             getSupportActionBar().show();
                             setAppBarVisibility(true);
                             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -204,36 +205,36 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         }
 
                         // LOAD THE NEW FRAGMENT
-                        if(position == 1)
+                        switch(position)
                         {
-                            abTitle.setText(R.string.menu_tab_1);
-                            currentMenu = Business.MenuTab.Interests;
-                            myItemsFragment = new MyItemsFragment();
-                            fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
-                            fragmentTransaction.commit();
-                        }
-                        else if(position == 3) {
-                            abTitle.setText(R.string.menu_tab_3);
-                            currentMenu = Business.MenuTab.Notifications;
-                            myNotificationsFragment = new MyNotificationsFragment();
-                            fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
-                            fragmentTransaction.commit();
-                        }
-                        else if(position == 2) {
-                            currentMenu = Business.MenuTab.Discover;
-                            abTitle.setText(R.string.menu_tab_2);
-                            discoverFragment = new DiscoverFragment();
-                            fragmentTransaction.add(R.id.fragment_container, discoverFragment,"discover_frag");
-                            fragmentTransaction.commit();
-                            //commitFragment("discover_frag",getResources().getString(R.string.menu_tab_2),new DiscoverFragment());
-                        }
-                        else if(position == 4)
-                        {
-                            currentMenu = Business.MenuTab.Settings;
-                            abTitle.setText(R.string.menu_tab_4);
-                            settingsFragment = new SettingsFragment();
-                            fragmentTransaction.add(R.id.fragment_container, settingsFragment,"settings_frag");
-                            fragmentTransaction.commit();
+                            case 1 :
+                                abTitle.setText(R.string.menu_tab_1);
+                                currentMenu = Business.MenuTab.Interests;
+                                myItemsFragment = new MyItemsFragment();
+                                fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
+                                fragmentTransaction.commit();
+                                break;
+                            case 2 :
+                                currentMenu = Business.MenuTab.Discover;
+                                abTitle.setText(R.string.menu_tab_2);
+                                discoverFragment = new DiscoverFragment();
+                                fragmentTransaction.add(R.id.fragment_container, discoverFragment,"discover_frag");
+                                fragmentTransaction.commit();
+                                break;
+                            case 3 :
+                                abTitle.setText(R.string.menu_tab_3);
+                                currentMenu = Business.MenuTab.Notifications;
+                                myNotificationsFragment = new MyNotificationsFragment();
+                                fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
+                                fragmentTransaction.commit();
+                                break;
+                            case 4 :
+                                currentMenu = Business.MenuTab.Settings;
+                                abTitle.setText(R.string.menu_tab_4);
+                                settingsFragment = new SettingsFragment();
+                                fragmentTransaction.add(R.id.fragment_container, settingsFragment,"settings_frag");
+                                fragmentTransaction.commit();
+                                break;
                         }
                         return false;
                     }

@@ -27,7 +27,6 @@
             app:elevation="0dp"/>
 
         <TextView
-            android:text="My text with lines above and below"
             android:background="@drawable/row_border"
             android:layout_height="1dp"
             android:layout_width="match_parent"
