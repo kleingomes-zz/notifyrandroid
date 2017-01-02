@@ -1,8 +1,6 @@
 package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -10,16 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.content.Intent;
 
-import com.notifyrapp.www.notifyr.Business.BackgroundService;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
-import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
+import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -134,7 +129,7 @@ public class AppStartActivity extends AppCompatActivity{
 
         /* HOUSE KEEPING  */
         // MAKE SURE CACHE IS CLEAR
-        ImageCacheManager.clearCacheAsync(ctx);
+        CacheManager.clearCacheAsync(ctx);
 
         /* BACKGROUND SERVICE **/
         // START THE BACKGROUND SERVICE TO GET ARTICLES

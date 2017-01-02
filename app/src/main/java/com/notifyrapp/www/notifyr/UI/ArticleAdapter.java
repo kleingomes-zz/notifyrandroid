@@ -7,14 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
+import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.R;
 import com.squareup.picasso.Picasso;
@@ -89,7 +87,7 @@ public class ArticleAdapter extends BaseAdapter {
         String imageUrl = article.getIurl();
 
         // Check if the image is in cache
-        Bitmap image = ImageCacheManager.getImageFromMemoryCache("article_"+String.valueOf(article.getId()));
+        Bitmap image = CacheManager.getImageFromMemoryCache("article_"+String.valueOf(article.getId()));
         if(image != null)
         {
             imageView.setImageBitmap(image);
@@ -103,7 +101,7 @@ public class ArticleAdapter extends BaseAdapter {
                     //do smth when picture is loaded successfully
                     mProgressBar.setVisibility(View.GONE);
                     Bitmap image=((BitmapDrawable)imageView.getDrawable()).getBitmap();
-                    ImageCacheManager.saveImageToMemoryCache("article_"+String.valueOf(article.getId()),image);
+                    CacheManager.saveImageToMemoryCache("article_"+String.valueOf(article.getId()),image);
                 }
 
                 @Override

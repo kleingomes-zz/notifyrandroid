@@ -13,11 +13,10 @@ import android.widget.TextView;
 
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
-import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
+import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -91,7 +90,7 @@ public class NotificationAdapter extends BaseAdapter {
 
         // Check if the image is in cache
         String imageUrl = article.getRelatedInterestsURL();
-        Bitmap image = ImageCacheManager.getImageFromMemoryCache("notification_"+String.valueOf(article.getId()));
+        Bitmap image = CacheManager.getImageFromMemoryCache("notification_"+String.valueOf(article.getId()));
         if(image != null)
         {
             imageView.setImageBitmap(image);
@@ -105,7 +104,7 @@ public class NotificationAdapter extends BaseAdapter {
                     public void onCompleted(Object data) {
                         if(data != null) {
                             Bitmap articleImage = (Bitmap) data;
-                            ImageCacheManager.saveImageToMemoryCache("notification_"+String.valueOf(article.getId()), articleImage);
+                            CacheManager.saveImageToMemoryCache("notification_"+String.valueOf(article.getId()), articleImage);
                         }
                         if(mProgressBar != null) mProgressBar.setVisibility(View.GONE);
                     }

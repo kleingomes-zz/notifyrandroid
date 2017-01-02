@@ -91,7 +91,6 @@ public class DiscoverFragment extends Fragment {
                 itemsList.addAll(downloadedItems);
                 mAdapter.notifyDataSetChanged();
             }
-
         });
 
         return view;

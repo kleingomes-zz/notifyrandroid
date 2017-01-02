@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
+import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.R;
 import com.squareup.picasso.Picasso;
@@ -93,7 +93,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
             String iurl = mDataset.get(position).getIurl();
 
             // Check if the image is in cache
-            Bitmap image = ImageCacheManager.getImageFromMemoryCache("item_" + String.valueOf(id));
+            Bitmap image = CacheManager.getImageFromMemoryCache("item_" + String.valueOf(id));
             if (image != null) {
                 hold.itemImage.setImageBitmap(image);
             } else {
@@ -103,7 +103,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
                             @Override
                             public void onSuccess() {
                                 Bitmap image = ((BitmapDrawable) hold.itemImage.getDrawable()).getBitmap();
-                                ImageCacheManager.saveImageToMemoryCache("item_" + String.valueOf(id), image);
+                                CacheManager.saveImageToMemoryCache("item_" + String.valueOf(id), image);
                             }
 
                             @Override

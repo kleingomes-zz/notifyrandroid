@@ -1,13 +1,11 @@
 package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -18,32 +16,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.notifyrapp.www.notifyr.Business.Business;
-import com.notifyrapp.www.notifyr.Business.ImageCacheManager;
+import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Model.ItemType;
 import com.notifyrapp.www.notifyr.UI.BottomNavigationViewHelper;
 
 import java.util.List;
-import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener,
@@ -366,8 +352,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ImageCacheManager.clearCache(ctx);
-        ImageCacheManager.clearImageMemoryCache();
+        CacheManager.clearCache(ctx);
+        CacheManager.clearImageMemoryCache();
     }
 
   /*  @Override

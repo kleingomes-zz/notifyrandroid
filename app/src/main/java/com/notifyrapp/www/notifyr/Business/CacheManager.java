@@ -22,13 +22,44 @@ import java.util.Map;
  * Created by K on 12/29/2016.
  */
 
-public final class ImageCacheManager {
+public final class CacheManager {
 
-    private ImageCacheManager () {  }
+    private CacheManager() {  }
 
     private static final int maxCacheSize = 100;
+    private static Map<String, Object> objectCache = new HashMap<String, Object>();
     private static Map<String, Bitmap> imageCache = new HashMap<String, Bitmap>();
 
+    //region Object
+
+    public static void saveObjectToMemoryCache(String key,Object obj)
+    {
+        if(!objectCache.containsKey(key))
+        {
+            // Cache is too big remove an old entry
+            // to make room for new entry
+            if(objectCache.size() > maxCacheSize)
+            {
+                List<String> list = new ArrayList<String>(objectCache.keySet());
+                objectCache.remove(list.get(0));
+            }
+            objectCache.put(key,obj);
+        }
+    }
+
+    public static Object getObjectFromMemoryCache(String key)
+    {
+        if(objectCache.containsKey(key))
+        {
+            Log.d("CACHE_HIT",key);
+            return objectCache.get(key);
+        }
+        Log.d("CACHE_MISS",key);
+        return null;
+    }
+    //endregion
+
+    //region Image
     public static void saveImageToMemoryCache(String key,Bitmap image)
     {
         if(!imageCache.containsKey(key))
@@ -124,6 +155,8 @@ public final class ImageCacheManager {
         Log.d("CACHE_MISS",key);
         return bMap;
     }
+
+    //endregion
 
     /**
      * Method clears the cache
