@@ -15,7 +15,9 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.R;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+
+import java.util.List;
+
 /**
  * Created by K on 1/2/2017.
  */
@@ -24,7 +26,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
         .Adapter<DiscoverRecyclerAdapter.DataObjectHolder> {
 
     private static String LOG_TAG = "MyRecyclerViewAdapter";
-    private ArrayList<Item> mDataset;
+    private List<Item> mDataset;
     private static MyClickListener myClickListener;
 
     public static class DataObjectHolder extends RecyclerView.ViewHolder
@@ -53,7 +55,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
         this.myClickListener = myClickListener;
     }
 
-    public DiscoverRecyclerAdapter(ArrayList<Item> myDataset) {
+    public DiscoverRecyclerAdapter(List<Item> myDataset) {
         mDataset = myDataset;
     }
 

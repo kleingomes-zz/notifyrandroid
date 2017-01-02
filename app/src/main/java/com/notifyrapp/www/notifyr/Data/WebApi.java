@@ -118,6 +118,14 @@ public class WebApi {
         }
     }
 
+    public void getPopularItemsByItemTypeId(int skip, int take,int itemTypeId, CallbackInterface callback){
+        String urlPath = "Item/getPopularItems?skip="+skip+"&take="+take+"&type="+itemTypeId;
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, Item);
+        }
+    }
+
     public void getAllItems(CallbackInterface callback){
         String urlPath = "Item/getAllItems";
         String url = apiBaseUrl + urlPath;
@@ -133,6 +141,8 @@ public class WebApi {
             postJSONObjectFromURL.execute(url,context,callback, Item );
         }
     }
+
+
     //endregion
 
     //region Articles

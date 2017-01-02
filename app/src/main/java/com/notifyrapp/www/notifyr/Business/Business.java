@@ -74,6 +74,17 @@ public class Business {
         return new Repository(context).saveUserItemLocal(userItem);
     }
 
+    public void getPopularItemsFromServer(int skip,int take,CallbackInterface callback)
+    {
+        new WebApi(context).getPopularItems(skip,take,callback);
+    }
+
+    public void getPopularItemsByItemTypeIdFromServer(int skip,int take,int itemTypeId,CallbackInterface callback)
+    {
+        new WebApi(context).getPopularItemsByItemTypeId(skip,take,itemTypeId,callback);
+    }
+
+
     public void syncUserItems()
     {
 

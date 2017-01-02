@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.UI.DiscoverRecyclerAdapter;
 import com.notifyrapp.www.notifyr.UI.DividerItemDecoration;
@@ -41,7 +42,7 @@ public class DiscoverFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private static String LOG_TAG = "RecyclerViewActivity";
-
+    private List<Item> itemsList;
     private OnFragmentInteractionListener mListener;
 
     public DiscoverFragment() {
@@ -102,15 +103,18 @@ public class DiscoverFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        ArrayList<Item> items = (ArrayList)business.getUserItemsFromLocal();
-
-        mAdapter = new DiscoverRecyclerAdapter(items);
+        itemsList = new ArrayList<Item>();
+        mAdapter = new DiscoverRecyclerAdapter(itemsList);
         mRecyclerView.setAdapter(mAdapter);
-     //   RecyclerView.ItemDecoration itemDecoration =
-      //          new DividerItemDecoration(getActivity(), LinearLayoutManager.HORIZONTAL);
-     //   mRecyclerView.addItemDecoration(itemDecoration);
 
+        business.getPopularItems(0, 20, new CallbackInterface() {
+            @Override
+            public void onCompleted(Object data) {
+                List<Item> downloadedItems = (List<Item>) data;
+                itemsList.addAll(downloadedItems);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
 
         return view;
     }
