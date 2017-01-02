@@ -6,13 +6,23 @@
     tools:context="com.notifyrapp.www.notifyr.DiscoverFragment">
 
 
-
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <EditText
+        <SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@color/lightGray"
+            android:clickable="true"
+            android:layout_centerInParent="true"
+            android:queryHint="Search"
+            />
+        <!--<EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
@@ -22,8 +32,19 @@
             android:padding="5dp"
             android:ems="10"
             android:id="@+id/textSearchItems"
-            android:background="@color/colorNotifyrLightBlue" />
-
+            android:background="@color/lightGray" />-->
+        <TextView
+            android:id="@+id/txtSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:fontFamily="sans-serif"
+            android:text="@string/header_you_might_like"
+            android:textColor="@color/darkGray"
+            android:textSize="14sp" />
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"

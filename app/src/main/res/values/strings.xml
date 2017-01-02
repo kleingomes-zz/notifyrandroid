@@ -30,4 +30,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+
+    <!-- DISCOVER -->
+    <string name="header_you_might_like">You might be interested in...</string>
+
 </resources>

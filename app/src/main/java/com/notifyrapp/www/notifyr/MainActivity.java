@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         ImageCacheManager.clearImageMemoryCache();
     }
 
-    @Override
+  /*  @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
@@ -385,5 +385,5 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             }
         }
         return super.dispatchTouchEvent( event );
-    }
+    }*/
 }

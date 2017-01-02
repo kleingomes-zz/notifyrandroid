@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Model.Item;
@@ -81,10 +82,24 @@ public class DiscoverFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_discover, container, false);
         Business business = new Business(getContext());
 
+        //Define your Searchview
+        final SearchView searchView = (SearchView) view.findViewById(R.id.search_view);
+
+        //Turn iconified to false:
+        //searchView.setIconified(false);
+        //The above line will expand it to fit the area as well as throw up the keyboard
+
+        //To remove the keyboard, but make sure you keep the expanded version:
+        //searchView.clearFocus();
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.setIconified(false);
+            }
+        });
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.discover_recyclerview);
         mRecyclerView.setHasFixedSize(true);
-
-
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -92,9 +107,9 @@ public class DiscoverFragment extends Fragment {
 
         mAdapter = new DiscoverRecyclerAdapter(items);
         mRecyclerView.setAdapter(mAdapter);
-        RecyclerView.ItemDecoration itemDecoration =
-                new DividerItemDecoration(getActivity(), LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.addItemDecoration(itemDecoration);
+     //   RecyclerView.ItemDecoration itemDecoration =
+      //          new DividerItemDecoration(getActivity(), LinearLayoutManager.HORIZONTAL);
+     //   mRecyclerView.addItemDecoration(itemDecoration);
 
 
         return view;
