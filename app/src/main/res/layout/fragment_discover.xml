@@ -55,7 +55,14 @@
                 android:id="@+id/discover_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/activity_main_height"
-                android:background="@android:color/darker_gray" />
+                android:background="@android:color/white" />
+            <!--<ProgressBar
+                style="?android:attr/progressBarStyle"
+                android:layout_centerInParent="true"
+                android:id="@+id/progress"
+                android:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />-->
 
         </RelativeLayout>
 

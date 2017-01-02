@@ -23,11 +23,17 @@ import java.util.List;
  */
 
 public class DiscoverRecyclerAdapter extends RecyclerView
-        .Adapter<DiscoverRecyclerAdapter.DataObjectHolder> {
+        .Adapter<RecyclerView.ViewHolder> {
 
     private static String LOG_TAG = "MyRecyclerViewAdapter";
     private List<Item> mDataset;
     private static MyClickListener myClickListener;
+
+    public class EmptyViewHolder extends RecyclerView.ViewHolder {
+        public EmptyViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
 
     public static class DataObjectHolder extends RecyclerView.ViewHolder
             implements View
@@ -35,6 +41,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
         ImageView itemImage;
         TextView itemName;
         Context ctx;
+
 
         public DataObjectHolder(View itemView) {
             super(itemView);
@@ -60,43 +67,55 @@ public class DiscoverRecyclerAdapter extends RecyclerView
     }
 
     @Override
-    public DataObjectHolder onCreateViewHolder(ViewGroup parent,
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_discover, parent, false);
+
+        if (viewType == EMPTY_VIEW) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_circle_center, parent, false);
+            EmptyViewHolder emptyViewHolder = new EmptyViewHolder(v);
+            return emptyViewHolder;
+        }
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_discover, parent, false);
         DataObjectHolder dataObjectHolder = new DataObjectHolder(view);
+
+
         return dataObjectHolder;
     }
 
+
     @Override
-    public void onBindViewHolder(final DataObjectHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         //holder.itemImage.setText(mDataset.get(position).getItemTypeName());
-        final int id = mDataset.get(position).getId();
-        String iurl = mDataset.get(position).getIurl();
+        if (holder instanceof DataObjectHolder) {
+            final DataObjectHolder hold = (DataObjectHolder) holder;
+            final int id = mDataset.get(position).getId();
+            String iurl = mDataset.get(position).getIurl();
 
-        // Check if the image is in cache
-        Bitmap image = ImageCacheManager.getImageFromMemoryCache("item_"+String.valueOf(id));
-        if(image != null)
-        {
-            holder.itemImage.setImageBitmap(image);
-        }
-        else
-        {
-            Picasso.with(holder.ctx).load(iurl).into( holder.itemImage, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    Bitmap image=((BitmapDrawable)holder.itemImage.getDrawable()).getBitmap();
-                    ImageCacheManager.saveImageToMemoryCache("item_"+String.valueOf(id),image);
-                }
+            // Check if the image is in cache
+            Bitmap image = ImageCacheManager.getImageFromMemoryCache("item_" + String.valueOf(id));
+            if (image != null) {
+                hold.itemImage.setImageBitmap(image);
+            } else {
+                Picasso.with(hold.ctx)
+                        .load(iurl)
+                        .into(hold.itemImage, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                                Bitmap image = ((BitmapDrawable) hold.itemImage.getDrawable()).getBitmap();
+                                ImageCacheManager.saveImageToMemoryCache("item_" + String.valueOf(id), image);
+                            }
 
-                @Override
-                public void onError() {
-                    Log.d("FAILED","Fail");
-                }
-            });
+                            @Override
+                            public void onError() {
+                                Log.d("FAILED", "Fail");
+                            }
+                        });
+            }
+            hold.itemName.setText(mDataset.get(position).getName());
         }
-        holder.itemName.setText(mDataset.get(position).getName());
     }
+
 
     public void addItem(Item dataObj, int index) {
         mDataset.add(dataObj);
@@ -110,10 +129,20 @@ public class DiscoverRecyclerAdapter extends RecyclerView
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return mDataset.size() > 0 ? mDataset.size() : 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mDataset.size() == 0) {
+            return EMPTY_VIEW;
+        }
+        return super.getItemViewType(position);
     }
 
     public interface MyClickListener {
         public void onItemClick(int position, View v);
     }
+
+    private static final int EMPTY_VIEW = 10;
 }
