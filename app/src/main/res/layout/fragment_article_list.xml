@@ -5,17 +5,14 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/tools">
 
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipeContainer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center|top" >
+        android:gravity="center|top"
+        android:background="@color/colorWhite">
+
     <RadioGroup
         android:id="@+id/radioGroupTab"
         android:layout_width="wrap_content"
@@ -63,6 +60,11 @@
 
             />
     </RadioGroup>
+        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
             <ListView
                 android:layout_width="match_parent"
                 android:id="@+id/article_list_view"
@@ -73,9 +75,9 @@
                 android:dividerHeight="1dp"
                 />
     <!--    android:scrollbars="none" -->
-
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
-</android.support.v4.widget.SwipeRefreshLayout>
+
 
 
 <android.support.design.widget.FloatingActionButton

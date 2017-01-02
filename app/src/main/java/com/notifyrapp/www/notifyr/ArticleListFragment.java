@@ -62,6 +62,7 @@ public class ArticleListFragment extends Fragment {
     private ArticleAdapter adapter;
     private ProgressBar pbFooter;
     private InfiniteScrollListener mInfiniteScrollListener;
+
     public ArticleListFragment() {
         // Required empty public constructor
     }

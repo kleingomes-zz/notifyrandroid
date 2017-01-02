@@ -133,7 +133,6 @@ public class WebApi {
             postJSONObjectFromURL.execute(url,context,callback, Item );
         }
     }
-
     //endregion
 
     //region Articles
@@ -234,10 +233,8 @@ public class WebApi {
                     os.close();
                 }
 
-
                 conn.connect();
                 int statusCode = conn.getResponseCode();
-
                 InputStream is = null;
 
                 if (statusCode >= 200 && statusCode < 400) {
@@ -323,7 +320,6 @@ public class WebApi {
 
                             DateTime pubDate = ISODateTimeFormat.dateTimeParser().parseDateTime(pubDateStr);
                             DateTime notifyrDate =ISODateTimeFormat.dateTimeParser().parseDateTime(notifyrDateStr);
-
 
                             article.setScore((!jsonItem.isNull( "Score" ) ?  jsonItem.getInt("Score") : -1));
                             article.setSource(!jsonItem.isNull( "Source" ) ?  jsonItem.getString("Source") : "");

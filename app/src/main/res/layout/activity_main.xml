@@ -14,7 +14,7 @@
         android:paddingTop="-100dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         android:background="@color/colorWhite"
-       >
+        app:elevation="0dp">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
@@ -24,6 +24,14 @@
             app:tabTextColor="@color/colorNotifyrLightBlue"
             app:tabSelectedTextColor="@color/colorNotifyrLightBlue"
             app:tabMode="scrollable"
+            app:elevation="0dp"/>
+
+        <TextView
+            android:text="My text with lines above and below"
+            android:background="@drawable/row_border"
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:padding="0dp"
             />
 
     </android.support.design.widget.AppBarLayout>

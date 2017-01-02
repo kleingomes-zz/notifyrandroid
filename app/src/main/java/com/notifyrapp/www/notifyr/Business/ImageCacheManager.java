@@ -26,15 +26,16 @@ public final class ImageCacheManager {
 
     private ImageCacheManager () {  }
 
-    private static final int cacheSize = 100;
+    private static final int maxCacheSize = 100;
     private static Map<String, Bitmap> imageCache = new HashMap<String, Bitmap>();
-
 
     public static void saveImageToMemoryCache(String key,Bitmap image)
     {
         if(!imageCache.containsKey(key))
         {
-            if(imageCache.size() > cacheSize)
+            // Cache is too big remove an old entry
+            // to make room for new entry
+            if(imageCache.size() > maxCacheSize)
             {
                 List<String> list = new ArrayList<String>(imageCache.keySet());
                 imageCache.remove(list.get(0));

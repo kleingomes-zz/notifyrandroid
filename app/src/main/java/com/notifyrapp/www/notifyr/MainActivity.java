@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,27 +50,15 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         MyItemsFragment.OnFragmentInteractionListener,
         WebViewFragment.OnFragmentInteractionListener,
         ArticleListFragment.OnFragmentInteractionListener,
-        MyNotificationsFragment.OnFragmentInteractionListener
-
+        MyNotificationsFragment.OnFragmentInteractionListener,
+        DiscoverFragment.OnFragmentInteractionListener
 {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
     private Context ctx;
     private SettingsFragment settingsFragment;
+    private DiscoverFragment discoverFragment;
     private MyItemsFragment myItemsFragment;
     private MyNotificationsFragment myNotificationsFragment;
     public TextView abTitle;
@@ -144,8 +133,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
-
-
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
@@ -232,6 +219,10 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         else if(position == 2) {
                             currentMenu = Business.MenuTab.Discover;
                             abTitle.setText(R.string.menu_tab_2);
+                            discoverFragment = new DiscoverFragment();
+                            fragmentTransaction.add(R.id.fragment_container, discoverFragment,"discover_frag");
+                            fragmentTransaction.commit();
+                            //commitFragment("discover_frag",getResources().getString(R.string.menu_tab_2),new DiscoverFragment());
                         }
                         else if(position == 4)
                         {
@@ -245,6 +236,16 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                     }
                 });
 
+    }
+
+    private void commitFragment(String fragmentName,String title,Fragment fragment)
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        abTitle.setText(title);
+        settingsFragment = new SettingsFragment();
+        fragmentTransaction.add(R.id.fragment_container, fragment,fragmentName);
+        fragmentTransaction.commit();
     }
 
     private void setAppBarVisibility(Boolean isHidden)
