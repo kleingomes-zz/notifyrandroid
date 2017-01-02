@@ -338,9 +338,7 @@ public class WebApi {
                             article.setRelatedInterestsURL(!jsonItem.isNull( "RelatedInterestsIURL" ) ?  jsonItem.getString("RelatedInterestsIURL") : "");
                             articles.add(article);
                         }
-
                         callback.onCompleted(articles);
-
                     }
                     else if (notifyrType == Item) {
                         ArrayList<Item> items = new ArrayList<Item>();

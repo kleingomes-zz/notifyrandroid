@@ -34,6 +34,7 @@ public class ArticleAdapter extends BaseAdapter {
         mContext = context;
         mDataSource = articles;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
     }
 
     //1

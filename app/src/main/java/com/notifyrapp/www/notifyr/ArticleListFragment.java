@@ -1,5 +1,7 @@
 package com.notifyrapp.www.notifyr;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +24,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
@@ -62,7 +65,7 @@ public class ArticleListFragment extends Fragment {
     private ArticleAdapter adapter;
     private ProgressBar pbFooter;
     private InfiniteScrollListener mInfiniteScrollListener;
-
+    private RadioGroup radioGroup;
     public ArticleListFragment() {
         // Required empty public constructor
     }
@@ -136,6 +139,7 @@ public class ArticleListFragment extends Fragment {
 
         // Lookup the swipe container view
         mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        radioGroup =  (RadioGroup) view.findViewById(R.id.radioGroupTab);
         mListView = (ListView) view.findViewById(R.id.article_list_view);
         mListView.setFooterDividersEnabled(false);
         mListView.setHeaderDividersEnabled(false);
@@ -155,6 +159,7 @@ public class ArticleListFragment extends Fragment {
                 mListView.setAdapter(adapter);
                 articleList.clear();
                 mInfiniteScrollListener.setCurrentPage(0);
+                currentPage = 0;
                 getArticles(0,pageSize,sortBy.toString());
             }
         });
@@ -172,8 +177,8 @@ public class ArticleListFragment extends Fragment {
 
                 if(totalItemsCount > 10) {
                     pbFooter.setVisibility(View.VISIBLE);
-                    getArticles((page) * pageSize, pageSize, sortBy.toString());
-                    currentPage = page;
+                    Log.d("CURRENTPAGE", String.valueOf(currentPage));
+                    getArticles((currentPage) * pageSize, pageSize, sortBy.toString());
                 }
             }
 
@@ -189,6 +194,8 @@ public class ArticleListFragment extends Fragment {
                     upFab.setVisibility(View.INVISIBLE);
                 }
             }
+
+
         };
 
         mListView.setOnScrollListener(mInfiniteScrollListener);
@@ -357,6 +364,7 @@ public class ArticleListFragment extends Fragment {
                     if(pbFooter != null && articles.size() > 0) {
                         articleList.addAll(articles);
                         adapter.notifyDataSetChanged();
+                        currentPage++;
                     }
                     mSwipeContainer.setRefreshing(false);
                 }
