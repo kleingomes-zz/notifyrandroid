@@ -337,10 +337,6 @@ public class WebApi {
                             article.setNotifiedTimeAgo(!jsonItem.isNull( "NotifiedTimeAgo" ) ?  jsonItem.getString("NotifiedTimeAgo") : "");
                             article.setRelatedInterestsURL(!jsonItem.isNull( "RelatedInterestsIURL" ) ?  jsonItem.getString("RelatedInterestsIURL") : "");
                             articles.add(article);
-                         //   Log.d("Article_Drawn","CLS Date:" + article.getPublishDate() + " Title:"+ article.getTitle());
-                    //       Log.d("Article_Drawn","ZZZ Date:" + dateTime +" Title:"+ article.getTitle());
-                      //      Log.d("Article_Drawn","STR Date:" + pubDateStr + " Title:"+ article.getTitle());
-
                         }
 
                         callback.onCompleted(articles);

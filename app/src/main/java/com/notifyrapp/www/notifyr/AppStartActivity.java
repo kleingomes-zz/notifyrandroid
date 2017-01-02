@@ -86,7 +86,7 @@ public class AppStartActivity extends AppCompatActivity{
         else
         {
             // TODO: remove this
-            //this.deleteDatabase("NotifyrLocal.db");
+            this.deleteDatabase("NotifyrLocal.db");
             final Business business = new Business(ctx);
             if(!business.checkIfDatabaseExists()) {
                 business.createNotifyrDatabase(userId);
@@ -145,41 +145,4 @@ public class AppStartActivity extends AppCompatActivity{
         /* REGISTER FOR REMOTE NOTIFICATIONS */
 
     }
-
-    private AsyncTask<Object, Void, String> createOrUpdateDatabase = new AsyncTask<Object, Void, String>() {
-
-       //  if(createOrUpdateDatabase.getStatus().equals(AsyncTask.Status.PENDING)) {
-            //createOrUpdateDatabase.execute(this,user);
-        //        }
-
-        @Override
-        protected String doInBackground(Object... params) {
-
-            /******* CREATE LOCAL DB HERE *******/
-            Context context = (Context)params[0];
-            String userId =  (String)params[1];
-            Business business = new Business(context);
-            business.createNotifyrDatabase(userId);
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //get sharedPreferences here
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-           // startActivity(new Intent(AppStartActivity.this, ArticleActivity.class));
-            //do something as the execution completed, you can launch your real activity.
-        }
-    };
-
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-    }
-
 }

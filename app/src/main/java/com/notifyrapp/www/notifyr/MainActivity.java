@@ -190,6 +190,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                             getSupportActionBar().hide();
                             setAppBarVisibility(false);
                             abTitle.setText(R.string.empty);
+                            // NEED TO REDRAW THE APPBar incase the user added categories
+                            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+                            mViewPager.setAdapter(mSectionsPagerAdapter);
                             viewPager.setVisibility(View.VISIBLE);
                         }
                         else
@@ -272,9 +275,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     }
 
-
-
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             super(fm);
             business = new Business(ctx);
             itemCategories = business.getItemCategories();
-            categoryCount = itemCategories.size() > 0 ? itemCategories.size() : 1;
+            categoryCount = itemCategories != null && itemCategories.size() > 0 ? itemCategories.size() : 1;
 
         }
 
@@ -313,7 +313,12 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         @Override
         public int getCount() {
             // Show All Categories PLUS the ALL category
-            return categoryCount+1;
+            if (itemCategories != null && itemCategories.size() > 1) {
+                return categoryCount+1;
+            }
+            else{
+                return 1;
+            }
         }
 
 
@@ -321,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         @Override
         public CharSequence getPageTitle(int position) {
 
-            if (itemCategories.size() > 1)
+            if (itemCategories != null && itemCategories.size() > 1)
             {
                 if(position ==0) {
                     return "All";
