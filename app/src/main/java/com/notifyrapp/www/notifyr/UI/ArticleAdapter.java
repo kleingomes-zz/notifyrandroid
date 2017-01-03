@@ -3,6 +3,8 @@ package com.notifyrapp.www.notifyr.UI;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Model.Article;
+import com.notifyrapp.www.notifyr.Model.UserSetting;
 import com.notifyrapp.www.notifyr.R;
 import com.squareup.picasso.Picasso;
 
@@ -27,12 +31,40 @@ public class ArticleAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private List<Article> mDataSource;
+    private ConnectivityManager mConnManager;
+    private NetworkInfo mWifi;
+    private UserSetting mUserSettings;
+    private int viewMode = 0;
 
     public ArticleAdapter(Context context, List<Article> articles) {
         mContext = context;
         mDataSource = articles;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mConnManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        mWifi = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
+
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        mUserSettings = new Business(mContext).getUserSettings();
+        int userMode = mUserSettings.getArticleDisplayType();
+
+        // User wants WiFi online AND HAS WiFi ON
+        if(userMode == 1 && mWifi.isConnected())
+        {
+            viewMode = 1; // Image Mode
+        }
+        else if((userMode == 1 && !mWifi.isConnected()) || userMode == 0)
+        {
+            viewMode = 0; // Text Mode
+        }
+        else if(userMode == 2)
+        {
+            viewMode = 1; // Image Mode
+        }
+        super.notifyDataSetChanged();
     }
 
     //1
@@ -61,54 +93,79 @@ public class ArticleAdapter extends BaseAdapter {
     @Override
     public View getView(int position, final View convertView, ViewGroup parent) {
 
-        // Get view for row item
-        View rowView = mInflater.inflate(R.layout.list_item_article_image, parent, false);
 
-        // Get Title element
-        TextView titleTextView = (TextView) rowView.findViewById(R.id.txtImageArticleTitle);
 
-        // Get Subtitle element
-        TextView subtitleTextView = (TextView) rowView.findViewById(R.id.txtImageArticleSubTitle);
+        View rowView;
 
-        // Get image
-        final ImageView imageView = (ImageView) rowView.findViewById(R.id.imgArticle);
+        // Image Mode
+        if(viewMode == 1) {
+            // Get view for row item
+            rowView = mInflater.inflate(R.layout.list_item_article_image, parent, false);
 
-        // Get Article
-        final Article article = (Article) getItem(position);
+            // Get Title element
+            TextView titleTextView = (TextView) rowView.findViewById(R.id.txtImageArticleTitle);
 
-        // Get Progress Bar
-        final ProgressBar mProgressBar =  (ProgressBar) rowView.findViewById(R.id.pbHeaderProgress);
+            // Get Subtitle element
+            TextView subtitleTextView = (TextView) rowView.findViewById(R.id.txtImageArticleSubTitle);
 
-        // Load the Elements with data
-        titleTextView.setText(article.getTitle());
-        subtitleTextView.setText(article.getSource() + " - " + article.getTimeAgo());
+            // Get image
+            final ImageView imageView = (ImageView) rowView.findViewById(R.id.imgArticle);
 
-        // Load the image element
-        String imageUrl = article.getIurl();
+            // Get Article
+            final Article article = (Article) getItem(position);
 
-        // Check if the image is in cache
-        Bitmap image = CacheManager.getImageFromMemoryCache("article_"+String.valueOf(article.getId()));
-        if(image != null)
-        {
-            imageView.setImageBitmap(image);
+            // Get Progress Bar
+            final ProgressBar mProgressBar = (ProgressBar) rowView.findViewById(R.id.pbHeaderProgress);
+
+            // Load the Elements with data
+            titleTextView.setText(article.getTitle());
+            subtitleTextView.setText(article.getSource() + " - " + article.getTimeAgo());
+
+            // Load the image element
+            String imageUrl = article.getIurl();
+
+            // Check if the image is in cache
+            Bitmap image = CacheManager.getImageFromMemoryCache("article_" + String.valueOf(article.getId()));
+            if (image != null) {
+                imageView.setImageBitmap(image);
+            } else {
+                mProgressBar.setVisibility(View.VISIBLE);
+                Picasso.with(mContext).load(article.getIurl()).into(imageView, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Bitmap image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                        CacheManager.saveImageToMemoryCache("article_" + String.valueOf(article.getId()), image);
+                    }
+
+                    @Override
+                    public void onError() {
+                        Log.d("FAILED", article.getTitle() + " " + article.getIurl());
+                    }
+                });
+            }
         }
+        // Text Mode
         else
         {
-            mProgressBar.setVisibility(View.VISIBLE);
-            Picasso.with(mContext).load(article.getIurl()).into(imageView, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    mProgressBar.setVisibility(View.GONE);
-                    Bitmap image=((BitmapDrawable)imageView.getDrawable()).getBitmap();
-                    CacheManager.saveImageToMemoryCache("article_"+String.valueOf(article.getId()),image);
-                }
+            // Get view for row item
+            rowView = mInflater.inflate(R.layout.list_item_article_noimage, parent, false);
 
-                @Override
-                public void onError() {
-                    Log.d("FAILED",article.getTitle() + " " + article.getIurl());
-                }
-            });
+            // Get Title element
+            TextView titleTextView = (TextView) rowView.findViewById(R.id.txtNoImageArticleTitle);
+
+            // Get Subtitle element
+            TextView subtitleTextView = (TextView) rowView.findViewById(R.id.txtNoImageArticleSubTitle);
+
+            // Get Article
+            final Article article = (Article) getItem(position);
+
+            // Load the Elements with data
+            titleTextView.setText(article.getTitle());
+            subtitleTextView.setText(article.getSource() + " - " + article.getTimeAgo());
+
         }
+
 
         return rowView;
     }

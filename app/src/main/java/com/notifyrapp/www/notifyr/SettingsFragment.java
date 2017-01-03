@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Switch;
 import android.widget.RadioGroup;
@@ -43,7 +44,7 @@ public class SettingsFragment extends Fragment {
     private int serverRadioButtonValue;
     private int userRadioButtonValue;
     private int articleReaderMode;
-
+    private int checkStatus = 0;
     TextView txtsettings, txtMaxNotification, txtMaxNotificationDescription, txtNotificationsPerDay, txtDownloadArticleImages, txtArticleReaderMode, txtArticleReaderModeDescription,
             txtAccountInformation, txtNetworkStatus, txtNetworkStatusGreen, txtAbout, txtVersion, txtVersionNumber;
     Button btnSendTestNotification, btnPrivacy, btnTerms, btnRateOnAppStore, btnSendFeedback;
@@ -56,6 +57,7 @@ public class SettingsFragment extends Fragment {
     Business business;
     UserSetting settings;
     ProgressBar pbNetworkStatus;
+    TableRow rowNetworkStatus;
 
     private OnFragmentInteractionListener mListener;
 
@@ -106,7 +108,7 @@ public class SettingsFragment extends Fragment {
         //get settings info from the local database
         business = new Business(getActivity());
         settings = business.getUserSettings();
-
+        rowNetworkStatus = (TableRow) view.findViewById(R.id.rowNetworkStatus);
         txtsettings = (TextView) view.findViewById(R.id.txtSettings);
         txtMaxNotification = (TextView) view.findViewById(R.id.txtMaxNotification);
         txtMaxNotificationDescription = (TextView) view.findViewById(R.id.txtMaxNotificationDescription);
@@ -209,35 +211,22 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        //NETWORK STATUS AND VERSION NUMBER
-        business.getNetworkStatus(new CallbackInterface() {
+        //NETWORK STATUS
+        getNetworkStatus();
+        rowNetworkStatus.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCompleted(Object data) {
-                String status = (String) data;
-                if(status.equals("true"))
+            public void onClick(View v) {
+                checkStatus++;
+                if(checkStatus > 3)
                 {
-                    txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchGreen));
-                    txtNetworkStatusGreen.setText("Online");
+                    checkStatus = 0;
+                    getNetworkStatus();
                 }
-                else
-                {
-                    txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchRed));
-                    txtNetworkStatusGreen.setText("Offline");
-                }
-                txtNetworkStatusGreen.setVisibility(View.VISIBLE);
-                pbNetworkStatus.setVisibility(View.GONE);
             }
         });
 
-        PackageInfo pInfo = null;
-        try {
-            pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        String version = pInfo.versionName;
-        txtVersionNumber.setText(version);
-
+        // VERSION NUMBER
+        txtVersionNumber.setText(getVersionNumber());
 
         //SEEKBAR FOR MAX NOTIFICATIONS
         seekBarMaxNotificationsPerDay.setMax(20);
@@ -279,6 +268,42 @@ public class SettingsFragment extends Fragment {
 
 
         return view;
+    }
+
+
+    private void getNetworkStatus()
+    {
+        pbNetworkStatus.setVisibility(View.VISIBLE);
+        txtNetworkStatusGreen.setVisibility(View.GONE);
+        business.getNetworkStatus(new CallbackInterface() {
+            @Override
+            public void onCompleted(Object data) {
+                String status = (String) data;
+                if(status.equals("true"))
+                {
+                    txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchGreen));
+                    txtNetworkStatusGreen.setText("Online");
+                }
+                else
+                {
+                    txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchRed));
+                    txtNetworkStatusGreen.setText("Offline");
+                }
+                txtNetworkStatusGreen.setVisibility(View.VISIBLE);
+                pbNetworkStatus.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private String getVersionNumber()
+    {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return pInfo.versionName;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -172,7 +172,8 @@ public class Business {
     }
     public boolean saveUserSettingsLocal(UserSetting userSetting)
     {
-        return new Repository(context).saveUserSettings(userSetting);
+        Boolean result = new Repository(context).saveUserSettings(userSetting);
+        return result;
     }
     public void saveUserSettingsServer(UserSetting userSetting,CallbackInterface callback)
     {

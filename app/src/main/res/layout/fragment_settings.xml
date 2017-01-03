@@ -212,7 +212,7 @@
                                 android:background="@drawable/radio_button_selector"
                                 android:button="@null"
                                 android:checked="true"
-                                android:text="Wifi Only"
+                                android:text="WiFi Only"
                                 android:textAlignment="center"
                                 android:textColor="@drawable/radio_button_text_color"
 
@@ -344,7 +344,7 @@
                 android:layout_marginBottom=".25dp">
 
                 <TableRow
-                    android:id="@+id/NS"
+                    android:id="@+id/rowNetworkStatus"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/white">
@@ -385,7 +385,7 @@
                             android:layout_alignParentRight="true"
                             android:layout_alignTop="@+id/txtNetworkStatus"
                             android:layout_centerVertical="true"
-                            android:layout_marginRight="28dp"
+                            android:layout_marginRight="18dp"
                             android:text="Online"
                             android:visibility="gone"
                             android:textColor="@color/switchGreen"
@@ -626,7 +626,7 @@
                             android:layout_alignParentRight="true"
                             android:layout_alignTop="@+id/txtVersion"
                             android:layout_centerVertical="true"
-                            android:layout_marginRight="28dp"
+                            android:layout_marginRight="18dp"
                             android:text="1.0.9"
                             android:textColor="@color/darkGray"
                             android:textSize="16sp" />
