@@ -163,6 +163,7 @@ public class MyItemsFragment extends Fragment {
         mListView.setAdapter(itemAdapter);
         View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
         mListView.addFooterView(emptyFooter);
+        btnEditDoneDelete.setText("Edit");
         getUserItems();
 
         btnEditDoneDelete.setOnClickListener(new View.OnClickListener() {
