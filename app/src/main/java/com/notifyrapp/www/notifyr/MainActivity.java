@@ -341,27 +341,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             {
                 return "All";
             }
-          /*  switch (position) {
-                case 0:
-                    return "Newest";
-                case 1:
-                    return "Popular";
-                case 2:
-                    return "Bookmarks";
-                case 3:
-                    return "Bookmarks";
-                case 4:
-                    return "Bookmarks";
-                case 5:
-                    return "Bookmarks";
-                case 6:
-                    return "Bookmarks";
-                case 7:
-                    return "Bookmarks";
-                case 8:
-                    return "Bookmarks";
-
-            }*/
         }
     }
 

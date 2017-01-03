@@ -25,20 +25,20 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <!-- <category android:name="android.intent.category." /> -->
             </intent-filter>
-            
         </activity>
-        <service
+        <!--<service
             android:name=".Business.BackgroundService"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/service_name"
             >
-        </service>
+        </service>-->
     </application>
 
 </manifest>

@@ -10,12 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.UI.DiscoverRecyclerAdapter;
 import com.notifyrapp.www.notifyr.UI.DividerItemDecoration;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,8 @@ public class DiscoverFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private static String LOG_TAG = "RecyclerViewActivity";
+    private TextView topResultsTextView;
+
     private List<Item> itemsList;
     private OnFragmentInteractionListener mListener;
 
@@ -57,11 +62,11 @@ public class DiscoverFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_discover, container, false);
-        Business business = new Business(getContext());
+        final Business business = new Business(getContext());
 
         //Define your Searchview
         final SearchView searchView = (SearchView) view.findViewById(R.id.search_view);
-
+        topResultsTextView = (TextView) view.findViewById(R.id.txtSettings);
         //Turn iconified to false:
         //searchView.setIconified(false);
         //The above line will expand it to fit the area as well as throw up the keyboard
@@ -71,7 +76,69 @@ public class DiscoverFragment extends Fragment {
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(searchView.isIconified())
+                {
+                    ((MainActivity)getActivity()).getSupportActionBar().setShowHideAnimationEnabled(true);
+                    ((MainActivity)getActivity()).getSupportActionBar().hide();
+                }
                 searchView.setIconified(false);
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                if(!searchView.isIconified())
+                {
+                    ((MainActivity)getActivity()).getSupportActionBar().setShowHideAnimationEnabled(true);
+                    ((MainActivity)getActivity()).getSupportActionBar().show();
+                }
+                return false;
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // your text view here
+                if(newText.equals("")) {
+
+                    topResultsTextView.setText(R.string.header_you_might_like);
+                    itemsList.clear();
+                    business.getPopularItems(0, 20, new CallbackInterface() {
+                        @Override
+                        public void onCompleted(Object data) {
+                            List<Item> downloadedItems = (List<Item>) data;
+
+                            itemsList.addAll(downloadedItems);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+                else {
+                    topResultsTextView.setText("Results...");
+                    itemsList.clear();
+                    if(newText.length() > 2) {
+                        business.getItemsByQuery(newText, new CallbackInterface() {
+                            @Override
+                            public void onCompleted(Object data) {
+                                List<Item> results = (List<Item>) data;
+
+                                itemsList.addAll(results);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //topResultsTextView.setText(R.string.header_you_might_like);
+                return true;
             }
         });
 
