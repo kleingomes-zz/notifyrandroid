@@ -83,7 +83,7 @@ public class ArticleAdapter extends BaseAdapter {
         titleTextView.setText(article.getTitle());
         subtitleTextView.setText(article.getSource() + " - " + article.getTimeAgo());
 
-        // Load the image element ( TODO: Image loads everytime articles are seen....need to cache this locally somehow??? )
+        // Load the image element
         String imageUrl = article.getIurl();
 
         // Check if the image is in cache

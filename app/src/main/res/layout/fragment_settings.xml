@@ -244,7 +244,8 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom=".25dp">
+                android:layout_marginBottom=".25dp"
+                android:visibility="gone">
 
                 <TableRow
                     android:id="@+id/ARM"
@@ -366,7 +367,16 @@
                             android:text="Network Status"
                             android:textColor="@color/darkGray"
                             android:textSize="16sp" />
-
+                        <ProgressBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/pbNetworkStatus"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="20dp"
+                            android:visibility="visible"
+                            style="?android:attr/progressBarStyleSmall" />
                         <TextView
                             android:id="@+id/txtNetworkStatusGreen"
                             android:layout_width="wrap_content"
@@ -377,6 +387,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginRight="28dp"
                             android:text="Online"
+                            android:visibility="gone"
                             android:textColor="@color/switchGreen"
                             android:textSize="16sp" />
                     </RelativeLayout>

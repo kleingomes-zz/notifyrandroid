@@ -11,6 +11,7 @@
     <color name="darkGray">#7f8c8d</color>
     <color name="notifyrBlue">#3498db</color>
     <color name="switchGreen">#63d863</color>
+    <color name="switchRed">#d00101</color>
     <color name="black_overlay">#66000000</color>
 
 </resources>

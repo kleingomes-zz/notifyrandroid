@@ -1,6 +1,8 @@
 package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -17,6 +20,7 @@ import android.widget.Switch;
 import android.widget.RadioGroup;
 
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 
@@ -51,6 +55,7 @@ public class SettingsFragment extends Fragment {
     Switch swtchArticleReaderMode;
     Business business;
     UserSetting settings;
+    ProgressBar pbNetworkStatus;
 
     private OnFragmentInteractionListener mListener;
 
@@ -124,7 +129,7 @@ public class SettingsFragment extends Fragment {
         RadioBtnNever = (RadioButton) view.findViewById(R.id.radioButtonNever);
         RadioBtnWifiOnly = (RadioButton) view.findViewById(R.id.radioButtonWifiOnly);
         RadioBtnAlways = (RadioButton) view.findViewById(R.id.radioButtonAlways);
-
+        pbNetworkStatus = (ProgressBar) view.findViewById(R.id.pbNetworkStatus);
         openSansRegular = Typeface.createFromAsset(getActivity().getAssets(), "fonts/OpenSans-Regular.ttf");
         openSansLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/OpenSans-Light.ttf");
 
@@ -205,9 +210,34 @@ public class SettingsFragment extends Fragment {
         });
 
         //NETWORK STATUS AND VERSION NUMBER
-        txtNetworkStatusGreen.setText(settings.getNetworkStatus()); //get networkstatus from the db
-        txtVersionNumber.setText(settings.getVersion()); //get version number from the db
-        //seekBarMaxNotificationsPerDay.setProgress(0);
+        business.getNetworkStatus(new CallbackInterface() {
+            @Override
+            public void onCompleted(Object data) {
+                String status = (String) data;
+                if(status.equals("true"))
+                {
+                    txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchGreen));
+                    txtNetworkStatusGreen.setText("Online");
+                }
+                else
+                {
+                    txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchRed));
+                    txtNetworkStatusGreen.setText("Offline");
+                }
+                txtNetworkStatusGreen.setVisibility(View.VISIBLE);
+                pbNetworkStatus.setVisibility(View.GONE);
+            }
+        });
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String version = pInfo.versionName;
+        txtVersionNumber.setText(version);
+
 
         //SEEKBAR FOR MAX NOTIFICATIONS
         seekBarMaxNotificationsPerDay.setMax(20);

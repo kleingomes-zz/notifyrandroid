@@ -261,6 +261,13 @@ public class Business {
 
     //endregion
 
+    //region MISC
+    public void getNetworkStatus(CallbackInterface callback)
+    {
+        new WebApi(context).getNetworkStatus(callback);
+    }
+    //endregion
+
     //region ENUM
     public enum MenuTab
     {

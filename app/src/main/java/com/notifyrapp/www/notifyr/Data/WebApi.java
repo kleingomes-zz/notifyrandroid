@@ -2,6 +2,7 @@ package com.notifyrapp.www.notifyr.Data;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Network;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -40,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.Item;
+import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.NetworkStatus;
 import static java.lang.Thread.sleep;
 
 public class WebApi {
@@ -188,6 +190,17 @@ public class WebApi {
 
     //endregions
 
+    //region MISC
+    public void getNetworkStatus(CallbackInterface callback)
+    {
+        String urlPath = "Status/IsNetworkOnline";
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url, context, callback, NetworkStatus);
+        }
+    }
+    //endregion
+
     //region Network Requests
     private AsyncTask<Object, Void, List<Object>> postJSONObjectFromURL = new AsyncTask<Object, Void, List<Object>>() {
 
@@ -276,6 +289,10 @@ public class WebApi {
                     {
                         returnObj.add(new JSONArray(result));
                     }
+                    else if (notifyrObjectType == NotifyrObjects.NetworkStatus)
+                    {
+                        returnObj.add(new JSONObject(result));
+                    }
                     else
                     {
                         returnObj.add(new JSONObject(result));
@@ -302,10 +319,14 @@ public class WebApi {
                 NotifyrObjects notifyrType = (NotifyrObjects) returnObjects.get(2);
                 JSONObject jsonObject = null;
                 JSONArray jsonArray = null;
-
+                String response = null;
                 if(notifyrType == NotifyrObjects.Article || notifyrType == NotifyrObjects.Item)
                 {
                     jsonArray = (JSONArray) returnObjects.get(0);
+                }
+                else if (notifyrType == NotifyrObjects.NetworkStatus)
+                {
+                    jsonObject = (JSONObject) returnObjects.get(0);
                 }
                 else
                 {
@@ -378,6 +399,11 @@ public class WebApi {
                         PreferenceManager.getDefaultSharedPreferences(context).edit().putString("accesstoken",accessToken).commit();
                         callback.onCompleted(null);
                     }
+                    else if (notifyrType == NotifyrObjects.NetworkStatus) {
+                        String status = jsonObject.getString("NetworkStatus");
+                        callback.onCompleted(status);
+                    }
+
                     } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -390,7 +416,7 @@ public class WebApi {
 
     //region Helpers
     public enum NotifyrObjects {
-        Article, Item, UserProfile, AccessToken, UserSetting
+        Article, Item, UserProfile, AccessToken, UserSetting, NetworkStatus
     }
 
     private String streamToString(InputStream is) throws IOException {
