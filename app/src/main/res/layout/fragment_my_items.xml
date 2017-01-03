@@ -1,27 +1,8 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/items_list_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.notifyrapp.www.notifyr.MyItemsFragment">
+    android:clickable="true">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/scrollView1"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/my_items_table">
-
-            </TableLayout>
-        </ScrollView>
-    </LinearLayout>
-
-</FrameLayout>
+</ListView>

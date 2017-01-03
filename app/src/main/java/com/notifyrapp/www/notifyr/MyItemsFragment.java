@@ -17,13 +17,42 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Context;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TableLayout;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Model.Item;
+import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
+import com.notifyrapp.www.notifyr.UI.ItemAdapter;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
 import com.notifyrapp.www.notifyr.Model.Item;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.List;
 
 
@@ -45,7 +74,26 @@ public class MyItemsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private Context ctx;
+    private Button btnFrequency;
     private OnFragmentInteractionListener mListener;
+    private TableLayout itemTable;
+    private ListView mListView;
+    private List<Item> userItemsList;
+    private ItemAdapter itemAdapter;
+    private ArrayList<Item> list_items = new ArrayList<>();
+    private int count = 0;
+    public Button btnEditDoneDelete;
+    private Button btnTrashcanDelete;
+    private CheckBox checkBoxDelete;
+    public MainActivity act;
+    public int counterforDeleteButton = 0;
+    public int visibility = 0;
+    public static MyItemsFragment fragment;
+    private int position;
+
+
+//    private OnFragmentInteractionListener mListener;
 
     /* Widgets */
     EditText searchText;
@@ -79,88 +127,131 @@ public class MyItemsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        userItemsList = new ArrayList<>();
 
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        act = (MainActivity) getActivity();
+        act.abTitle.setText("My Interests");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);
-        MainActivity act = (MainActivity)getActivity();
-        act.abTitle.setText("My Interests");
-        // Init the Widgets
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        Business biz = new Business(view.getContext());
-        List<Item> userItemsList = biz.getUserItemsFromLocal();
+        this.ctx = view.getContext();
+        btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
+        btnTrashcanDelete = (Button) act.findViewById(R.id.btnTrashCanDelete);
+        mListView = (ListView) view.findViewById(R.id.items_list_view);
+        //  checkBoxDelete = (CheckBox) mListView.findViewById(R.id.checkboxDelete);
+        //Get the batch of items
+        //final Business biz = new Business(view.getContext());
+        itemAdapter = new ItemAdapter(ctx, userItemsList);
+        mListView.setAdapter(itemAdapter);
+        getUserItems();
 
-        TableLayout itemTable =  (TableLayout) view.findViewById(R.id.my_items_table);
-        for (final Item currentItem: userItemsList) {
-            TableRow row = (TableRow)inflater.inflate(R.layout.item_row, null,false);//(TableRow) view.findViewById(R.id.item_row);
-            row.setClickable(true);
-            row.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getActivity(), "Clicked Item: " + currentItem.getName(),
-                            Toast.LENGTH_SHORT).show();
 
-                    Fragment newFragment = new ArticleListFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, newFragment);
-                    transaction.addToBackStack("myitems_frag");
-                    transaction.commit();
+
+
+
+                btnEditDoneDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        counterforDeleteButton++;
+                        if (counterforDeleteButton % 2 != 0) {
+                            btnEditDoneDelete.setText("Done");
+                            btnTrashcanDelete.setVisibility(View.VISIBLE);
+//                     itemAdapter.checkBoxDelete.setVisibility(View.VISIBLE);
+                    for (int i = 0; i< itemAdapter.numberofItems-2; i++) //still need to get all of the items
+                    {
+                        checkBoxDelete = (CheckBox) view.findViewWithTag(String.valueOf(i));
+                        checkBoxDelete.setVisibility(View.VISIBLE);
+                    }
+
+                            Toast.makeText(getActivity(), "Please select the items you wish to delete",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            for (int i = 0; i< itemAdapter.numberofItems-2; i++) //still need to get all of the items
+                            {
+                                checkBoxDelete = (CheckBox) view.findViewWithTag(String.valueOf(i));
+                                checkBoxDelete.setVisibility(View.GONE);
+                            }
+                            btnEditDoneDelete.setText("Edit");
+                            btnTrashcanDelete.setVisibility(View.GONE);
+
+//             checkboxDelete.setVisibility(View.GONE);
+
+                        }
+
+                    }
+
+                });
+
+        btnTrashcanDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //now we are actually going to remove the items from the listview when we hit the trashcan
+                for (int i  = 0; i < itemAdapter.numberofItems; i++)
+                {
+                    checkBoxDelete = (CheckBox) view.findViewWithTag(String.valueOf(i));
+                    if (checkBoxDelete.isChecked())
+                    {
+                        itemAdapter.remove(i);
+                    }
                 }
-            });
-            row.setOnLongClickListener(new View.OnLongClickListener()
-            {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("Priority:", String.valueOf(currentItem.getPriority()));
-                    new MaterialDialog.Builder(v.getContext())
-                            .title("Set Frequency")
-                            .content("How often would you like to receive notifications?")
-                            .positiveText("Save")
-                            .negativeText("Cancel")
-                            .items(R.array.freq_options)
-                            .itemsCallbackSingleChoice(3-currentItem.getPriority(), new MaterialDialog.ListCallbackSingleChoice() {
-                                @Override
-                                public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                    /**
-                                     * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
-                                     * returning false here won't allow the newly selected radio button to actually be selected.
-                                     **/
-                                    Log.d("SELECTED RADIO BUTTON:",text + ":" + which);
-                                    Toast.makeText(getActivity(), text + ", ID = " + which, Toast.LENGTH_SHORT).show();
-                                    return true;
-                                }
+//                for (int i = 0; i < itemAdapter.selectedItemPositions.size(); i++)
+//                {
+//                    position = itemAdapter.selectedItemPositions.get(i);
+//                    userItemsList.remove(position);
+//                    itemAdapter.notifyDataSetChanged();
 
-                            })
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                }
+//                for (int i = 0; i < itemAdapter.selectedItemPositions.size(); i++)
+//                {
+//                     if (btnEditDoneDelete.getTag())
+//                     if (itemAdapter.selectedItemPositions.contains((Integer)itemAdapter.checkBoxDelete.getTag()))
+//                     {
+//                         userItemsList.remove()
+//                     }
 
-                                }
-                            })
-                            .show();
-                    return false;
-                }
-            });
+//                }
+                Toast.makeText(getActivity(), "Items have been deleted",
+                        Toast.LENGTH_SHORT).show();
+            }
 
-            row.setBackgroundResource(R.drawable.row_border);
+        });
 
-            ((TextView)row.findViewById(R.id.item_name)).setText(currentItem.getName());
 
-            ((TextView)row.findViewById(R.id.item_frequency)).setText("Frequency: "+currentItem.getPriorityString());
+        //add the onclick listener to open the list of articles
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(getActivity(), "Clicked Item: " + ItemAdapter.item.getName(),
+                // Toast.LENGTH_SHORT).show();
+                Fragment newFragment = new ArticleListFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment);
+                transaction.addToBackStack("myitems_frag");
+                transaction.commit();
+            }
+        });
 
-            ImageView image = (ImageView) row.findViewById(R.id.item_image_view);
-
-            new DownloadImageTask(image).execute(currentItem.getIurl());
-
-            itemTable.addView(row);
-        }
 
         return view;
+
+    }
+
+    public void getUserItems() {
+        final Business business = new Business(ctx);
+        List<Item> localItems = business.getUserItemsFromLocal();
+        userItemsList.addAll(localItems);
+        itemAdapter.notifyDataSetChanged();
+        itemAdapter.notifyDataSetChanged();
+        itemAdapter.notifyDataSetChanged();
+
+
     }
 
 

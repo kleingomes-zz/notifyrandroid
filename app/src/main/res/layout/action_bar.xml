@@ -3,13 +3,51 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Notifyr"
-        android:textColor="@color/colorWhite"
-        android:id="@+id/abTitle"
-        android:textSize="18sp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp">
+
+        <TextView
+            android:id="@+id/abTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="false"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="Notifyr"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnEditDone"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="10dp"
+            android:background="#00000000"
+            android:paddingTop="12dp"
+            android:text="Edit"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp"
+            android:visibility="visible"
+            android:layout_marginStart="4dp" />
+
+        <Button
+            android:id="@+id/btnTrashCanDelete"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="45dp"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp"
+            android:visibility="gone"
+            android:background="@drawable/ic_delete_white_24dp" />
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                             case 1 :
                                 abTitle.setText(R.string.menu_tab_1);
                                 btnEditDone.setVisibility(View.VISIBLE);
-                                btnTrashCanDelete.setVisibility(View.VISIBLE);
+                                btnTrashCanDelete.setVisibility(View.GONE);
                                 currentMenu = Business.MenuTab.Interests;
                                 myItemsFragment = new MyItemsFragment();
                                 fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");

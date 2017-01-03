@@ -90,7 +90,7 @@ public class NotificationAdapter extends BaseAdapter {
 
         // Check if the image is in cache
         String imageUrl = article.getRelatedInterestsURL();
-        Bitmap image = CacheManager.getImageFromMemoryCache("notification_"+String.valueOf(article.getId()));
+        Bitmap image = CacheManager.getImageFromMemoryCache("item_"+String.valueOf(article.getRelatedInterests()));
         if(image != null)
         {
             imageView.setImageBitmap(image);
@@ -104,7 +104,15 @@ public class NotificationAdapter extends BaseAdapter {
                     public void onCompleted(Object data) {
                         if(data != null) {
                             Bitmap articleImage = (Bitmap) data;
-                            CacheManager.saveImageToMemoryCache("notification_"+String.valueOf(article.getId()), articleImage);
+                            CacheManager.saveImageToMemoryCache("notification_" + String.valueOf(article.getId()), articleImage);
+                            String str = article.getRelatedInterests();
+                            if (!str.contains(",")) {
+                                CacheManager.saveImageToMemoryCache("item_" + String.valueOf(str), articleImage);
+                            } else {
+                                String itemName = str.substring(0, str.indexOf(","));
+                                CacheManager.saveImageToMemoryCache("item_" + String.valueOf(itemName), articleImage);
+
+                            }
                         }
                         if(mProgressBar != null) mProgressBar.setVisibility(View.GONE);
                     }
