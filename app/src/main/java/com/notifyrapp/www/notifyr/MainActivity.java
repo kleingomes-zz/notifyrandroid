@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 itemTypeId = itemCategories.get(position-1).getId();
             }
 
-            return ArticleListFragment.newInstance(position,itemTypeId);
+            return ArticleListFragment.newInstance(position,itemTypeId,"");
         }
 
         @Override

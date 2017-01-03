@@ -1,37 +1,24 @@
 package com.notifyrapp.www.notifyr.Data;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Network;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.AccessToken;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.Item;
-import com.notifyrapp.www.notifyr.Model.UserProfile;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import org.joda.time.DateTime;
@@ -40,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.POST;
 import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.Item;
 import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.NetworkStatus;
 import static java.lang.Thread.sleep;
@@ -151,6 +139,25 @@ public class WebApi {
             postJSONObjectFromURL.execute(url,context,callback, Item );
         }
     }
+
+    public void updateUserItemPriority(int itemId,int priorityId, CallbackInterface callback) {
+        String urlPath = "Item/UpdateUserItemPriority?itemId="+itemId+"&priority=" + priorityId;
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, POST);
+        }
+    }
+
+    public void deleteUserItem(int itemId, CallbackInterface callback) {
+        String params = "itemId="+itemId;
+        String urlPath = "Item/DeleteUserItem?" + params;
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, POST, params );
+        }
+    }
+
+
     //endregion
 
     //region Articles
@@ -223,7 +230,8 @@ public class WebApi {
                 conn.setConnectTimeout(15000);
 
                 /* Set Request Type */
-                if(notifyrObjectType == NotifyrObjects.AccessToken || notifyrObjectType == NotifyrObjects.UserProfile || notifyrObjectType == NotifyrObjects.UserSetting) {
+                if(notifyrObjectType == NotifyrObjects.AccessToken || notifyrObjectType == NotifyrObjects.UserProfile || notifyrObjectType == NotifyrObjects.UserSetting
+                        || notifyrObjectType == NotifyrObjects.POST) {
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
@@ -261,6 +269,16 @@ public class WebApi {
                     os.write( outputInBytes );
                     os.close();
                 }
+                // REMOVE item
+                else if(notifyrObjectType == NotifyrObjects.POST) {
+                    String param = (String) params[4];
+                    String bearer = "Bearer " + accessToken;
+                    conn.setRequestProperty("Authorization", bearer);
+                    byte[] outputInBytes = param.getBytes("UTF-8");
+                    OutputStream os = conn.getOutputStream();
+                    os.write( outputInBytes );
+                    os.close();
+                }
 
                 conn.connect();
                 int statusCode = conn.getResponseCode();
@@ -292,6 +310,10 @@ public class WebApi {
                     else if (notifyrObjectType == NotifyrObjects.NetworkStatus)
                     {
                         returnObj.add(new JSONObject(result));
+                    }
+                    else if (notifyrObjectType == NotifyrObjects.POST)
+                    {
+                        returnObj.add(result);
                     }
                     else
                     {
@@ -327,6 +349,10 @@ public class WebApi {
                 else if (notifyrType == NotifyrObjects.NetworkStatus)
                 {
                     jsonObject = (JSONObject) returnObjects.get(0);
+                }
+                else if(notifyrType == NotifyrObjects.POST)
+                {
+                    response = (String)returnObjects.get(0);
                 }
                 else
                 {
@@ -403,7 +429,9 @@ public class WebApi {
                         String status = jsonObject.getString("NetworkStatus");
                         callback.onCompleted(status);
                     }
-
+                    else if (notifyrType == NotifyrObjects.POST) {
+                        callback.onCompleted(response);
+                    }
                     } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -412,11 +440,12 @@ public class WebApi {
             super.onPostExecute(returnObjects);
         }
     };
+
     //endregion
 
     //region Helpers
     public enum NotifyrObjects {
-        Article, Item, UserProfile, AccessToken, UserSetting, NetworkStatus
+        Article, Item, UserProfile, AccessToken, UserSetting, NetworkStatus, POST
     }
 
     private String streamToString(InputStream is) throws IOException {

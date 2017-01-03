@@ -22,9 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
@@ -50,7 +52,9 @@ import me.samthompson.bubbleactions.Callback;
 public class ArticleListFragment extends Fragment {
 
     private int mParam1;
+    private int itemId;
     private int itemTypeId;
+    private String itemName;
     private Context ctx;
     private Activity act;
     private ListView mListView;
@@ -66,25 +70,29 @@ public class ArticleListFragment extends Fragment {
     private ProgressBar pbFooter;
     private InfiniteScrollListener mInfiniteScrollListener;
     private RadioGroup radioGroup;
+    public TextView abTitle;
+
     public ArticleListFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param position Parameter 1.
-     * @return A new instance of fragment ArticleListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ArticleListFragment newInstance(int position,int itemTypeId) {
+    public static ArticleListFragment newInstance(int position,int itemTypeId, String itemName) {
         ArticleListFragment fragment = new ArticleListFragment();
         Bundle args = new Bundle();
         args.putInt("pos", position);
         args.putInt("itemTypeId", itemTypeId);
+        args.putString("itemName", itemName);
         fragment.setArguments(args);
 
+        return fragment;
+    }
+
+    public static ArticleListFragment newInstance(int itemId,String itemName) {
+        ArticleListFragment fragment = new ArticleListFragment();
+        Bundle args = new Bundle();
+        args.putInt("itemId", itemId);
+        args.putString("itemName", itemName);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -95,6 +103,8 @@ public class ArticleListFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getInt("pos");
             itemTypeId = getArguments().getInt("itemTypeId");
+            itemId = getArguments().getInt("itemId");
+            itemName = getArguments().getString("itemName");
         }
         if(mParam1 == 0)  {
             this.sortBy = Business.SortBy.Newest;
@@ -114,7 +124,7 @@ public class ArticleListFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         articleList = new ArrayList<>();
     }
 
@@ -127,7 +137,12 @@ public class ArticleListFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
         this.ctx = view.getContext();
-
+        Button btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
+        btnEditDoneDelete.setVisibility(View.GONE);
+        abTitle =  (TextView)act.findViewById(R.id.abTitle);
+        if(itemName!= null && !itemName.equals("")) {
+            abTitle.setText(itemName);
+         }
         /*upFab = (FloatingActionButton) view.findViewById(R.id.fab);
         upFab.setOnClickListener(new View.OnClickListener() {
             @Override

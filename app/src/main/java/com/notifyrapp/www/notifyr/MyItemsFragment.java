@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,6 +45,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.GlobalShared;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
@@ -90,6 +92,7 @@ public class MyItemsFragment extends Fragment {
     private ListView mListView;
     private List<Item> userItemsList;
     private ItemAdapter itemAdapter;
+    private SwipeRefreshLayout mSwipeContainer;
     private ArrayList<Item> list_items = new ArrayList<>();
     private int count = 0;
     public Button btnEditDoneDelete;
@@ -156,16 +159,50 @@ public class MyItemsFragment extends Fragment {
         btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
         btnTrashcanDelete = (Button) act.findViewById(R.id.btnTrashCanDelete);
         mListView = (ListView) view.findViewById(R.id.items_list_view);
-        //  checkBoxDelete = (CheckBox) mListView.findViewById(R.id.checkboxDelete);
-        //Get the batch of items
-        //final Business biz = new Business(view.getContext());
-        itemAdapter = new ItemAdapter(ctx, userItemsList,itemsToDelete);
+        //add the onclick listener to open the list of articles
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(getActivity(), "Clicked Item: " + ItemAdapter.item.getName(),
+                // Toast.LENGTH_SHORT).show();
+                Log.d("ITEMCLICKER","HERE");
+                Fragment newFragment = new ArticleListFragment();
+                FragmentTransaction transaction =getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment);
+                transaction.addToBackStack("myitems_frag");
+                transaction.commit();
+            }
+        });
+        itemAdapter = new ItemAdapter(ctx, userItemsList,itemsToDelete,(MainActivity)getActivity());
         mListView.setAdapter(itemAdapter);
         View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
         mListView.addFooterView(emptyFooter);
         btnEditDoneDelete.setText("Edit");
-        getUserItems();
 
+        mListView.setClickable(true);
+
+
+        mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainerItems);
+        // Setup refresh listener which triggers new data loading
+        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(!GlobalShared.getIsInEditMode()) {
+                    mListView.setAdapter(itemAdapter);
+                    userItemsList.clear();
+                    getUserItems();
+                }
+                mSwipeContainer.setRefreshing(false);
+            }
+        });
+
+        // Configure the refreshing colors
+        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        getUserItems();
         btnEditDoneDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,6 +211,7 @@ public class MyItemsFragment extends Fragment {
                     btnEditDoneDelete.setText("Done");
                     btnTrashcanDelete.setVisibility(View.VISIBLE);
                     GlobalShared.setIsEditMode(true);
+                    mSwipeContainer.setEnabled(false);
                     itemAdapter.notifyDataSetChanged();
                     Toast.makeText(getActivity(), "Please select the items you wish to delete",Toast.LENGTH_SHORT).show();
                 }
@@ -182,6 +220,7 @@ public class MyItemsFragment extends Fragment {
                     btnEditDoneDelete.setText("Edit");
                     btnTrashcanDelete.setVisibility(View.GONE);
                     GlobalShared.setIsEditMode(false);
+                    mSwipeContainer.setEnabled(true);
                     itemAdapter.notifyDataSetChanged();
                 }
             }
@@ -209,6 +248,14 @@ public class MyItemsFragment extends Fragment {
                     // Delete it from the local SQL DB first
                     // If that's a success then remove it from the listview adapter
                     Boolean deleteSuccess =  business.deleteUserItemLocal(item);
+                    // Now delete from Server
+                    business.deleteUserItemFromServer(item.getId(), new CallbackInterface() {
+                        @Override
+                        public void onCompleted(Object data) {
+                                 // Maybe log something here later
+                            }
+                    });
+
                     if(deleteSuccess) {
                         Log.d("DELETING_ITEM", item.getName() + " ROW: " + item.getItemRowId());
                         userItemsList.remove(row - offset);
@@ -235,20 +282,6 @@ public class MyItemsFragment extends Fragment {
         });
 
 
-        //add the onclick listener to open the list of articles
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(getActivity(), "Clicked Item: " + ItemAdapter.item.getName(),
-                // Toast.LENGTH_SHORT).show();
-                Fragment newFragment = new ArticleListFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack("myitems_frag");
-                transaction.commit();
-            }
-        });
-
 
         return view;
 
@@ -259,10 +292,6 @@ public class MyItemsFragment extends Fragment {
         List<Item> localItems = business.getUserItemsFromLocal();
         userItemsList.addAll(localItems);
         itemAdapter.notifyDataSetChanged();
-        itemAdapter.notifyDataSetChanged();
-        itemAdapter.notifyDataSetChanged();
-
-
     }
 
 

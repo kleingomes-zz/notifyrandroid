@@ -79,6 +79,17 @@ public class Business {
         return new Repository(context).deleteUserItem(userItem);
     }
 
+    public void deleteUserItemFromServer(int itemId,CallbackInterface callback)
+    {
+        new WebApi(context).deleteUserItem(itemId,callback);
+    }
+
+    public void updateUserItemPriorityFromServer(int itemId,int priorityId,CallbackInterface callback)
+    {
+        new WebApi(context).updateUserItemPriority(itemId,priorityId,callback);
+    }
+
+
     public void getPopularItemsFromServer(int skip,int take,CallbackInterface callback)
     {
         new WebApi(context).getPopularItems(skip,take,callback);

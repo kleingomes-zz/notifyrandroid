@@ -2,11 +2,15 @@
 package com.notifyrapp.www.notifyr.UI;
 
 
+        import android.app.Activity;
         import android.content.Context;
         import android.graphics.Bitmap;
+        import android.graphics.PorterDuff;
         import android.graphics.drawable.BitmapDrawable;
+        import android.graphics.drawable.Drawable;
         import android.support.annotation.NonNull;
         import android.support.v4.app.FragmentManager;
+        import android.support.v7.app.AppCompatActivity;
         import android.util.Log;
         import android.support.v4.app.FragmentTransaction;
         import android.support.v4.app.Fragment;
@@ -55,6 +59,7 @@ public class ItemAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<Item> mDataSource;
     private Map<Integer, Item> mDeleteQueue;
+    private MainActivity act;
     public List<Integer> selectedItemPositions = new ArrayList<>();
 
     public int numberofItems;
@@ -68,10 +73,11 @@ public class ItemAdapter extends BaseAdapter {
 
 
 
-    public ItemAdapter(Context context, List<Item> items,Map<Integer, Item> deleteItemsQueue) {
+    public ItemAdapter(Context context, List<Item> items, Map<Integer, Item> deleteItemsQueue, MainActivity activity) {
         mContext = context;
         mDataSource = items;
         mDeleteQueue = deleteItemsQueue;
+        act = activity;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -243,6 +249,20 @@ public class ItemAdapter extends BaseAdapter {
                 }
             });
         }
+
+        rowView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment newFragment = new ArticleListFragment().newInstance(item.getId(),item.getName());
+                android.support.v4.app.FragmentTransaction transaction =  act.getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment);
+                transaction.addToBackStack("myitems_frag");
+                final Drawable upArrow = act.getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+                upArrow.setColorFilter(act.getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
+
+                transaction.commit();
+            }
+        });
 
         return rowView;
     }
