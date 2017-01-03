@@ -1,15 +1,21 @@
 package com.notifyrapp.www.notifyr;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
@@ -22,6 +28,7 @@ import android.widget.RadioGroup;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
+import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 
@@ -35,6 +42,7 @@ public class SettingsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private Context ctx;
     private boolean isDirtyServer = false;
     private boolean isDirtyLocal = false;
     private boolean truth;
@@ -45,6 +53,7 @@ public class SettingsFragment extends Fragment {
     private int userRadioButtonValue;
     private int articleReaderMode;
     private int checkStatus = 0;
+    private WebViewFragment mWebViewFragment;
     TextView txtsettings, txtMaxNotification, txtMaxNotificationDescription, txtNotificationsPerDay, txtDownloadArticleImages, txtArticleReaderMode, txtArticleReaderModeDescription,
             txtAccountInformation, txtNetworkStatus, txtNetworkStatusGreen, txtAbout, txtVersion, txtVersionNumber;
     Button btnSendTestNotification, btnPrivacy, btnTerms, btnRateOnAppStore, btnSendFeedback;
@@ -105,6 +114,7 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        this.ctx = getContext();
         //get settings info from the local database
         business = new Business(getActivity());
         settings = business.getUserSettings();
@@ -266,6 +276,43 @@ public class SettingsFragment extends Fragment {
                 }
         );
 
+        // RATE ON GOOGLE PLAY
+        btnRateOnAppStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rateOnAppStore();
+            }
+        });
+
+        // Privacy
+        btnPrivacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                Article art = new Article();
+                art.setUrl("http://www.notifyrapp.com/privacy.html");
+                mWebViewFragment = new WebViewFragment().newInstance(art);
+                fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
+                fragmentTransaction.addToBackStack("settings_frag");
+                fragmentTransaction.commit();
+            }
+        });
+
+        // Terms
+        btnTerms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                Article art = new Article();
+                art.setUrl("http://www.notifyrapp.com/terms.html");
+                mWebViewFragment = new WebViewFragment().newInstance(art);
+                fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
+                fragmentTransaction.addToBackStack("settings_frag");
+                fragmentTransaction.commit();
+            }
+        });
 
         return view;
     }
@@ -310,6 +357,21 @@ public class SettingsFragment extends Fragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    private void rateOnAppStore()
+    {
+        Uri uri = Uri.parse("market://details?id=" + ctx.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + ctx.getPackageName())));
         }
     }
 

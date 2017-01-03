@@ -570,7 +570,7 @@
                             android:layout_marginLeft="0dp"
                             android:layout_marginStart="0dp"
                             android:fontFamily="sans-serif"
-                            android:text="Rate on App Store"
+                            android:text="Rate on Google Play"
                             android:textAlignment="viewStart"
                             android:textAllCaps="false"
                             android:textColor="@color/darkGray"

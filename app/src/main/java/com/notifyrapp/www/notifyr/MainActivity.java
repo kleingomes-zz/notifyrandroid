@@ -76,6 +76,18 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                     getSupportActionBar().hide();
                     setAppBarVisibility(false);
                 }
+                else if (currentMenu == Business.MenuTab.Interests)
+                {
+                    fm.popBackStack("myitems_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    abTitle.setText(R.string.menu_tab_2);
+                }
+                else if (currentMenu == Business.MenuTab.Settings)
+                {
+                    fm.popBackStack("settings_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    abTitle.setText(R.string.menu_tab_4);
+                }
 
                 return true;
 

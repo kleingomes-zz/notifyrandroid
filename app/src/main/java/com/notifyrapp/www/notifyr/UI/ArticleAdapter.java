@@ -51,15 +51,17 @@ public class ArticleAdapter extends BaseAdapter {
         mUserSettings = new Business(mContext).getUserSettings();
         int userMode = mUserSettings.getArticleDisplayType();
 
-        // User wants WiFi online AND HAS WiFi ON
+        // User wants WiFi only AND HAS WiFi ON
         if(userMode == 1 && mWifi.isConnected())
         {
             viewMode = 1; // Image Mode
         }
+        // User wants WiFi only AND has WIFI off OR NEVER wants images
         else if((userMode == 1 && !mWifi.isConnected()) || userMode == 0)
         {
             viewMode = 0; // Text Mode
         }
+        // User always wants images
         else if(userMode == 2)
         {
             viewMode = 1; // Image Mode
@@ -67,7 +69,6 @@ public class ArticleAdapter extends BaseAdapter {
         super.notifyDataSetChanged();
     }
 
-    //1
     @Override
     public int getCount() {
         if(mDataSource != null || mDataSource.size()>0)
@@ -76,24 +77,19 @@ public class ArticleAdapter extends BaseAdapter {
             return 0;
     }
 
-    //2
     @Override
     public Object getItem(int position) {
         return mDataSource.get(position);
     }
 
-    //3
     @Override
     public long getItemId(int position) {
         return position;
         //return mDataSource.get(position).getId();
     }
 
-    //4
     @Override
     public View getView(int position, final View convertView, ViewGroup parent) {
-
-
 
         View rowView;
 
@@ -128,7 +124,8 @@ public class ArticleAdapter extends BaseAdapter {
             Bitmap image = CacheManager.getImageFromMemoryCache("article_" + String.valueOf(article.getId()));
             if (image != null) {
                 imageView.setImageBitmap(image);
-            } else {
+            }
+            else {
                 mProgressBar.setVisibility(View.VISIBLE);
                 Picasso.with(mContext).load(article.getIurl()).into(imageView, new com.squareup.picasso.Callback() {
                     @Override
@@ -162,10 +159,9 @@ public class ArticleAdapter extends BaseAdapter {
 
             // Load the Elements with data
             titleTextView.setText(article.getTitle());
+
             subtitleTextView.setText(article.getSource() + " - " + article.getTimeAgo());
-
         }
-
 
         return rowView;
     }
