@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public TextView abTitle;
     public Business.MenuTab currentMenu = Business.MenuTab.Home;
     public boolean isBookmarkDirty;
+    private Button btnEditDone;
+    private Button btnTrashCanDelete;
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -96,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         getSupportActionBar().hide();
 
         abTitle =  (TextView)findViewById(R.id.abTitle);
+        btnEditDone = (Button)findViewById(R.id.btnEditDone);
+        btnTrashCanDelete = (Button)findViewById(R.id.btnTrashCanDelete);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -181,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                             mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
                             mViewPager.setAdapter(mSectionsPagerAdapter);
                             viewPager.setVisibility(View.VISIBLE);
+                            btnEditDone.setVisibility(View.GONE);
+                            btnTrashCanDelete.setVisibility(View.GONE);
                         }
                         else
                         {
@@ -196,12 +204,16 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         {
                             case 1 :
                                 abTitle.setText(R.string.menu_tab_1);
+                                btnEditDone.setVisibility(View.VISIBLE);
+                                btnTrashCanDelete.setVisibility(View.VISIBLE);
                                 currentMenu = Business.MenuTab.Interests;
                                 myItemsFragment = new MyItemsFragment();
                                 fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
                                 fragmentTransaction.commit();
                                 break;
                             case 2 :
+                                btnEditDone.setVisibility(View.GONE);
+                                btnTrashCanDelete.setVisibility(View.GONE);
                                 currentMenu = Business.MenuTab.Discover;
                                 abTitle.setText(R.string.menu_tab_2);
                                 discoverFragment = new DiscoverFragment();
@@ -209,6 +221,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                 fragmentTransaction.commit();
                                 break;
                             case 3 :
+                                btnEditDone.setVisibility(View.GONE);
+                                btnTrashCanDelete.setVisibility(View.GONE);
                                 abTitle.setText(R.string.menu_tab_3);
                                 currentMenu = Business.MenuTab.Notifications;
                                 myNotificationsFragment = new MyNotificationsFragment();
@@ -216,6 +230,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                 fragmentTransaction.commit();
                                 break;
                             case 4 :
+                                btnEditDone.setVisibility(View.GONE);
+                                btnTrashCanDelete.setVisibility(View.GONE);
                                 currentMenu = Business.MenuTab.Settings;
                                 abTitle.setText(R.string.menu_tab_4);
                                 settingsFragment = new SettingsFragment();
