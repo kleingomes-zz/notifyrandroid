@@ -6,8 +6,11 @@ package com.notifyrapp.www.notifyr.Business;
 
 public final class GlobalShared {
 
-    private GlobalShared() {}
+    private GlobalShared() {
+        GlobalShared.isInEditMode = false;
+    }
 
+    private static Boolean isInEditMode;
     private static int articleDisplayType;
 
 
@@ -20,5 +23,12 @@ public final class GlobalShared {
     }
 
 
+    public static Boolean getIsInEditMode() {
+        return isInEditMode;
+    }
+
+    public static void setIsEditMode(Boolean isEditMode) {
+        GlobalShared.isInEditMode = isEditMode;
+    }
 }
 

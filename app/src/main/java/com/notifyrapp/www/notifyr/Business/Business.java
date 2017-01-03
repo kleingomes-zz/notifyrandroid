@@ -74,6 +74,11 @@ public class Business {
         return new Repository(context).saveUserItemLocal(userItem);
     }
 
+    public Boolean deleteUserItemLocal(Item userItem)
+    {
+        return new Repository(context).deleteUserItem(userItem);
+    }
+
     public void getPopularItemsFromServer(int skip,int take,CallbackInterface callback)
     {
         new WebApi(context).getPopularItems(skip,take,callback);

@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.GlobalShared;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
 import com.notifyrapp.www.notifyr.UI.ItemAdapter;
@@ -52,8 +55,14 @@ import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
 import com.notifyrapp.www.notifyr.Model.Item;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -89,6 +98,7 @@ public class MyItemsFragment extends Fragment {
     public MainActivity act;
     public int counterforDeleteButton = 0;
     public int visibility = 0;
+    private Map<Integer, Item> itemsToDelete;
     public static MyItemsFragment fragment;
     private int position;
 
@@ -134,6 +144,8 @@ public class MyItemsFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        GlobalShared.setIsEditMode(false);
+        itemsToDelete = new HashMap<>();
         act = (MainActivity) getActivity();
         act.abTitle.setText("My Interests");
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -147,78 +159,74 @@ public class MyItemsFragment extends Fragment {
         //  checkBoxDelete = (CheckBox) mListView.findViewById(R.id.checkboxDelete);
         //Get the batch of items
         //final Business biz = new Business(view.getContext());
-        itemAdapter = new ItemAdapter(ctx, userItemsList);
+        itemAdapter = new ItemAdapter(ctx, userItemsList,itemsToDelete);
         mListView.setAdapter(itemAdapter);
+        View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
+        mListView.addFooterView(emptyFooter);
         getUserItems();
 
-
-
-
-
-                btnEditDoneDelete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        counterforDeleteButton++;
-                        if (counterforDeleteButton % 2 != 0) {
-                            btnEditDoneDelete.setText("Done");
-                            btnTrashcanDelete.setVisibility(View.VISIBLE);
-//                     itemAdapter.checkBoxDelete.setVisibility(View.VISIBLE);
-                    for (int i = 0; i< itemAdapter.numberofItems-2; i++) //still need to get all of the items
-                    {
-                        checkBoxDelete = (CheckBox) view.findViewWithTag(String.valueOf(i));
-                        checkBoxDelete.setVisibility(View.VISIBLE);
-                    }
-
-                            Toast.makeText(getActivity(), "Please select the items you wish to delete",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            for (int i = 0; i< itemAdapter.numberofItems-2; i++) //still need to get all of the items
-                            {
-                                checkBoxDelete = (CheckBox) view.findViewWithTag(String.valueOf(i));
-                                checkBoxDelete.setVisibility(View.GONE);
-                            }
-                            btnEditDoneDelete.setText("Edit");
-                            btnTrashcanDelete.setVisibility(View.GONE);
-
-//             checkboxDelete.setVisibility(View.GONE);
-
-                        }
-
-                    }
-
-                });
+        btnEditDoneDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                counterforDeleteButton++;
+                if (counterforDeleteButton % 2 != 0) {
+                    btnEditDoneDelete.setText("Done");
+                    btnTrashcanDelete.setVisibility(View.VISIBLE);
+                    GlobalShared.setIsEditMode(true);
+                    itemAdapter.notifyDataSetChanged();
+                    Toast.makeText(getActivity(), "Please select the items you wish to delete",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    btnEditDoneDelete.setText("Edit");
+                    btnTrashcanDelete.setVisibility(View.GONE);
+                    GlobalShared.setIsEditMode(false);
+                    itemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
         btnTrashcanDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //now we are actually going to remove the items from the listview when we hit the trashcan
-                for (int i  = 0; i < itemAdapter.numberofItems; i++)
+                // Need an offset to decrease target the new row
+                // when the previous item gets deleted in the userItemsList
+                Integer offset = 0;
+                Boolean hasErrors = false;
+                Business business = new Business(ctx);
+                List<Integer> sortedRowPositions = new ArrayList<>(itemsToDelete.keySet());
+                Collections.sort(sortedRowPositions);
+
+                for (Integer row: sortedRowPositions)
                 {
-                    checkBoxDelete = (CheckBox) view.findViewWithTag(String.valueOf(i));
-                    if (checkBoxDelete.isChecked())
+                    // Get the item to delete
+                    Item item = userItemsList.get(row - offset);
+
+                    // Delete it from the local SQL DB first
+                    // If that's a success then remove it from the listview adapter
+                    Boolean deleteSuccess =  business.deleteUserItemLocal(item);
+                    if(deleteSuccess) {
+                        Log.d("DELETING_ITEM", item.getName() + " ROW: " + item.getItemRowId());
+                        userItemsList.remove(row - offset);
+                        offset++;
+                    }
+                    else
                     {
-                        itemAdapter.remove(i);
+                        hasErrors = true;
                     }
                 }
-//                for (int i = 0; i < itemAdapter.selectedItemPositions.size(); i++)
-//                {
-//                    position = itemAdapter.selectedItemPositions.get(i);
-//                    userItemsList.remove(position);
-//                    itemAdapter.notifyDataSetChanged();
 
-//                }
-//                for (int i = 0; i < itemAdapter.selectedItemPositions.size(); i++)
-//                {
-//                     if (btnEditDoneDelete.getTag())
-//                     if (itemAdapter.selectedItemPositions.contains((Integer)itemAdapter.checkBoxDelete.getTag()))
-//                     {
-//                         userItemsList.remove()
-//                     }
+                itemsToDelete.clear();
+                itemAdapter.notifyDataSetChanged();
 
-//                }
-                Toast.makeText(getActivity(), "Items have been deleted",
-                        Toast.LENGTH_SHORT).show();
+                if(hasErrors) {
+                    Toast.makeText(getActivity(), "An unknown error occurred while deleting an item.",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getActivity(), "Item(s) deleted successfully!",Toast.LENGTH_SHORT).show();
+                }
+
             }
 
         });

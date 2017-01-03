@@ -33,6 +33,7 @@ package com.notifyrapp.www.notifyr.UI;
         import com.notifyrapp.www.notifyr.Business.CallbackInterface;
         import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
         import com.notifyrapp.www.notifyr.Business.CacheManager;
+        import com.notifyrapp.www.notifyr.Business.GlobalShared;
         import com.notifyrapp.www.notifyr.MainActivity;
         import com.notifyrapp.www.notifyr.Model.Article;
         import com.notifyrapp.www.notifyr.Model.Item;
@@ -43,6 +44,8 @@ package com.notifyrapp.www.notifyr.UI;
 
         import java.util.ArrayList;
         import java.util.List;
+        import java.util.Map;
+
 /**
  * Created by dchi on 12/29/16.
  */
@@ -51,6 +54,7 @@ public class ItemAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private List<Item> mDataSource;
+    private Map<Integer, Item> mDeleteQueue;
     public List<Integer> selectedItemPositions = new ArrayList<>();
 
     public int numberofItems;
@@ -64,9 +68,10 @@ public class ItemAdapter extends BaseAdapter {
 
 
 
-    public ItemAdapter(Context context, List<Item> items) {
+    public ItemAdapter(Context context, List<Item> items,Map<Integer, Item> deleteItemsQueue) {
         mContext = context;
         mDataSource = items;
+        mDeleteQueue = deleteItemsQueue;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -88,113 +93,81 @@ public class ItemAdapter extends BaseAdapter {
         return position;
         //return mDataSource.get(position).getId();
     }
+
     public void remove(int position)
     {
         mDataSource.remove(position);
         this.notifyDataSetChanged();
     }
 
-
-
     //4
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        // MainActivity act = (MainActivity) getActivity();
-        // Get view for row item
-
-         rowView = mInflater.inflate(R.layout.list_item, parent, false);
+        rowView = mInflater.inflate(R.layout.list_item, parent, false);
         rowView.setClickable(true);
         final MyItemsFragment itemsFragment = new MyItemsFragment();
-//        itemsFragment = MyItemsFragment.fragment;
-//        MainActivity activity = (MainActivity) MyItemsFragment.fragment.getActivity();
-//        MainActivity activity = (MainActivity) .getActivity();
-//        MainActivity activity =  itemsFragment.act;
-//        Button btnEditDoneDelete = (Button) activity.findViewById(R.id.btnEditDone);
-//        Button btnTrashcanDelete = (Button) activity.findViewById(R.id.btnTrashCanDelete);
+
         //set the checkbox visibility to gone
         checkBoxDelete = (CheckBox) rowView.findViewById(R.id.checkboxDelete);
 
-//        checkBoxDelete.setTag("hello");
+        checkBoxDelete.setTag(position);
+        Boolean isInEditMode = GlobalShared.getIsInEditMode();
 
-       numberofItems++;
-        checkBoxDelete.setTag(String.valueOf(position));
-
-//        selectedItemPositions.add((Integer) checkBoxDelete.getTag());
-
-
-
-        //store an array full of the checkboxes to be deleted
-//        numberofItems = mDataSource.size();
-//        .containts
-//        .size();
-        //for(final int currentinteger: selectedItemsPosition)
-//        Arrays.fill(itemListArray, -1);
-//        checkBoxDelete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-//                if (isChecked)
-//                {
-//                    counter = 3;
-//                    selectedItemPositions.add(position);
-//                }
-//                else
-//                {
-//                    if (selectedItemPositions.contains(position))
-//                    {
-//                        selectedItemPositions.remove(position);
-//                    }
-//                    counter = 2;
-//                }
-//            }
-//        });
-
-//            @Override
-//            public void onClick(View view) {
-//                if (checkBoxDelete.isChecked() == true)
-//                {
-//                    counter = 3;
-//                    selectedItemPositions.add(position);
-//                    itemListArray[i++] = position; //stores the position in the array
-//                }
-//                else if (checkBoxDelete.isChecked() == false)
-//                {
-//                    counter = 2;
-//                    if (selectedItemPositions.contains(position))
-//                    {
-//                        selectedItemPositions.remove(position);
-//                    }
-//                }
-//
-//
-//            }
-//        });
-
-//        itemsFragment.btnEditDoneDelete.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                checkBoxDelete.setVisibility(View.VISIBLE);
-//
-//            }
-//        });
-/*
-        if (itemsFragment.counterforDeleteButton%2 != 0)
+        if(isInEditMode)
         {
             checkBoxDelete.setVisibility(View.VISIBLE);
         }
         else
         {
-            checkBoxDelete.setVisibility(View.VISIBLE);
+            // Not in edit mode restore to all unchecked
+            checkBoxDelete.setChecked(false);
+            mDeleteQueue.clear();
+            checkBoxDelete.setVisibility(View.GONE);
         }
 
-*/
-        // for the buttons in the action bar
-        //   btnEditDone = (Button) rowView.findViewById(R.id.btnEditDone);
-//        MainActivity.clickEvent(rowView)
-//        if(btnEditDone.getText() == "Done")
-//        {
-//            checkBoxDelete.setVisibility(View.VISIBLE);
-//        }
+        checkBoxDelete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // get checkbox position
+                Integer position = (Integer) buttonView.getTag();
+                // get item
+                Item deleteItem = mDataSource.get(position);
+                deleteItem.setItemRowId(position);
+
+                if(isChecked) {
+                    // item is checked so we need to queue a delete
+                    // check if its already in the collection
+                    if(!mDeleteQueue.containsKey(position))
+                    {
+                        // it doesn't so insert it
+                        mDeleteQueue.put(position,deleteItem);
+                    }
+                }
+                else
+                {
+                    // item is NOT checked make sure its out of the delete queue
+                    // we don't want to delete an item that got unchecked
+                    if(mDeleteQueue.containsKey(position))
+                    {
+                        // uhoh the item is in the delete queue even though
+                        // the user unchecked - remove it . This can happen if
+                        // the user checks and unchecks an item
+                        mDeleteQueue.remove(position);
+                    }
+                }
+            }
+        });
+
+        // We need to check if the current checkbox is in the delete queue to recheck it
+        // this happens because android redraws the view on listview scroll
+        Integer currentButtonPosition = (Integer) checkBoxDelete.getTag();
+        if(mDeleteQueue.containsKey(currentButtonPosition))
+        {
+            checkBoxDelete.setChecked(true);
+        }
+
+
         // Get the name of the item
         TextView itemTextView = (TextView) rowView.findViewById(R.id.item_name);
 
@@ -210,7 +183,6 @@ public class ItemAdapter extends BaseAdapter {
 
         // Load the Elements with data
         itemTextView.setText(item.getName());
-//       itemTextView.setText(Integer.toString(position));
         frequencyTextView.setText("Frequency: "+item.getPriorityString());
 
         //for the frequency button
@@ -274,4 +246,6 @@ public class ItemAdapter extends BaseAdapter {
 
         return rowView;
     }
+
+
 }

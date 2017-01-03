@@ -12,6 +12,7 @@ public class Item {
     private String itemTypeName;
     private int priority;
     private int userItemId;
+    private int itemRowId;
 
     public int getId() {
         return id;
@@ -80,5 +81,13 @@ public class Item {
         else if(priority == 3)
             return "High";
         return "None";
+    }
+
+    public int getItemRowId() {
+        return itemRowId;
+    }
+
+    public void setItemRowId(int itemRowId) {
+        this.itemRowId = itemRowId;
     }
 }

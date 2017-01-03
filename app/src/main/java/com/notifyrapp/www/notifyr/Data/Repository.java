@@ -80,6 +80,33 @@ public class Repository {
         return isSuccess;
     }
 
+    public Boolean deleteUserItem(Item userItem)
+    {
+        String tableName = "UserItem";
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()),db);
+            if(exists) {
+                // Insert the useritem since it exists
+                db.execSQL("DELETE FROM "
+                        + tableName
+                        + " WHERE ItemId = " + userItem.getId());
+            }
+        }
+        catch(Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return isSuccess;
+    }
+
     public List<Item> getUserItems()
     {
         String TableName = "UserItem";
