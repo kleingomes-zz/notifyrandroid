@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.UI.DiscoverRecyclerAdapter;
@@ -39,9 +41,10 @@ public class DiscoverFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private static String LOG_TAG = "RecyclerViewActivity";
     private TextView topResultsTextView;
-
+    private Context ctx;
     private List<Item> itemsList;
     private OnFragmentInteractionListener mListener;
+    private SwipeRefreshLayout swipe;
 
     public DiscoverFragment() {
         // Required empty public constructor
@@ -61,18 +64,26 @@ public class DiscoverFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         final View view = inflater.inflate(R.layout.fragment_discover, container, false);
         final Business business = new Business(getContext());
-
+        this.ctx = getContext();
         //Define your Searchview
         final SearchView searchView = (SearchView) view.findViewById(R.id.search_view);
         topResultsTextView = (TextView) view.findViewById(R.id.txtSettings);
-        //Turn iconified to false:
-        //searchView.setIconified(false);
-        //The above line will expand it to fit the area as well as throw up the keyboard
 
-        //To remove the keyboard, but make sure you keep the expanded version:
-        //searchView.clearFocus();
+        swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayoutDiscoverRecyclerview);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getPopularItems(true);
+            }
+        });
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,15 +117,7 @@ public class DiscoverFragment extends Fragment {
 
                     topResultsTextView.setText(R.string.header_you_might_like);
                     itemsList.clear();
-                    business.getPopularItems(0, 20, new CallbackInterface() {
-                        @Override
-                        public void onCompleted(Object data) {
-                            List<Item> downloadedItems = (List<Item>) data;
-
-                            itemsList.addAll(downloadedItems);
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    });
+                    getPopularItems(false);
                 }
                 else {
                     topResultsTextView.setText("Results...");
@@ -124,7 +127,6 @@ public class DiscoverFragment extends Fragment {
                             @Override
                             public void onCompleted(Object data) {
                                 List<Item> results = (List<Item>) data;
-
                                 itemsList.addAll(results);
                                 mAdapter.notifyDataSetChanged();
                             }
@@ -148,20 +150,37 @@ public class DiscoverFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         itemsList = new ArrayList<Item>();
         mAdapter = new DiscoverRecyclerAdapter(itemsList);
-
         mRecyclerView.setAdapter(mAdapter);
+        getPopularItems(false);
 
-        business.getPopularItems(0, 20, new CallbackInterface() {
-            @Override
-            public void onCompleted(Object data) {
-                List<Item> downloadedItems = (List<Item>) data;
-                itemsList.addAll(downloadedItems);
-                mAdapter.notifyDataSetChanged();
-            }
-        });
 
         return view;
     }
+
+    private void getPopularItems(Boolean forceServerLoad)
+    {
+        // First check if popular items is cached else get it from server
+        List<Item> cachedItems = (List<Item>)CacheManager.getObjectFromMemoryCache("popular_items");
+        if(cachedItems != null && forceServerLoad == false)
+        {
+            itemsList.addAll(cachedItems);
+            mAdapter.notifyDataSetChanged();
+        }
+        else
+        {
+            new Business(ctx).getPopularItems(0, 20, new CallbackInterface() {
+                @Override
+                public void onCompleted(Object data) {
+                    List<Item> downloadedItems = (List<Item>) data;
+                    CacheManager.saveObjectToMemoryCache("popular_items", data);
+                    itemsList.addAll(downloadedItems);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+        swipe.setRefreshing(false);
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

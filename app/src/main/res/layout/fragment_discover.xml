@@ -45,6 +45,11 @@
             android:text="@string/header_you_might_like"
             android:textColor="@color/darkGray"
             android:textSize="14sp" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayoutDiscoverRecyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
@@ -58,6 +63,6 @@
                 android:background="@android:color/white" />
 
         </RelativeLayout>
-
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 </FrameLayout>

@@ -90,10 +90,11 @@ public class DiscoverRecyclerAdapter extends RecyclerView
         if (holder instanceof DataObjectHolder) {
             final DataObjectHolder hold = (DataObjectHolder) holder;
             final int id = mDataset.get(position).getId();
+            final String itemName = mDataset.get(position).getName();
             String iurl = mDataset.get(position).getIurl();
 
             // Check if the image is in cache
-            Bitmap image = CacheManager.getImageFromMemoryCache("item_" + String.valueOf(id));
+            Bitmap image = CacheManager.getImageFromMemoryCache("item_" + itemName);
             if (image != null) {
                 hold.itemImage.setImageBitmap(image);
             } else {
@@ -103,7 +104,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
                             @Override
                             public void onSuccess() {
                                 Bitmap image = ((BitmapDrawable) hold.itemImage.getDrawable()).getBitmap();
-                                CacheManager.saveImageToMemoryCache("item_" + String.valueOf(id), image);
+                                CacheManager.saveImageToMemoryCache("item_" + itemName, image);
                             }
 
                             @Override
