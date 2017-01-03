@@ -34,7 +34,7 @@ public class ArticleAdapter extends BaseAdapter {
     private ConnectivityManager mConnManager;
     private NetworkInfo mWifi;
     private UserSetting mUserSettings;
-    private int viewMode = 0;
+    private int viewMode = 1;
 
     public ArticleAdapter(Context context, List<Article> articles) {
         mContext = context;
@@ -42,8 +42,6 @@ public class ArticleAdapter extends BaseAdapter {
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mConnManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         mWifi = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-
     }
 
     @Override
