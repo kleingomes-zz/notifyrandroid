@@ -196,6 +196,8 @@ public class MyItemsFragment extends Fragment {
                 Integer offset = 0;
                 Boolean hasErrors = false;
                 Business business = new Business(ctx);
+                // Need to sort the value of rows so when we remove a row
+                // we know the higher row will be decremented by one (the offset)
                 List<Integer> sortedRowPositions = new ArrayList<>(itemsToDelete.keySet());
                 Collections.sort(sortedRowPositions);
 

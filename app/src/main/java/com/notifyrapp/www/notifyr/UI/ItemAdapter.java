@@ -193,7 +193,7 @@ public class ItemAdapter extends BaseAdapter {
             public void onClick(View v) {
                 new MaterialDialog.Builder(v.getContext())
                         .title("Set Frequency")
-                        .content("How often would you like to receive notifications?")
+                        .content("How often would you like to receive notifications about "+ item.getName() +"?")
                         .positiveText("Save")
                         .negativeText("Cancel")
                         .items(R.array.freq_options)
