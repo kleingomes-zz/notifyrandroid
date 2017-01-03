@@ -142,7 +142,13 @@ public class WebApi {
         }
     }
 
-
+    public void getItemsByQuery(String query,CallbackInterface callback){
+        String urlPath = "Item/GetItems?query="+query;
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, Item );
+        }
+    }
     //endregion
 
     //region Articles

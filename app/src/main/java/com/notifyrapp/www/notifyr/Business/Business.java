@@ -84,6 +84,10 @@ public class Business {
         new WebApi(context).getPopularItemsByItemTypeId(skip,take,itemTypeId,callback);
     }
 
+    public void getItemsByQuery(String query,CallbackInterface callback)
+    {
+        new WebApi(context).getItemsByQuery(query,callback);
+    }
 
     public void syncUserItems()
     {
