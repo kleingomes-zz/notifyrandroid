@@ -153,13 +153,11 @@ public class ArticleListFragment extends Fragment {
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call mSwipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
                 mListView.setAdapter(adapter);
                 articleList.clear();
                 mInfiniteScrollListener.setCurrentPage(0);
                 currentPage = 0;
+                pbFooter.setVisibility(View.GONE);
                 getArticles(0,pageSize,sortBy.toString());
             }
         });
