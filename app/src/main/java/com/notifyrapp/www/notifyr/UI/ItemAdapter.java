@@ -4,6 +4,7 @@ package com.notifyrapp.www.notifyr.UI;
 
         import android.content.Context;
         import android.graphics.Bitmap;
+        import android.graphics.drawable.BitmapDrawable;
         import android.support.annotation.NonNull;
         import android.support.v4.app.FragmentManager;
         import android.util.Log;
@@ -37,6 +38,7 @@ package com.notifyrapp.www.notifyr.UI;
         import com.notifyrapp.www.notifyr.Model.Item;
         import com.notifyrapp.www.notifyr.MyItemsFragment;
         import com.notifyrapp.www.notifyr.R;
+        import com.squareup.picasso.Picasso;
 
 
         import java.util.ArrayList;
@@ -201,7 +203,7 @@ public class ItemAdapter extends BaseAdapter {
 
 
         // Get image of the item
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.item_image_view);
+        final ImageView imageView = (ImageView) rowView.findViewById(R.id.item_image_view);
 
         //Get the item
         final Item item = (Item) getItem(position);
@@ -247,27 +249,27 @@ public class ItemAdapter extends BaseAdapter {
             }
 
         });
-        // Check if the image is in cache
-        String imageUrl = item.getIurl();
-        Bitmap image = CacheManager.getImageFromMemoryCache("item_" + String.valueOf(item.getName()));
-        if (image != null) {
-            imageView.setImageBitmap(image);
-        } else {
-            if(mProgressBar != null) mProgressBar.setVisibility(View.VISIBLE);
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                new DownloadImageTask(imageView, mProgressBar, new CallbackInterface() {
-                    @Override
-                    public void onCompleted(Object data) {
-                        if (data != null) {
-                            Bitmap itemImage = (Bitmap) data;
-//                            ImageCacheManager.saveImageToMemoryCache("item_" + String.valueOf(item.getId()), itemImage);
-                            CacheManager.saveImageToMemoryCache("item_" + String.valueOf(item.getName()), itemImage);
 
-                        }
-                        if (mProgressBar != null) mProgressBar.setVisibility(View.GONE);
-                    }
-                }).execute(imageUrl);
-            }
+        // Check if the image is in cache
+        Bitmap image = CacheManager.getImageFromMemoryCache("item_" + String.valueOf(item.getName()));
+        if(image != null)
+        {
+            imageView.setImageBitmap(image);
+        }
+        else
+        {
+            Picasso.with(mContext).load(item.getIurl()).into(imageView, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    Bitmap image=((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                    CacheManager.saveImageToMemoryCache("item_" + String.valueOf(item.getName()), image);
+                }
+
+                @Override
+                public void onError() {
+                    Log.d("FAILED",item.getName() + " " + item.getIurl());
+                }
+            });
         }
 
         return rowView;

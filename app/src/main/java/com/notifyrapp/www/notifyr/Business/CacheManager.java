@@ -174,6 +174,8 @@ public final class CacheManager {
                 Log.d("DELETING_CACHE_ITEM",dir+"/"+children[i]);
             }
         }
+        imageCache.clear();
+        objectCache.clear();
     }
 
     public static void clearCacheAsync(Context ctx)

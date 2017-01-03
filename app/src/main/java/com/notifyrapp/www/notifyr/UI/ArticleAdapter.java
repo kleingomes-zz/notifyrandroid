@@ -98,7 +98,6 @@ public class ArticleAdapter extends BaseAdapter {
             Picasso.with(mContext).load(article.getIurl()).into(imageView, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
-                    //do smth when picture is loaded successfully
                     mProgressBar.setVisibility(View.GONE);
                     Bitmap image=((BitmapDrawable)imageView.getDrawable()).getBitmap();
                     CacheManager.saveImageToMemoryCache("article_"+String.valueOf(article.getId()),image);
