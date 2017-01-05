@@ -241,14 +241,6 @@ public class ArticleListFragment extends Fragment {
             public void onDownScrolling() {
             }
 
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-                Log.d("firstVisibleItem", String.valueOf(firstVisibleItem));
-                Log.d("visibleItemCount", String.valueOf(visibleItemCount));
-                Log.d("totalItemCount", String.valueOf(totalItemCount));
-                super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-            }
         };
 
         mListView.setOnScrollListener(mInfiniteScrollListener);
@@ -423,7 +415,7 @@ public class ArticleListFragment extends Fragment {
         // Set the Loader
         if (pbFooter != null && showFooterLoader) pbFooter.setVisibility(View.VISIBLE);
         if (pbFooter != null && !showFooterLoader)  pbFooter.setVisibility(View.GONE);
-        
+
         if(sortBy == Business.SortBy.Bookmark.toString()) {
             List<Article> bookmarks = business.getBookmarks(skip, take);
             if(bookmarks != null && bookmarks.size() > 0) {
@@ -438,7 +430,7 @@ public class ArticleListFragment extends Fragment {
             mSwipeContainer.setRefreshing(false);
         }
         else {
-            business.getUserArticlesFromServer(skip, pageSize, sortBy, itemTypeId, new CallbackInterface() {
+            business.getArticlesFromServer(skip, pageSize, sortBy, itemTypeId,itemId,isItemMode, new CallbackInterface() {
 
                 @Override
                 public void onCompleted(Object data) {

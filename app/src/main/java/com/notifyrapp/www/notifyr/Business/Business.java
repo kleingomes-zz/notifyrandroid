@@ -125,6 +125,19 @@ public class Business {
         new WebApi(context).getItemArticles(itemId,skip,take,sortBy,callback);
     }
 
+    public void getArticlesFromServer(int skip,int take, String sortBy,int itemTypeId,int itemId,Boolean isItem, CallbackInterface callback)
+    {
+        if(isItem)
+        {
+            getUserItemArticlesFromServer(skip,take,sortBy,itemId,callback);
+        }
+        else
+        {
+            getUserArticlesFromServer(skip,take,sortBy,itemTypeId,callback);
+        }
+
+    }
+
     public void  getUserArticlesFromServer(int skip, int take, String sortBy, int itemTypeId, final CallbackInterface callback)    {
         new WebApi(context).getUserArticles(skip,take,sortBy,itemTypeId,new CallbackInterface() {
             @Override
@@ -144,6 +157,11 @@ public class Business {
             }
         });
     }
+
+    public void  getUserItemArticlesFromServer(int skip, int take, String sortBy,  int itemId, CallbackInterface callback) {
+        new WebApi(context).getUserItemArticles(skip,take,sortBy,itemId,callback);
+    }
+
 
     public List<Article>  getUserArticlesFromLocal(int skip, int take,String sortBy, int itemTypeId)    {
         return new Repository(context).getUserArticles(skip,take,sortBy,itemTypeId);

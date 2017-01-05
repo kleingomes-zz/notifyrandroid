@@ -170,6 +170,15 @@ public class WebApi {
         }
     }
 
+    public void  getUserItemArticles(int skip, int take,String sortBy, int itemId, CallbackInterface callback)
+    {
+        String urlPath = "Item/GetItemArticles?skip="+skip+"&take="+take+"&sortBy="+sortBy+"&itemId="+itemId;
+        String url = apiBaseUrl + urlPath;
+        if(postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url,context,callback, NotifyrObjects.Article);
+        }
+    }
+
     //endregion
 
     //region Notifications
