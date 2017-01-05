@@ -17,6 +17,7 @@ package com.notifyrapp.www.notifyr.UI;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
+        import android.widget.Adapter;
         import android.widget.BaseAdapter;
         import java.util.Arrays;
         import android.widget.Button;
@@ -33,6 +34,7 @@ package com.notifyrapp.www.notifyr.UI;
         import com.afollestad.materialdialogs.DialogAction;
         import com.afollestad.materialdialogs.MaterialDialog;
         import com.notifyrapp.www.notifyr.ArticleListFragment;
+        import com.notifyrapp.www.notifyr.Business.Business;
         import com.notifyrapp.www.notifyr.Business.CacheManager;
         import com.notifyrapp.www.notifyr.Business.CallbackInterface;
         import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
@@ -60,6 +62,7 @@ public class ItemAdapter extends BaseAdapter {
     private List<Item> mDataSource;
     private Map<Integer, Item> mDeleteQueue;
     private MainActivity act;
+    private ItemAdapter adapter;
     public List<Integer> selectedItemPositions = new ArrayList<>();
 
     public int numberofItems;
@@ -78,6 +81,7 @@ public class ItemAdapter extends BaseAdapter {
         mDataSource = items;
         mDeleteQueue = deleteItemsQueue;
         act = activity;
+        adapter = this;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -206,12 +210,20 @@ public class ItemAdapter extends BaseAdapter {
                         .itemsCallbackSingleChoice(3-item.getPriority(), new MaterialDialog.ListCallbackSingleChoice() {
                             @Override
                             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                /**
-                                 * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
-                                 * returning false here won't allow the newly selected radio button to actually be selected.
-                                 **/
+
+                                int selectPriority = 3-which;
+                                Business business = new Business(mContext);
+                                item.setPriority(selectPriority);
+                                business.saveUserItemLocal(item);
+                                business.updateUserItemPriorityFromServer(item.getId(), selectPriority, new CallbackInterface() {
+                                    @Override
+                                    public void onCompleted(Object data) {
+                                        // TODO: Check for a fail here!!
+                                    }
+                                });
+                                adapter.notifyDataSetChanged();
                                 Log.d("SELECTED RADIO BUTTON:",text + ":" + which);
-                                //Toast.makeText(getActivity(), text + ", ID = " + which, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(act,"Saved", Toast.LENGTH_SHORT).show();
                                 return true;
                             }
 
@@ -259,7 +271,6 @@ public class ItemAdapter extends BaseAdapter {
                 transaction.addToBackStack("myitems_frag");
                 final Drawable upArrow = act.getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
                 upArrow.setColorFilter(act.getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
-
                 transaction.commit();
             }
         });

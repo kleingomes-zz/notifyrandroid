@@ -68,6 +68,19 @@ public class Repository {
                         + userItem.getUserItemId() + ","
                         + userItem.getPriority() + ");");
             }
+            else
+            {
+                db.execSQL("UPDATE "
+                        + tableName
+                        + " SET "
+                        + "Name="+ "'" +userItem.getName() + "'"+ ","
+                        + "IUrl="+ "'" +userItem.getIurl() + "'"+ ","
+                        + "ItemTypeId=" +userItem.getItemTypeId() + ","
+                        + "ItemTypeName="+ "'" +userItem.getItemTypeName()+ "'" + ","
+                        + "UserItemId=" +userItem.getUserItemId() + ","
+                        + "Priority="+ userItem.getPriority()
+                        + " WHERE ItemId = " + userItem.getId());
+            }
         }
         catch(Exception e) {
             isSuccess = false;

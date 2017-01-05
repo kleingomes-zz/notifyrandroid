@@ -282,10 +282,7 @@ public class MyItemsFragment extends Fragment {
 
         });
 
-
-
         return view;
-
     }
 
     public void getUserItems() {
