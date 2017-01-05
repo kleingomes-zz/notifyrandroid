@@ -73,7 +73,7 @@ public class ArticleListFragment extends Fragment {
     private RadioButton radioButtonPopular;
     private RadioButton radioButtonBookmark;
     private View sortViewHeader;
-
+    private Boolean showFooterLoader = true;
     // The actual articles display on the screen
     private List<Article> articleListOnScreen;
 
@@ -206,12 +206,13 @@ public class ArticleListFragment extends Fragment {
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                showFooterLoader = false;
                 mListView.setAdapter(adapter);
                 articleListOnScreen.clear();
                 mInfiniteScrollListener.setCurrentPage(0);
                 currentPage = 0;
-                pbFooter.setVisibility(View.GONE);
                 getArticles(0,pageSize,sortBy.toString());
+                showFooterLoader = true;
             }
         });
 
@@ -376,15 +377,31 @@ public class ArticleListFragment extends Fragment {
         radioGroupArticleSort.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                clearArticleBuffers();
+                articleListOnScreen.clear();
                 if (radioButtonNewest.isChecked())
                 {
-                    getArticles(0, pageSize, Business.SortBy.Newest.toString());
+                    if(articleListNewestBuffer.size() == 0)
+                    {
+                        getArticles(0, pageSize, Business.SortBy.Newest.toString());
+                    }
+                    else
+                    {
+                        articleListOnScreen.addAll(articleListNewestBuffer);
+                        adapter.notifyDataSetChanged();
+                    }
                     sortBy =  Business.SortBy.Newest;
                 }
                 else if (radioButtonPopular.isChecked())
                 {
-                    getArticles(0, pageSize, Business.SortBy.Popular.toString());
+                    if(articleListPopularBuffer.size() == 0)
+                    {
+                        getArticles(0, pageSize, Business.SortBy.Popular.toString());
+                    }
+                    else
+                    {
+                        articleListOnScreen.addAll(articleListPopularBuffer);
+                        adapter.notifyDataSetChanged();
+                    }
                     sortBy =  Business.SortBy.Popular;
                 }
                 else if (radioButtonBookmark.isChecked())
@@ -404,8 +421,9 @@ public class ArticleListFragment extends Fragment {
     {
         final Business business = new Business(ctx);
         // Set the Loader
-        if (pbFooter != null) pbFooter.setVisibility(View.VISIBLE);
-
+        if (pbFooter != null && showFooterLoader) pbFooter.setVisibility(View.VISIBLE);
+        if (pbFooter != null && !showFooterLoader)  pbFooter.setVisibility(View.GONE);
+        
         if(sortBy == Business.SortBy.Bookmark.toString()) {
             List<Article> bookmarks = business.getBookmarks(skip, take);
             if(bookmarks != null && bookmarks.size() > 0) {
