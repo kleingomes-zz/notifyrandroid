@@ -1,7 +1,5 @@
 package com.notifyrapp.www.notifyr;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,9 +50,10 @@ import me.samthompson.bubbleactions.Callback;
  */
 public class ArticleListFragment extends Fragment {
 
-    private int mParam1;
+    private int selectedIndex;
     private int itemId;
     private int itemTypeId;
+    private Boolean isItemMode;
     private String itemName;
     private Context ctx;
     private Activity act;
@@ -61,7 +61,6 @@ public class ArticleListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private SwipeRefreshLayout mSwipeContainer;
     private WebViewFragment mWebViewFragment;
-    private List<Article> articleList;
     private int currentPage = 0;
     private final int pageSize = 20;
     private Business.SortBy sortBy = Business.SortBy.Newest;
@@ -69,7 +68,22 @@ public class ArticleListFragment extends Fragment {
     private ArticleAdapter adapter;
     private ProgressBar pbFooter;
     private InfiniteScrollListener mInfiniteScrollListener;
-    private RadioGroup radioGroup;
+    private RadioGroup radioGroupArticleSort;
+    private RadioButton radioButtonNewest;
+    private RadioButton radioButtonPopular;
+    private RadioButton radioButtonBookmark;
+    private View sortViewHeader;
+
+    // The actual articles display on the screen
+    private List<Article> articleListOnScreen;
+
+    // Temp buffers to hold contents of sort types
+    // These will be swapped with articleListOnScreen
+    // if selected index of the checkbox is active
+    private List<Article> articleListNewestBuffer;
+    private List<Article> articleListPopularBuffer;
+    private List<Article> articleListBookmarkBuffer;
+
     public TextView abTitle;
 
     public ArticleListFragment() {
@@ -79,9 +93,11 @@ public class ArticleListFragment extends Fragment {
     public static ArticleListFragment newInstance(int position,int itemTypeId, String itemName) {
         ArticleListFragment fragment = new ArticleListFragment();
         Bundle args = new Bundle();
-        args.putInt("pos", position);
+        args.putInt("selectedIndex", position);
         args.putInt("itemTypeId", itemTypeId);
         args.putString("itemName", itemName);
+        args.putBoolean("isItemMode", false);
+
         fragment.setArguments(args);
 
         return fragment;
@@ -92,6 +108,7 @@ public class ArticleListFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt("itemId", itemId);
         args.putString("itemName", itemName);
+        args.putBoolean("isItemMode", true);
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,23 +118,20 @@ public class ArticleListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            mParam1 = getArguments().getInt("pos");
-            itemTypeId = getArguments().getInt("itemTypeId");
-            itemId = getArguments().getInt("itemId");
-            itemName = getArguments().getString("itemName");
+            isItemMode = getArguments().getBoolean("isItemMode");
+            if(isItemMode) {
+                itemId = getArguments().getInt("itemId");
+                itemName = getArguments().getString("itemName");
+                itemTypeId = getArguments().getInt("itemTypeId");
+            } else {
+                selectedIndex = getArguments().getInt("selectedIndex");
+                itemName = getArguments().getString("itemName");
+                itemTypeId = getArguments().getInt("itemTypeId");
+            }
+
         }
-        if(mParam1 == 0)  {
-            this.sortBy = Business.SortBy.Newest;
-            //this.sortBy = "PublishDate";
-        }
-        else if(mParam1 == 1)  {
-            this.sortBy = Business.SortBy.Popular;
-            //this.sortBy = "Score";
-        }
-        else  {
-            this.sortBy = Business.SortBy.Bookmark;
-            //this.sortBy = "Favourite";
-        }
+
+
         // Init the Widgets
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
         upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
@@ -125,7 +139,11 @@ public class ArticleListFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
-        articleList = new ArrayList<>();
+        articleListOnScreen = new ArrayList<>();
+        articleListNewestBuffer = new ArrayList<>();
+        articleListBookmarkBuffer = new ArrayList<>();
+        articleListPopularBuffer = new ArrayList<>();
+
     }
 
     @Override
@@ -133,16 +151,22 @@ public class ArticleListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         MainActivity act = (MainActivity)getActivity();
-        this.act = act;
+
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
+        sortViewHeader = View.inflate(getActivity(), R.layout.article_sort, null);
+        this.act = act;
         this.ctx = view.getContext();
         Button btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
+        Button btnTrashcanDelete = (Button) act.findViewById(R.id.btnTrashCanDelete);
         btnEditDoneDelete.setVisibility(View.GONE);
+        btnTrashcanDelete.setVisibility(View.GONE);
+
         abTitle =  (TextView)act.findViewById(R.id.abTitle);
         if(itemName!= null && !itemName.equals("")) {
             abTitle.setText(itemName);
          }
+
         /*upFab = (FloatingActionButton) view.findViewById(R.id.fab);
         upFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,13 +178,27 @@ public class ArticleListFragment extends Fragment {
 
         // Lookup the swipe container view
         mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        radioGroup =  (RadioGroup) view.findViewById(R.id.radioGroupTab);
+        radioGroupArticleSort =  (RadioGroup) sortViewHeader.findViewById(R.id.radioGroupArticleSort);
+        radioButtonNewest = (RadioButton) sortViewHeader.findViewById(R.id.radioButtonNewest);
+        radioButtonPopular = (RadioButton) sortViewHeader.findViewById(R.id.radioButtonPopular);
+        radioButtonBookmark = (RadioButton) sortViewHeader.findViewById(R.id.radioButtonBookmarks);
+        if(radioButtonNewest.isChecked())  {
+            this.sortBy = Business.SortBy.Newest;
+        }
+        else if(radioButtonPopular.isChecked())  {
+            this.sortBy = Business.SortBy.Popular;
+        }
+        else  {
+            this.sortBy = Business.SortBy.Bookmark;
+        }
+
         mListView = (ListView) view.findViewById(R.id.article_list_view);
         mListView.setFooterDividersEnabled(false);
         mListView.setHeaderDividersEnabled(false);
+        mListView.addHeaderView(sortViewHeader);
         mListView.addFooterView(new View(ctx, null, 0));
         // Config adapter and get the first batch of articles
-        adapter = new ArticleAdapter(ctx, articleList);
+        adapter = new ArticleAdapter(ctx, articleListOnScreen);
         mListView.setAdapter(adapter);
         getArticles(0,pageSize,sortBy.toString());
 
@@ -169,7 +207,7 @@ public class ArticleListFragment extends Fragment {
             @Override
             public void onRefresh() {
                 mListView.setAdapter(adapter);
-                articleList.clear();
+                articleListOnScreen.clear();
                 mInfiniteScrollListener.setCurrentPage(0);
                 currentPage = 0;
                 pbFooter.setVisibility(View.GONE);
@@ -190,23 +228,25 @@ public class ArticleListFragment extends Fragment {
 
                 if(totalItemsCount > 10) {
                     pbFooter.setVisibility(View.VISIBLE);
-                    Log.d("CURRENTPAGE", String.valueOf(currentPage));
                     getArticles((currentPage) * pageSize, pageSize, sortBy.toString());
                 }
             }
 
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            public void onUpScrolling() {
+            }
 
-             /*  if(currentPage > 2)
-                {
-                    upFab.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    upFab.setVisibility(View.INVISIBLE);
-                }
-                */
+            @Override
+            public void onDownScrolling() {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                Log.d("firstVisibleItem", String.valueOf(firstVisibleItem));
+                Log.d("visibleItemCount", String.valueOf(visibleItemCount));
+                Log.d("totalItemCount", String.valueOf(totalItemCount));
+                super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
             }
         };
 
@@ -227,7 +267,7 @@ public class ArticleListFragment extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
                 appBar.setVisibility(View.INVISIBLE);
-                Article article = articleList.get(position);
+                Article article = articleListOnScreen.get(position);
                 mWebViewFragment = new WebViewFragment().newInstance(article);
                 fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
                 fragmentTransaction.addToBackStack("articlelist_frag");
@@ -240,9 +280,10 @@ public class ArticleListFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> arg0, final View v,
                                            final int pos, long id) {
                 final Business business = new Business(ctx);
-                final Article article = articleList.get(pos);
+                final int position  = pos -1;
+                final Article article = articleListOnScreen.get(position);
                 // bookmark buttons
-                if(mParam1 == 2)
+                if(sortBy == Business.SortBy.Bookmark)
                 {
                     BubbleActions.on(v)
                             .addAction("Remove All", R.drawable.bubble_star, new Callback() {
@@ -250,7 +291,7 @@ public class ArticleListFragment extends Fragment {
                                 public void doAction() {
                                     Boolean isSuccess = business.deleteBookmark(article);
                                     if(isSuccess){
-                                        articleList.clear();
+                                        articleListOnScreen.clear();
                                         adapter.notifyDataSetChanged();
                                         Toast.makeText(v.getContext(), "Removed All Bookmarks!", Toast.LENGTH_SHORT).show();
                                     }
@@ -264,7 +305,7 @@ public class ArticleListFragment extends Fragment {
                                 public void doAction() {
                                     Boolean isSuccess = business.deleteBookmark(article);
                                     if(isSuccess) {
-                                        articleList.remove(pos);
+                                        articleListOnScreen.remove(position);
                                         adapter.notifyDataSetChanged();
                                         Toast.makeText(v.getContext(), "Removed Bookmarked!", Toast.LENGTH_SHORT).show();
                                     }
@@ -331,6 +372,30 @@ public class ArticleListFragment extends Fragment {
             }
         });
 
+        // Handle Sort Order and it's Changes
+        radioGroupArticleSort.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                clearArticleBuffers();
+                if (radioButtonNewest.isChecked())
+                {
+                    getArticles(0, pageSize, Business.SortBy.Newest.toString());
+                    sortBy =  Business.SortBy.Newest;
+                }
+                else if (radioButtonPopular.isChecked())
+                {
+                    getArticles(0, pageSize, Business.SortBy.Popular.toString());
+                    sortBy =  Business.SortBy.Popular;
+                }
+                else if (radioButtonBookmark.isChecked())
+                {
+                    getArticles(0, pageSize, Business.SortBy.Bookmark.toString());
+                    sortBy =  Business.SortBy.Bookmark;
+                }
+            }
+        });
+
+
         return view;
     }
 
@@ -338,43 +403,47 @@ public class ArticleListFragment extends Fragment {
     public void getArticles(final int skip, final int take, final String sortBy)
     {
         final Business business = new Business(ctx);
+        // Set the Loader
+        if (pbFooter != null) pbFooter.setVisibility(View.VISIBLE);
 
-        if(mParam1 == 2) {
+        if(sortBy == Business.SortBy.Bookmark.toString()) {
             List<Article> bookmarks = business.getBookmarks(skip, take);
-            if(bookmarks.size() > 0) {
-                articleList.addAll(bookmarks);
+            if(bookmarks != null && bookmarks.size() > 0) {
+                articleListOnScreen.addAll(bookmarks);
                 adapter.notifyDataSetChanged();
+            }
+            if (pbFooter != null && articleListOnScreen.size() == 0) {
+                pbFooter.setVisibility(View.GONE);
+            } else {
+                pbFooter.setVisibility(View.VISIBLE);
             }
             mSwipeContainer.setRefreshing(false);
         }
         else {
-            business.getUserArticlesFromServer(skip, pageSize, Business.SortBy.Popular.toString(), itemTypeId, new CallbackInterface() {
+            business.getUserArticlesFromServer(skip, pageSize, sortBy, itemTypeId, new CallbackInterface() {
 
                 @Override
                 public void onCompleted(Object data) {
                     List<Article> articles = (List<Article>) data;
                     // At this point we know that the data was saved into the DB
                     //  List<Article> localArticles = new ArrayList<Article>();
-                  /*  if (mParam1 == 2) {
-                        localArticles = business.getBookmarks(skip, take);
-                        mParam1 = 2;
-                    } else if (mParam1 == 1) {
-                        //  localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Popular.toString(), -1);
-                        mParam1 = 1;
-                    } else if (mParam1 == 0) {
-                        //  localArticles = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Newest.toString(), -1);
-                        mParam1 = 0;
-                    } */
-                    //if(skip == 0){
-                    //    articleList.clear();
-                    // }
-                    if (pbFooter != null && articleList.size() == 0) {
+
+                    if (sortBy == Business.SortBy.Newest.toString()) {
+                        //articleListNewestBuffer = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Popular.toString(), -1);
+                        articleListNewestBuffer = (List<Article>) data;
+                        if(pbFooter != null && articles.size() > 0) articleListOnScreen.addAll(articleListNewestBuffer);
+                    } else if (sortBy == Business.SortBy.Popular.toString()) {
+                        ///articleListPopularBuffer = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Newest.toString(), -1);
+                        articleListPopularBuffer = (List<Article>) data;
+                        if(pbFooter != null && articles.size() > 0) articleListOnScreen.addAll(articleListPopularBuffer);
+                    }
+
+                    if (pbFooter != null && articleListOnScreen.size() == 0) {
                         pbFooter.setVisibility(View.GONE);
                     } else {
                         pbFooter.setVisibility(View.VISIBLE);
                     }
                     if(pbFooter != null && articles.size() > 0) {
-                        articleList.addAll(articles);
                         adapter.notifyDataSetChanged();
                         currentPage++;
                     }
@@ -382,7 +451,19 @@ public class ArticleListFragment extends Fragment {
                 }
             });
         }
+        mListView.removeHeaderView(sortViewHeader);
+        mListView.addHeaderView(sortViewHeader);
     }
+
+    private void clearArticleBuffers()
+    {
+        articleListPopularBuffer.clear();
+        articleListBookmarkBuffer.clear();
+        articleListNewestBuffer.clear();
+        articleListOnScreen.clear();
+        currentPage = 0;
+    }
+
 
 
     // TODO: Rename method, update argument and hook method into UI event

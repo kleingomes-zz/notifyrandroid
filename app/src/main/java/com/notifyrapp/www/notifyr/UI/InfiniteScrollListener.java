@@ -1,6 +1,9 @@
 package com.notifyrapp.www.notifyr.UI;
 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.AbsListView;
 
 /**
@@ -8,25 +11,27 @@ import android.widget.AbsListView;
  */
 
 public abstract class InfiniteScrollListener implements AbsListView.OnScrollListener {
-    private int bufferItemCount = 10;
+    private int bufferItemCount = 2;
     private int currentPage = 0;
     private int itemCount = 0;
     private boolean isLoading = true;
+    private int oldTop =0;
+    private int oldFirstVisibleItem =0;
     private int last = 0;
     private boolean control = true;
-
-
+    private AbsListView.OnScrollListener onScrollListener;
+    public abstract void loadMore(int page, int totalItemsCount);
+    public abstract void onUpScrolling();
+    public abstract void onDownScrolling();
 
     public InfiniteScrollListener(int bufferItemCount) {
         this.bufferItemCount = bufferItemCount;
         this.currentPage = 0;
     }
 
-    public abstract void loadMore(int page, int totalItemsCount);
-
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        // Do Nothing2
+        // Do Nothing
     }
 
     @Override
@@ -50,10 +55,32 @@ public abstract class InfiniteScrollListener implements AbsListView.OnScrollList
             isLoading = true;
         }
 
+        int top = (view == null) ? 0 : view.getTop();
+
+        if (firstVisibleItem == oldFirstVisibleItem) {
+            if (top > oldTop) {
+                onUpScrolling();
+            } else if (top < oldTop) {
+                onDownScrolling();
+            }
+        } else {
+            if (firstVisibleItem < oldFirstVisibleItem) {
+                onUpScrolling();
+            } else {
+                onDownScrolling();
+            }
+        }
+
+        oldTop = top;
+        oldFirstVisibleItem = firstVisibleItem;
     }
 
     public void setCurrentPage(int page)
     {
         this.currentPage = page;
     }
+
+
+
 }
+

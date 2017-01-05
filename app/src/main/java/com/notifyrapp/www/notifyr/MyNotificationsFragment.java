@@ -142,6 +142,16 @@ public class MyNotificationsFragment extends Fragment {
             public void loadMore(int page, int totalItemsCount) {
                 getNotifications(page * pageSize, pageSize);
             }
+
+            @Override
+            public void onUpScrolling() {
+
+            }
+
+            @Override
+            public void onDownScrolling() {
+
+            }
         });
 
         //Add the onclick listener to open the web view

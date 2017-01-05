@@ -157,6 +157,7 @@ public class MyItemsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);
         this.ctx = view.getContext();
         btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
+        btnEditDoneDelete.setVisibility(View.VISIBLE);
         btnTrashcanDelete = (Button) act.findViewById(R.id.btnTrashCanDelete);
         mListView = (ListView) view.findViewById(R.id.items_list_view);
         //add the onclick listener to open the list of articles

@@ -3,6 +3,7 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     xmlns:app="http://schemas.android.com/tools">
 
 
@@ -12,54 +13,7 @@
         android:layout_height="fill_parent"
         android:gravity="center|top">
 
-    <RadioGroup
-        android:id="@+id/radioGroupTab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/radioButtonNewest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/radio_button_selector"
-            android:button="@null"
-            android:text="Newest"
-            android:textAlignment="center"
-            android:textColor="@drawable/radio_button_text_color" />
-
-        <RadioButton
-            android:id="@+id/radioButtonPopular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/radio_button_selector"
-            android:button="@null"
-            android:checked="true"
-            android:text="Popular"
-            android:textAlignment="center"
-            android:textColor="@drawable/radio_button_text_color"
-
-            />
-
-        <RadioButton
-            android:id="@+id/radioButtonBookmarks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/radio_button_selector"
-            android:button="@null"
-            android:text="Bookmarks"
-            android:textAlignment="center"
-            android:textColor="@drawable/radio_button_text_color"
-
-            />
-    </RadioGroup>
-        <TextView
+       <TextView
             android:background="@drawable/row_border"
             android:layout_height="1dp"
             android:layout_width="match_parent"
