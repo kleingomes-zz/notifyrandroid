@@ -13,5 +13,6 @@
     <color name="switchGreen">#63d863</color>
     <color name="switchRed">#d00101</color>
     <color name="black_overlay">#66000000</color>
+    <color name="colorGreen">#2ecc71</color>
 
 </resources>

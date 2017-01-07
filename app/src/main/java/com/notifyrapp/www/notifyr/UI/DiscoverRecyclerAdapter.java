@@ -1,4 +1,5 @@
 package com.notifyrapp.www.notifyr.UI;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -29,8 +30,9 @@ public class DiscoverRecyclerAdapter extends RecyclerView
 
     private static String LOG_TAG = "MyRecyclerViewAdapter";
     private static List<Item> mDataset;
+    private static List<Item> userItems;
     private static MyClickListener myClickListener;
-
+    private static Business mBusiness;
 
     public class EmptyViewHolder extends RecyclerView.ViewHolder {
         public EmptyViewHolder(View itemView) {
@@ -43,24 +45,38 @@ public class DiscoverRecyclerAdapter extends RecyclerView
             .OnClickListener {
         ImageView itemImage;
         TextView itemName;
+        ImageView itemIsChecked;
         Context ctx;
-
 
         public DataObjectHolder(View itemView) {
             super(itemView);
             itemImage = (ImageView) itemView.findViewById(R.id.itemImage);
             itemName = (TextView) itemView.findViewById(R.id.itemName);
+            itemIsChecked = (ImageView) itemView.findViewById(R.id.itemIsChecked);
             ctx = itemView.getContext();
-            final Business business = new Business(ctx);
+            mBusiness = new Business(ctx);
+            userItems = mBusiness.getUserItemsFromLocal();
             Log.i(LOG_TAG, "Adding Listener");
-           // itemView.setOnClickListener(this);
+            // itemView.setOnClickListener(this);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Item item = mDataset.get(getPosition());
                     item.setPriority(2);
-                    business.saveUserItemLocal(item);
-                    business.save
+                    Boolean isChecked = itemIsChecked.getTag() == "checked" ? true : false;
+                    if (!isChecked) {
+                        Boolean isSuccess = mBusiness.saveUserItemLocal(item);
+                        if (isSuccess) {
+                            itemIsChecked.setImageResource(R.mipmap.ic_check_circle_black_24dp);
+                            itemIsChecked.setTag("checked");
+                        }
+                    } else {
+                        Boolean isSuccess = mBusiness.deleteUserItemLocal(item);
+                        if (isSuccess) {
+                            itemIsChecked.setImageResource(R.mipmap.ic_add_circle_outline_black_24dp);
+                            itemIsChecked.setTag("unchecked");
+                        }
+                    }
                 }
             });
         }
@@ -69,7 +85,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
         public void onClick(View v) {
 
             getPosition();
-           // myClickListener.onItemClick(getPosition(), v);
+            // myClickListener.onItemClick(getPosition(), v);
         }
     }
 
@@ -84,7 +100,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                               int viewType) {
+                                                      int viewType) {
 
         if (viewType == EMPTY_VIEW) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_circle_center, parent, false);
@@ -105,10 +121,12 @@ public class DiscoverRecyclerAdapter extends RecyclerView
         //holder.itemImage.setText(mDataset.get(position).getItemTypeName());
         if (holder instanceof DataObjectHolder) {
             final DataObjectHolder hold = (DataObjectHolder) holder;
-            final int id = mDataset.get(position).getId();
-            final String itemName = mDataset.get(position).getName();
 
-            String iurl = mDataset.get(position).getIurl();
+            Item item =  mDataset.get(position);
+            final int id =item.getId();
+            final String itemName = item.getName();
+
+            String iurl = item.getIurl();
 
             // Check if the image is in cache
             Bitmap image = CacheManager.getImageFromMemoryCache("item_" + itemName);
@@ -131,9 +149,18 @@ public class DiscoverRecyclerAdapter extends RecyclerView
                         });
             }
             hold.itemName.setText(mDataset.get(position).getName());
+
+            // set the check box value if the user already follows it
+            Boolean userHasItem = mBusiness.isUserItemInList(userItems,item);
+            if (userHasItem) {
+                hold.itemIsChecked.setImageResource(R.mipmap.ic_check_circle_black_24dp);
+                hold.itemIsChecked.setTag("checked");
+            } else {
+                hold.itemIsChecked.setImageResource(R.mipmap.ic_add_circle_outline_black_24dp);
+                hold.itemIsChecked.setTag("unchecked");
+            }
         }
     }
-
 
 
     public void addItem(Item dataObj, int index) {
@@ -159,9 +186,10 @@ public class DiscoverRecyclerAdapter extends RecyclerView
         return super.getItemViewType(position);
     }
 
-    public interface MyClickListener {
-        public void onItemClick(int position, View v);
-    }
+public interface MyClickListener {
+    public void onItemClick(int position, View v);
+
+}
 
     private static final int EMPTY_VIEW = 10;
 }

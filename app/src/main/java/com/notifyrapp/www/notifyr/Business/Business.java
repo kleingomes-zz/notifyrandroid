@@ -54,10 +54,7 @@ public class Business {
         new WebApi(context).getAllItems(callback);
     }
 
-    public void getPopularItems(int skip,int take,CallbackInterface callback)
-    {
-        new WebApi(context).getPopularItems(skip,take,callback);
-    }
+
 
     public List<Item> getUserItemsFromLocal()
     {
@@ -89,7 +86,6 @@ public class Business {
         new WebApi(context).updateUserItemPriority(itemId,priorityId,callback);
     }
 
-
     public void getPopularItemsFromServer(int skip,int take,CallbackInterface callback)
     {
         new WebApi(context).getPopularItems(skip,take,callback);
@@ -103,6 +99,22 @@ public class Business {
     public void getItemsByQuery(String query,CallbackInterface callback)
     {
         new WebApi(context).getItemsByQuery(query,callback);
+    }
+
+    public Boolean isUserFollowingItem(Item userItem)
+    {
+        return new Repository(context).isUserFollowingItem(userItem);
+    }
+
+    public Boolean isUserItemInList(List<Item>userItems,Item userItem)
+    {
+        for (Item currentItem : userItems) {
+            if(currentItem.getId() == userItem.getId())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void syncUserItems()

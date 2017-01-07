@@ -36,10 +36,10 @@ import static java.lang.Thread.sleep;
 public class WebApi {
 
     /* Private Fields */
-    private String apiBaseUrl = "http://www.notifyr.ca/service/api/";
-    private String tokenUrl = "http://www.notifyr.ca/service/token";
+    private final String apiBaseUrl = "http://www.notifyr.ca/service/v2/api/";
+    private final String tokenUrl = "http://www.notifyr.ca/service/v2/token";
+    private final String defaultPassword = "2014$NotifyrPassword$2014";
 
-    private String defaultPassword = "2014$NotifyrPassword$2014";
     //private String apiBaseUrlDev = "http://www.notifyr.ca/dev/service/api/";
     private Context context;
     private String accessToken = "";
@@ -108,7 +108,7 @@ public class WebApi {
     }
 
     public void getPopularItemsByItemTypeId(int skip, int take, int itemTypeId, CallbackInterface callback) {
-        String urlPath = "Item/getPopularItems?skip=" + skip + "&take=" + take + "&type=" + itemTypeId;
+        String urlPath = "Item/GetPopularItemsByType?skip=" + skip + "&take=" + take + "&type=" + itemTypeId;
         String url = apiBaseUrl + urlPath;
         if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
             postJSONObjectFromURL.execute(url, context, callback, Item);

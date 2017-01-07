@@ -52,7 +52,7 @@ public class Repository {
         boolean isSuccess = true;
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()),db);
             if(!exists) {
                 // Insert the useritem
@@ -100,7 +100,7 @@ public class Repository {
         boolean isSuccess = true;
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()),db);
             if(exists) {
                 // Insert the useritem since it exists
@@ -130,7 +130,7 @@ public class Repository {
 
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Cursor c =  db.rawQuery("SELECT * FROM " + TableName + " ORDER BY NAME", null);
 
             int col_itemid = c.getColumnIndex("ItemId");
@@ -177,7 +177,7 @@ public class Repository {
 
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Cursor c =  db.rawQuery("SELECT" +
                     " ItemTypeId, ItemTypeName" +
                     " FROM " + TableName +
@@ -209,6 +209,27 @@ public class Repository {
         return itemCategories;
     }
 
+    public Boolean isUserFollowingItem(Item userItem)
+    {
+        String tableName = "UserItem";
+        SQLiteDatabase db = null;
+
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()),db);
+            return exists;
+        }
+        catch(Exception e) {
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return null;
+    }
+
 
     //endregion
 
@@ -220,7 +241,7 @@ public class Repository {
         boolean isSuccess = true;
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             for (Article article : articles) {
 
                 Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ArticleId", String.valueOf(article.getId()), db);
@@ -287,7 +308,7 @@ public class Repository {
         List<Article> articles = new ArrayList<Article>();
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Cursor c = null;
             /* TODO: finish this query */
 
@@ -358,7 +379,7 @@ public class Repository {
         try {
 
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
 
             Cursor c =  db.rawQuery("SELECT * FROM " + TableName , null);
 
@@ -397,7 +418,7 @@ public class Repository {
         int isArticleReaderMode = (userSetting.isArticleReaderMode()) ? 1:0;
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             // Insert the profile
             db.execSQL("UPDATE " //update
                     + tableName
@@ -427,7 +448,7 @@ public class Repository {
         boolean isSuccess = true;
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             for (Article article : articles) {
 
                 Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ArticleId", String.valueOf(article.getId()), db);
@@ -456,7 +477,7 @@ public class Repository {
         List<Article> articles = new ArrayList<Article>();
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Cursor c =  db.rawQuery("SELECT * FROM " + TableName
                     + " ORDER BY ArticleNotifiedDateUnix DESC LIMIT "+take+" OFFSET " + skip, null);
 
@@ -486,7 +507,7 @@ public class Repository {
         List<Article> articles = new ArrayList<Article>();
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Cursor c =  db.rawQuery("SELECT * FROM " + TableName
                     + " ORDER BY ArticleNotifiedDate DESC LIMIT "+take+" OFFSET " + skip, null);
 
@@ -511,7 +532,7 @@ public class Repository {
         boolean isSuccess = true;
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ArticleId", String.valueOf(article.getId()), db);
             if (!exists) {
                     db.insert(tableName, null, getArticleParams(article));
@@ -536,7 +557,7 @@ public class Repository {
         boolean isSuccess = true;
         try {
             File path = context.getDatabasePath(dbName);
-            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, 0);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             db.execSQL("DELETE FROM "
                         + tableName
                         + " WHERE ArticleId =" + article.getId());

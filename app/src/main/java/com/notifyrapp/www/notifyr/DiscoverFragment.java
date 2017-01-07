@@ -170,7 +170,7 @@ public class DiscoverFragment extends Fragment {
         }
         else
         {
-            new Business(ctx).getPopularItems(0, 20, new CallbackInterface() {
+            new Business(ctx).getPopularItemsByItemTypeIdFromServer(0, 40,0, new CallbackInterface() {
                 @Override
                 public void onCompleted(Object data) {
                     List<Item> downloadedItems = (List<Item>) data;
