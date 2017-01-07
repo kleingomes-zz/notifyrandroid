@@ -3,7 +3,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="360dp"
+    android:layout_width="match_parent"
     android:layout_height="59dp"
     android:background="@color/colorWhite"
     >
@@ -39,7 +39,7 @@
         android:fontFamily="sans-serif"
         android:text="Apple"
         android:textColor="#4a4a4a"
-        android:textSize="15sp"
+        android:textSize="17sp"
         android:textStyle="normal|bold" />
 
     <TextView
@@ -51,10 +51,11 @@
         android:layout_alignStart="@+id/item_name"
         android:fontFamily="sans-serif"
         android:maxLines="1"
+        android:paddingTop="2dp"
         android:paddingBottom="8dp"
         android:text="Frequency: 1"
         android:textColor="@color/darkGray"
-        android:textSize="10sp" />
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/btnFrequency"

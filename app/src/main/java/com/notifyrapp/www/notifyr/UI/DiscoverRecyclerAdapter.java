@@ -2,6 +2,7 @@ package com.notifyrapp.www.notifyr.UI;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.R;
@@ -26,8 +28,9 @@ public class DiscoverRecyclerAdapter extends RecyclerView
         .Adapter<RecyclerView.ViewHolder> {
 
     private static String LOG_TAG = "MyRecyclerViewAdapter";
-    private List<Item> mDataset;
+    private static List<Item> mDataset;
     private static MyClickListener myClickListener;
+
 
     public class EmptyViewHolder extends RecyclerView.ViewHolder {
         public EmptyViewHolder(View itemView) {
@@ -48,13 +51,25 @@ public class DiscoverRecyclerAdapter extends RecyclerView
             itemImage = (ImageView) itemView.findViewById(R.id.itemImage);
             itemName = (TextView) itemView.findViewById(R.id.itemName);
             ctx = itemView.getContext();
+            final Business business = new Business(ctx);
             Log.i(LOG_TAG, "Adding Listener");
-            itemView.setOnClickListener(this);
+           // itemView.setOnClickListener(this);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Item item = mDataset.get(getPosition());
+                    item.setPriority(2);
+                    business.saveUserItemLocal(item);
+                    business.save
+                }
+            });
         }
 
         @Override
         public void onClick(View v) {
-            myClickListener.onItemClick(getPosition(), v);
+
+            getPosition();
+           // myClickListener.onItemClick(getPosition(), v);
         }
     }
 
@@ -65,6 +80,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
     public DiscoverRecyclerAdapter(List<Item> myDataset) {
         mDataset = myDataset;
     }
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
@@ -91,6 +107,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
             final DataObjectHolder hold = (DataObjectHolder) holder;
             final int id = mDataset.get(position).getId();
             final String itemName = mDataset.get(position).getName();
+
             String iurl = mDataset.get(position).getIurl();
 
             // Check if the image is in cache
@@ -116,6 +133,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView
             hold.itemName.setText(mDataset.get(position).getName());
         }
     }
+
 
 
     public void addItem(Item dataObj, int index) {

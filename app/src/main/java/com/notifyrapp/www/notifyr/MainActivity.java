@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         }
                         else
                         {
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                             getSupportActionBar().setShowHideAnimationEnabled(false);
                             getSupportActionBar().show();
                             setAppBarVisibility(true);

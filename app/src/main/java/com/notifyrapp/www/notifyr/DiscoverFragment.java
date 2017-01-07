@@ -133,7 +133,6 @@ public class DiscoverFragment extends Fragment {
                         });
                     }
                 }
-
                 return true;
             }
 
@@ -151,6 +150,9 @@ public class DiscoverFragment extends Fragment {
         itemsList = new ArrayList<Item>();
         mAdapter = new DiscoverRecyclerAdapter(itemsList);
         mRecyclerView.setAdapter(mAdapter);
+
+
+
         getPopularItems(false);
 
 

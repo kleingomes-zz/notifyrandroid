@@ -160,20 +160,6 @@ public class MyItemsFragment extends Fragment {
         btnEditDoneDelete.setVisibility(View.VISIBLE);
         btnTrashcanDelete = (Button) act.findViewById(R.id.btnTrashCanDelete);
         mListView = (ListView) view.findViewById(R.id.items_list_view);
-        //add the onclick listener to open the list of articles
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(getActivity(), "Clicked Item: " + ItemAdapter.item.getName(),
-                // Toast.LENGTH_SHORT).show();
-                Log.d("ITEMCLICKER","HERE");
-                Fragment newFragment = new ArticleListFragment();
-                FragmentTransaction transaction =getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack("myitems_frag");
-                transaction.commit();
-            }
-        });
         itemAdapter = new ItemAdapter(ctx, userItemsList,itemsToDelete,(MainActivity)getActivity());
         mListView.setAdapter(itemAdapter);
         View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
