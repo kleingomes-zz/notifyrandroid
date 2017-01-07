@@ -103,7 +103,6 @@ public class Repository {
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()),db);
             if(exists) {
-                // Insert the useritem since it exists
                 db.execSQL("DELETE FROM "
                         + tableName
                         + " WHERE ItemId = " + userItem.getId());

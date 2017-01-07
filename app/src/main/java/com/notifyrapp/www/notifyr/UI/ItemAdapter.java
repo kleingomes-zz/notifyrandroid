@@ -4,6 +4,7 @@ package com.notifyrapp.www.notifyr.UI;
 
         import android.app.Activity;
         import android.content.Context;
+        import android.content.Intent;
         import android.graphics.Bitmap;
         import android.graphics.PorterDuff;
         import android.graphics.drawable.BitmapDrawable;
@@ -52,6 +53,9 @@ package com.notifyrapp.www.notifyr.UI;
         import java.util.List;
         import java.util.Map;
 
+        import me.samthompson.bubbleactions.BubbleActions;
+        import me.samthompson.bubbleactions.Callback;
+
 /**
  * Created by dchi on 12/29/16.
  */
@@ -63,13 +67,9 @@ public class ItemAdapter extends BaseAdapter {
     private Map<Integer, Item> mDeleteQueue;
     private MainActivity act;
     private ItemAdapter adapter;
-    public List<Integer> selectedItemPositions = new ArrayList<>();
+    private Business mBusiness;
 
-    public int numberofItems;
-    private ProgressBar mProgressBar;
-    private int counter;
-    private int temporaryListPosition;
-    private int i;
+
     public CheckBox checkBoxDelete;
     public View rowView;
 
@@ -82,6 +82,7 @@ public class ItemAdapter extends BaseAdapter {
         mDeleteQueue = deleteItemsQueue;
         act = activity;
         adapter = this;
+        mBusiness = new Business(context);
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -237,7 +238,6 @@ public class ItemAdapter extends BaseAdapter {
                         .show();
 
             }
-
         });
 
         // Check if the image is in cache
@@ -272,6 +272,35 @@ public class ItemAdapter extends BaseAdapter {
                 final Drawable upArrow = act.getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
                 upArrow.setColorFilter(act.getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
                 transaction.commit();
+            }
+        });
+
+        rowView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(final View v) {
+                BubbleActions.on(v)
+                        .addAction("Remove", R.drawable.ic_delete_white_24dp, new Callback() {
+                            @Override
+                            public void doAction() {
+                                Boolean isSuccess = mBusiness.deleteUserItemLocal(item);
+                                if(isSuccess) {
+                                    mDataSource.remove(position);
+                                    adapter.notifyDataSetChanged();
+                                    Toast.makeText(v.getContext(), "Removed " + item.getName(), Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    Toast.makeText(v.getContext(), "Error Removing " + item.getName(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .addAction("Close", R.drawable.bubble_hide, new Callback() {
+                            @Override
+                            public void doAction() {
+                                Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .show();
+                return false;
             }
         });
 
