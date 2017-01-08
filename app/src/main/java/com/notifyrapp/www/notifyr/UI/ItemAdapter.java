@@ -279,12 +279,20 @@ public class ItemAdapter extends BaseAdapter {
             @Override
             public boolean onLongClick(final View v) {
                 BubbleActions.on(v)
-                        .addAction("Remove", R.drawable.ic_delete_white_24dp, new Callback() {
+                        .addAction("Remove", R.drawable.bubble_delete, new Callback() {
                             @Override
                             public void doAction() {
                                 Boolean isSuccess = mBusiness.deleteUserItemLocal(item);
                                 if(isSuccess) {
                                     mDataSource.remove(position);
+                                    // Now delete from Server
+                                    mBusiness.deleteUserItemFromServer(item.getId(), new CallbackInterface() {
+                                        @Override
+                                        public void onCompleted(Object data) {
+                                            // Maybe log something here later
+                                        }
+                                    });
+
                                     adapter.notifyDataSetChanged();
                                     Toast.makeText(v.getContext(), "Removed " + item.getName(), Toast.LENGTH_SHORT).show();
                                 }

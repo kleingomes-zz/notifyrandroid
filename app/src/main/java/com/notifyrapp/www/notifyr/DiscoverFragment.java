@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -18,9 +20,8 @@ import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.UI.DiscoverRecyclerAdapter;
-import com.notifyrapp.www.notifyr.UI.DividerItemDecoration;
-
-import org.w3c.dom.Text;
+import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
+import com.notifyrapp.www.notifyr.UI.PopularItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,14 +38,21 @@ import java.util.List;
 public class DiscoverFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.Adapter mSuggestedAdapter;
+    private PopularItemAdapter mPopularAdapter;
+    private int currentPage = 0;
+    private final int pageSize = 20;
     private RecyclerView.LayoutManager mLayoutManager;
     private static String LOG_TAG = "RecyclerViewActivity";
     private TextView topResultsTextView;
     private Context ctx;
-    private List<Item> itemsList;
+    private List<Item> suggestedItemsList;
+    private List<Item> popularItemsList;
+    private ListView mPopularListView;
     private OnFragmentInteractionListener mListener;
-    private SwipeRefreshLayout swipe;
+    private InfiniteScrollListener mInfiniteScrollListener;
+    private SwipeRefreshLayout swipeSuggested;
+    private ProgressBar pbFooter;
 
     public DiscoverFragment() {
         // Required empty public constructor
@@ -63,26 +71,71 @@ public class DiscoverFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         final View view = inflater.inflate(R.layout.fragment_discover, container, false);
         final Business business = new Business(getContext());
         this.ctx = getContext();
+
+        View progressView = inflater.inflate(R.layout.progress_circle, null);
+
+        View footerView = ((LayoutInflater) this.getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                R.layout.progress_circle, null, false);
+        pbFooter = (ProgressBar) progressView.findViewById(R.id.pb_main);
+        pbFooter.setVisibility(View.VISIBLE);
+
+        // Popular Items and Main List View
+        View header = inflater.inflate(R.layout.list_item_discover_header, null);
+        mPopularListView = (ListView) view.findViewById(R.id.popular_list_view);
+        //mPopularListView.setHeaderDividersEnabled(false);
+        mPopularListView.addHeaderView(header);
+        mPopularListView.addFooterView(footerView);
+        popularItemsList = new ArrayList<Item>();
+        mPopularAdapter = new PopularItemAdapter(ctx, popularItemsList);
+        mPopularListView.setAdapter(mPopularAdapter);
+
+        // Add the scroll listener to know when we hit the bottom
+        mInfiniteScrollListener = new InfiniteScrollListener(2) {
+            @Override
+            public void loadMore(int page, int totalItemsCount) {
+
+                if(totalItemsCount > 10) {
+                    pbFooter.setVisibility(View.VISIBLE);
+                    getPopularItems((currentPage+1) * pageSize, pageSize,true);
+                }
+            }
+
+            @Override
+            public void onUpScrolling() {
+            }
+
+            @Override
+            public void onDownScrolling() {
+            }
+
+        };
+        mInfiniteScrollListener.setCurrentPage(0);
+        mPopularListView.setOnScrollListener(mInfiniteScrollListener);
+
+
+
         //Define your Searchview
         final SearchView searchView = (SearchView) view.findViewById(R.id.search_view);
         topResultsTextView = (TextView) view.findViewById(R.id.txtSettings);
 
-        swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayoutDiscoverRecyclerview);
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeSuggested = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayoutDiscoverRecyclerview);
+        swipeSuggested.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getPopularItems(true);
+                getSuggestedItems(true);
             }
         });
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright,
+        swipeSuggested.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
+
 
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,19 +169,19 @@ public class DiscoverFragment extends Fragment {
                 if(newText.equals("")) {
 
                     topResultsTextView.setText(R.string.header_you_might_like);
-                    itemsList.clear();
-                    getPopularItems(false);
+                    suggestedItemsList.clear();
+                    getSuggestedItems(false);
                 }
                 else {
                     topResultsTextView.setText("Results...");
-                    itemsList.clear();
+                    suggestedItemsList.clear();
                     if(newText.length() > 2) {
                         business.getItemsByQuery(newText, new CallbackInterface() {
                             @Override
                             public void onCompleted(Object data) {
                                 List<Item> results = (List<Item>) data;
-                                itemsList.addAll(results);
-                                mAdapter.notifyDataSetChanged();
+                                suggestedItemsList.addAll(results);
+                                mSuggestedAdapter.notifyDataSetChanged();
                             }
                         });
                     }
@@ -143,30 +196,33 @@ public class DiscoverFragment extends Fragment {
             }
         });
 
+        // Suggested Items
         mRecyclerView = (RecyclerView) view.findViewById(R.id.discover_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        itemsList = new ArrayList<Item>();
-        mAdapter = new DiscoverRecyclerAdapter(itemsList);
-        mRecyclerView.setAdapter(mAdapter);
+        suggestedItemsList = new ArrayList<Item>();
+        mSuggestedAdapter = new DiscoverRecyclerAdapter(suggestedItemsList);
+        mRecyclerView.setAdapter(mSuggestedAdapter);
 
 
 
-        getPopularItems(false);
+        getSuggestedItems(false);
+        getPopularItems(0,pageSize,false);
 
 
         return view;
     }
 
-    private void getPopularItems(Boolean forceServerLoad)
+    private void getSuggestedItems(Boolean forceServerLoad)
     {
         // First check if popular items is cached else get it from server
-        List<Item> cachedItems = (List<Item>)CacheManager.getObjectFromMemoryCache("popular_items");
+        List<Item> cachedItems = (List<Item>)CacheManager.getObjectFromMemoryCache("suggested_items");
         if(cachedItems != null && forceServerLoad == false)
         {
-            itemsList.addAll(cachedItems);
-            mAdapter.notifyDataSetChanged();
+            suggestedItemsList.addAll(cachedItems);
+            swipeSuggested.setRefreshing(false);
+            mSuggestedAdapter.notifyDataSetChanged();
         }
         else
         {
@@ -174,15 +230,45 @@ public class DiscoverFragment extends Fragment {
                 @Override
                 public void onCompleted(Object data) {
                     List<Item> downloadedItems = (List<Item>) data;
-                    CacheManager.saveObjectToMemoryCache("popular_items", data);
-                    itemsList.addAll(downloadedItems);
-                    mAdapter.notifyDataSetChanged();
+                    CacheManager.saveObjectToMemoryCache("suggested_items", data);
+                    suggestedItemsList.addAll(downloadedItems);
+                    swipeSuggested.setRefreshing(false);
+                    mSuggestedAdapter.notifyDataSetChanged();
                 }
             });
         }
-        swipe.setRefreshing(false);
+
     }
 
+    private void getPopularItems(int skip,int take,Boolean forceServerLoad)
+    {
+        if(pbFooter != null)  pbFooter.setVisibility(View.VISIBLE);
+        // First check if popular items is cached else get it from server
+        List<Item> cachedItems = (List<Item>)CacheManager.getObjectFromMemoryCache("popular_items");
+        if(cachedItems != null && !forceServerLoad)
+        {
+            popularItemsList.addAll(cachedItems);
+            mSuggestedAdapter.notifyDataSetChanged();
+        }
+        else
+        {
+            new Business(ctx).getPopularItemsFromServer(skip, take, new CallbackInterface() {
+                @Override
+                public void onCompleted(Object data) {
+                    List<Item> downloadedItems = (List<Item>) data;
+                    CacheManager.saveObjectToMemoryCache("popular_items", data);
+                    popularItemsList.addAll(downloadedItems);
+                    currentPage++;
+                    mPopularAdapter.notifyDataSetChanged();
+                    if(downloadedItems.size() == 0)
+                    {
+                        if(pbFooter != null)  pbFooter.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
+        if(pbFooter != null)  pbFooter.setVisibility(View.GONE);
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

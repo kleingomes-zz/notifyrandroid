@@ -33,5 +33,7 @@
 
     <!-- DISCOVER -->
     <string name="header_you_might_like">You might be interested in...</string>
+    <string name="people_like">Popular right now...</string>
+
 
 </resources>

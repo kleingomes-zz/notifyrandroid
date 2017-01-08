@@ -279,31 +279,17 @@ public class ArticleListFragment extends Fragment {
                 if(sortBy == Business.SortBy.Bookmark)
                 {
                     BubbleActions.on(v)
-                            .addAction("Remove All", R.drawable.bubble_star, new Callback() {
-                                @Override
-                                public void doAction() {
-                                    Boolean isSuccess = business.deleteBookmark(article);
-                                    if(isSuccess){
-                                        articleListOnScreen.clear();
-                                        adapter.notifyDataSetChanged();
-                                        Toast.makeText(v.getContext(), "Removed All Bookmarks!", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else {
-                                        Toast.makeText(v.getContext(), "Error Removing Bookmarks!", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            })
-                            .addAction("Remove", R.drawable.bubble_star, new Callback() {
+                            .addAction("Remove", R.drawable.bubble_delete, new Callback() {
                                 @Override
                                 public void doAction() {
                                     Boolean isSuccess = business.deleteBookmark(article);
                                     if(isSuccess) {
                                         articleListOnScreen.remove(position);
                                         adapter.notifyDataSetChanged();
-                                        Toast.makeText(v.getContext(), "Removed Bookmarked!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(v.getContext(), "Removed Bookmark", Toast.LENGTH_SHORT).show();
                                     }
                                     else{
-                                        Toast.makeText(v.getContext(), "Error Removing Bookmark!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(v.getContext(), "Error Removing Bookmark", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             })
@@ -345,7 +331,7 @@ public class ArticleListFragment extends Fragment {
                                 public void doAction() {
                                     Boolean isSuccess = business.saveBookmark(article);
                                     if(isSuccess)                                    {
-                                        Toast.makeText(v.getContext(), "Bookmarked!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(v.getContext(), "Bookmarked", Toast.LENGTH_SHORT).show();
                                        ((MainActivity) getActivity()).isBookmarkDirty = true;
                                     }
                                     else                                    {
@@ -422,7 +408,7 @@ public class ArticleListFragment extends Fragment {
                 articleListOnScreen.addAll(bookmarks);
                 adapter.notifyDataSetChanged();
             }
-            if (pbFooter != null && articleListOnScreen.size() == 0) {
+            if (pbFooter != null && articleListOnScreen.size() < pageSize) {
                 pbFooter.setVisibility(View.GONE);
             } else {
                 pbFooter.setVisibility(View.VISIBLE);
