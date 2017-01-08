@@ -100,13 +100,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         }
     }
 
-    public MainActivity()
-    {
-        myItemsFragment = new MyItemsFragment();
-        discoverFragment = new DiscoverFragment();
-        settingsFragment = new SettingsFragment();
-        myNotificationsFragment = new MyNotificationsFragment();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     btnEditDone.setVisibility(View.VISIBLE);
                                     btnTrashCanDelete.setVisibility(View.GONE);
                                     currentMenu = Business.MenuTab.Interests;
+                                    myItemsFragment = myItemsFragment == null ? new MyItemsFragment() : myItemsFragment;
                                     fragmentTransaction.add(R.id.fragment_container, myItemsFragment, "myitems_frag");
                                     fragmentTransaction.commit();
                                 }
@@ -250,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     btnTrashCanDelete.setVisibility(View.GONE);
                                     currentMenu = Business.MenuTab.Discover;
                                     abTitle.setText(R.string.menu_tab_2);
+                                    discoverFragment = discoverFragment == null ? new DiscoverFragment() : discoverFragment;
                                     fragmentTransaction.add(R.id.fragment_container, discoverFragment, "discover_frag");
                                     fragmentTransaction.commit();
                                 }
@@ -260,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     btnTrashCanDelete.setVisibility(View.GONE);
                                     abTitle.setText(R.string.menu_tab_3);
                                     currentMenu = Business.MenuTab.Notifications;
+                                    myNotificationsFragment = myNotificationsFragment == null ? new MyNotificationsFragment() : myNotificationsFragment;
                                     fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
                                     fragmentTransaction.commit();
                                 }
@@ -270,6 +266,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     btnTrashCanDelete.setVisibility(View.GONE);
                                     currentMenu = Business.MenuTab.Settings;
                                     abTitle.setText(R.string.menu_tab_4);
+                                    settingsFragment = settingsFragment == null ? new SettingsFragment() : settingsFragment;
                                     fragmentTransaction.add(R.id.fragment_container, settingsFragment, "settings_frag");
                                     fragmentTransaction.commit();
                                 }
@@ -282,7 +279,52 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     }
 
+    @Override
+    public void onBackPressed() {
+        //final Myfragment fragment = (Myfragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
 
+        //if (fragment.allowBackPressed()) { // and then you define a method allowBackPressed with the logic to allow back pressed or not
+       //     super.onBackPressed();
+       // }
+        // FRAGMENT MANAGER
+        /*FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // DROP THE CURRENT FRAGMENT
+        Fragment fragment = null;
+
+        // Check which fragment is active, inactive ones return null
+        Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
+        Fragment pos1 = getSupportFragmentManager().findFragmentByTag("myitems_frag");
+        Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
+        Fragment pos3 = getSupportFragmentManager().findFragmentByTag("notifications_frag");
+        Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
+
+        // Remove the fragment that is not null from the manager
+        if(pos0 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos0).commit(); }
+        if(pos1 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
+        if(pos2 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
+        if(pos3 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
+        if(pos4 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
+
+        // SHOW/HIDE the app bar depending on which menu tab you're on
+        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
+
+            if(currentMenuPage != 0) {
+                getSupportActionBar().setShowHideAnimationEnabled(false);
+                currentMenu = Business.MenuTab.Home;
+                getSupportActionBar().hide();
+                setAppBarVisibility(false);
+                abTitle.setText(R.string.empty);
+                // NEED TO REDRAW THE APP BAR (in case the user added categories)
+                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+                mViewPager.setAdapter(mSectionsPagerAdapter);
+                viewPager.setVisibility(View.VISIBLE);
+                btnEditDone.setVisibility(View.GONE);
+                btnTrashCanDelete.setVisibility(View.GONE);
+            }
+*/
+    }
 
     private void commitFragment(String fragmentName,String title,Fragment fragment)
     {
