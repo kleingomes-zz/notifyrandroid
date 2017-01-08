@@ -39,6 +39,10 @@
             android:label="@string/service_name"
             >
         </service>-->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="8a72c3d8d7314aff2f244f30a555ee3c5c271d97"
+            />
     </application>
 
 </manifest>

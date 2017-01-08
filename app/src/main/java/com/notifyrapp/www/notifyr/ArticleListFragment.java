@@ -200,7 +200,14 @@ public class ArticleListFragment extends Fragment {
         // Config adapter and get the first batch of articles
         adapter = new ArticleAdapter(ctx, articleListOnScreen);
         mListView.setAdapter(adapter);
-        getArticles(0,pageSize,sortBy.toString());
+
+        // Only get articles if the list is empty
+        // This is to prevent api calls when selecting
+        // the home tab.
+        if(articleListOnScreen.size() == 0)
+        {
+            getArticles(0,pageSize,sortBy.toString());
+        }
 
         // Setup refresh listener which triggers new data loading
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

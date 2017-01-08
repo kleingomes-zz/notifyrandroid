@@ -19,6 +19,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
+
 
 
 import android.widget.Button;
@@ -53,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public boolean isBookmarkDirty;
     private Button btnEditDone;
     private Button btnTrashCanDelete;
-
+    private int currentMenuPage = 0;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -96,6 +100,14 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         }
     }
 
+    public MainActivity()
+    {
+        myItemsFragment = new MyItemsFragment();
+        discoverFragment = new DiscoverFragment();
+        settingsFragment = new SettingsFragment();
+        myNotificationsFragment = new MyNotificationsFragment();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -110,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         getSupportActionBar().setCustomView(R.layout.action_bar);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorNotifyrLightBlue)));
         getSupportActionBar().hide();
+
+        Fabric.with(this, new Answers());
+        Fabric.with(this, new Crashlytics());
+
+
 
         abTitle =  (TextView)findViewById(R.id.abTitle);
         btnEditDone = (Button)findViewById(R.id.btnEditDone);
@@ -180,27 +197,29 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
 
                         // Remove the fragment that is not null from the manager
-                        if(pos0 != null) {  getSupportFragmentManager().beginTransaction().remove(pos0).commit(); }
-                        if(pos1 != null) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
-                        if(pos2 != null) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
-                        if(pos3 != null) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
-                        if(pos4 != null) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
+                        if(pos0 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos0).commit(); }
+                        if(pos1 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
+                        if(pos2 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
+                        if(pos3 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
+                        if(pos4 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
 
                         // SHOW/HIDE the app bar depending on which menu tab you're on
                         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
                         {
-                            getSupportActionBar().setShowHideAnimationEnabled(false);
-                            currentMenu = Business.MenuTab.Home;
-                            getSupportActionBar().hide();
-                            setAppBarVisibility(false);
-                            abTitle.setText(R.string.empty);
-                            // NEED TO REDRAW THE APP BAR (in case the user added categories)
-                            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-                            mViewPager.setAdapter(mSectionsPagerAdapter);
-                            viewPager.setVisibility(View.VISIBLE);
-                            btnEditDone.setVisibility(View.GONE);
-                            btnTrashCanDelete.setVisibility(View.GONE);
+                            if(currentMenuPage != 0) {
+                                getSupportActionBar().setShowHideAnimationEnabled(false);
+                                currentMenu = Business.MenuTab.Home;
+                                getSupportActionBar().hide();
+                                setAppBarVisibility(false);
+                                abTitle.setText(R.string.empty);
+                                // NEED TO REDRAW THE APP BAR (in case the user added categories)
+                                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+                                mViewPager.setAdapter(mSectionsPagerAdapter);
+                                viewPager.setVisibility(View.VISIBLE);
+                                btnEditDone.setVisibility(View.GONE);
+                                btnTrashCanDelete.setVisibility(View.GONE);
+                            }
                         }
                         else
                         {
@@ -212,51 +231,58 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                             viewPager.setVisibility(View.GONE);
                         }
 
-                        // LOAD THE NEW FRAGMENT
+                        // LOAD THE NEW FRAGMENT (BUT NOT IF IT'S ALREADY LOADED!
                         switch(position)
                         {
                             case 1 :
-                                abTitle.setText(R.string.menu_tab_1);
-                                btnEditDone.setVisibility(View.VISIBLE);
-                                btnTrashCanDelete.setVisibility(View.GONE);
-                                currentMenu = Business.MenuTab.Interests;
-                                myItemsFragment = new MyItemsFragment();
-                                fragmentTransaction.add(R.id.fragment_container, myItemsFragment,"myitems_frag");
-                                fragmentTransaction.commit();
-                                break;
+                                if(currentMenuPage != 1) {
+                                    abTitle.setText(R.string.menu_tab_1);
+                                    btnEditDone.setVisibility(View.VISIBLE);
+                                    btnTrashCanDelete.setVisibility(View.GONE);
+                                    currentMenu = Business.MenuTab.Interests;
+                                    fragmentTransaction.add(R.id.fragment_container, myItemsFragment, "myitems_frag");
+                                    fragmentTransaction.commit();
+                                }
+                                    break;
                             case 2 :
-                                btnEditDone.setVisibility(View.GONE);
-                                btnTrashCanDelete.setVisibility(View.GONE);
-                                currentMenu = Business.MenuTab.Discover;
-                                abTitle.setText(R.string.menu_tab_2);
-                                discoverFragment = new DiscoverFragment();
-                                fragmentTransaction.add(R.id.fragment_container, discoverFragment,"discover_frag");
-                                fragmentTransaction.commit();
+                                if(currentMenuPage != 2) {
+                                    btnEditDone.setVisibility(View.GONE);
+                                    btnTrashCanDelete.setVisibility(View.GONE);
+                                    currentMenu = Business.MenuTab.Discover;
+                                    abTitle.setText(R.string.menu_tab_2);
+                                    fragmentTransaction.add(R.id.fragment_container, discoverFragment, "discover_frag");
+                                    fragmentTransaction.commit();
+                                }
                                 break;
                             case 3 :
-                                btnEditDone.setVisibility(View.GONE);
-                                btnTrashCanDelete.setVisibility(View.GONE);
-                                abTitle.setText(R.string.menu_tab_3);
-                                currentMenu = Business.MenuTab.Notifications;
-                                myNotificationsFragment = new MyNotificationsFragment();
-                                fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
-                                fragmentTransaction.commit();
+                                if(currentMenuPage != 3) {
+                                    btnEditDone.setVisibility(View.GONE);
+                                    btnTrashCanDelete.setVisibility(View.GONE);
+                                    abTitle.setText(R.string.menu_tab_3);
+                                    currentMenu = Business.MenuTab.Notifications;
+                                    fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
+                                    fragmentTransaction.commit();
+                                }
                                 break;
                             case 4 :
-                                btnEditDone.setVisibility(View.GONE);
-                                btnTrashCanDelete.setVisibility(View.GONE);
-                                currentMenu = Business.MenuTab.Settings;
-                                abTitle.setText(R.string.menu_tab_4);
-                                settingsFragment = new SettingsFragment();
-                                fragmentTransaction.add(R.id.fragment_container, settingsFragment,"settings_frag");
-                                fragmentTransaction.commit();
+                                if(currentMenuPage != 4) {
+                                    btnEditDone.setVisibility(View.GONE);
+                                    btnTrashCanDelete.setVisibility(View.GONE);
+                                    currentMenu = Business.MenuTab.Settings;
+                                    abTitle.setText(R.string.menu_tab_4);
+                                    fragmentTransaction.add(R.id.fragment_container, settingsFragment, "settings_frag");
+                                    fragmentTransaction.commit();
+                                }
                                 break;
                         }
+                        currentMenuPage = position;
                         return false;
                     }
                 });
 
     }
+
+
 
     private void commitFragment(String fragmentName,String title,Fragment fragment)
     {
