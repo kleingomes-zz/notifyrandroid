@@ -1,6 +1,7 @@
 package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -8,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.content.Intent;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.CacheManager;
@@ -134,10 +137,33 @@ public class AppStartActivity extends AppCompatActivity{
         /* BACKGROUND SERVICE **/
         // START THE BACKGROUND SERVICE TO GET ARTICLES
         // use this to start and trigger a service
-       // Intent i = new Intent(ctx, BackgroundService.class);
-      //  ctx.startService(i);
+        // Intent i = new Intent(ctx, BackgroundService.class);
+        // ctx.startService(i);
 
         /* REGISTER FOR REMOTE NOTIFICATIONS */
 
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    InstanceID instanceID = InstanceID.getInstance(ctx);
+
+                    String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+                            GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+
+                    Log.d("DEVICE_REGISTER_TOKEN", "GCM Registration Token: " + token);
+
+                }catch (Exception e) {
+                    Log.d("DEVICE_REGISTER_TOKEN", "Failed to complete token refresh", e);
+                }
+
+            }
+        });
+
+        thread.start();
+
     }
+
 }

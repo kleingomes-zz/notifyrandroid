@@ -23,11 +23,8 @@ import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
-
-
 import android.widget.Button;
 import android.widget.TextView;
-
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CacheManager;
@@ -120,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         Fabric.with(this, new Crashlytics());
 
 
+        //String PACKAGE_NAME = getApplicationContext().getPackageName();
 
         abTitle =  (TextView)findViewById(R.id.abTitle);
         btnEditDone = (Button)findViewById(R.id.btnEditDone);
