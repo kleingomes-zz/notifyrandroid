@@ -50,6 +50,35 @@
             Sender ID help
             1028898914170
         </service>-->
+
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.notifyrapp.gcm" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name=".Business.GcmIntentService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".Business.GcmIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".Business.RegistrationIntentService"
+            android:exported="false"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8a72c3d8d7314aff2f244f30a555ee3c5c271d97"

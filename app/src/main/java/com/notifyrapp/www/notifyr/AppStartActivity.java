@@ -141,8 +141,6 @@ public class AppStartActivity extends AppCompatActivity{
         // ctx.startService(i);
 
         /* REGISTER FOR REMOTE NOTIFICATIONS */
-
-
         Thread thread = new Thread(new Runnable() {
 
             @Override
@@ -150,8 +148,16 @@ public class AppStartActivity extends AppCompatActivity{
                 try {
                     InstanceID instanceID = InstanceID.getInstance(ctx);
 
-                    String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+                    final String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                             GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+
+                    new  Business(ctx).registerDevice(token, new CallbackInterface() {
+                        @Override
+                        public void onCompleted(Object data) {
+                            PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("deviceToken", token).commit();
+                            Log.d("DEVICE_REGISTER_TOKEN", "Registered Device with server" );
+                        }
+                    });
 
                     Log.d("DEVICE_REGISTER_TOKEN", "GCM Registration Token: " + token);
 

@@ -207,6 +207,10 @@ public class Business {
         new WebApi(context).registerUserProfile(userName,password,callback);
     }
 
+    public void registerDevice(String token, CallbackInterface callback){
+        new WebApi(context).registerDevice(token,callback);
+    }
+
     public void updateToken(CallbackInterface callback)
     {
         new WebApi(context).getAccessToken(callback);

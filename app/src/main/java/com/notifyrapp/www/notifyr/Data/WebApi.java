@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.JsonStatusResult;
 import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.Post;
 import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.Item;
 import static com.notifyrapp.www.notifyr.Data.WebApi.NotifyrObjects.NetworkStatus;
@@ -76,6 +77,15 @@ public class WebApi {
 
         if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
             postJSONObjectFromURL.execute(url, context, callback, NotifyrObjects.UserProfile);
+        }
+    }
+
+    public void registerDevice(String token, CallbackInterface callback) {
+        String urlPath = "Account/RegisterAndroidDevice?deviceToken="+token;
+        String url = apiBaseUrl + urlPath;
+
+        if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url, context, callback, JsonStatusResult);
         }
     }
 
@@ -242,7 +252,8 @@ public class WebApi {
                     conn.setRequestMethod("PUT");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
-                } else if (notifyrObjectType == Item || notifyrObjectType == NotifyrObjects.Article) {
+                } else if (notifyrObjectType == Item || notifyrObjectType == NotifyrObjects.Article ||
+                        notifyrObjectType == NotifyrObjects.JsonStatusResult) {
                     String bearer = "Bearer " + accessToken;
                     conn.setRequestProperty("Authorization", bearer);
                     conn.setRequestMethod("GET");
@@ -285,7 +296,6 @@ public class WebApi {
                     String param = (String) params[4];
                     String bearer = "Bearer " + accessToken;
                     conn.setRequestProperty("Authorization", bearer);
-
                 }
 
                 conn.connect();
@@ -315,7 +325,7 @@ public class WebApi {
                         returnObj.add(new JSONArray(result));
                     } else if (notifyrObjectType == NotifyrObjects.NetworkStatus) {
                         returnObj.add(new JSONObject(result));
-                    } else if (notifyrObjectType == NotifyrObjects.Post || notifyrObjectType == Put) {
+                    } else if (notifyrObjectType == NotifyrObjects.Post || notifyrObjectType == Put || notifyrObjectType == NotifyrObjects.JsonStatusResult) {
                         returnObj.add(result);
                     } else {
                         returnObj.add(new JSONObject(result));
@@ -347,7 +357,7 @@ public class WebApi {
                     jsonArray = (JSONArray) returnObjects.get(0);
                 } else if (notifyrType == NotifyrObjects.NetworkStatus) {
                     jsonObject = (JSONObject) returnObjects.get(0);
-                } else if (notifyrType == NotifyrObjects.Post || notifyrType == NotifyrObjects.Put) {
+                } else if (notifyrType == NotifyrObjects.Post || notifyrType == NotifyrObjects.Put || notifyrType == NotifyrObjects.JsonStatusResult) {
                     response = (String) returnObjects.get(0);
                 } else {
                     jsonObject = (JSONObject) returnObjects.get(0);
@@ -418,13 +428,13 @@ public class WebApi {
                     } else if (notifyrType == NotifyrObjects.NetworkStatus) {
                         String status = jsonObject.getString("NetworkStatus");
                         callback.onCompleted(status);
-                    } else if (notifyrType == NotifyrObjects.Post  || notifyrType == NotifyrObjects.Put) {
+                    } else if (notifyrType == NotifyrObjects.Post  || notifyrType == NotifyrObjects.Put
+                            || notifyrType == NotifyrObjects.JsonStatusResult) {
                         callback.onCompleted(response);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
             super.onPostExecute(returnObjects);
         }
@@ -434,7 +444,7 @@ public class WebApi {
 
     //region Helpers
     public enum NotifyrObjects {
-        Article, Item, UserProfile, AccessToken, UserSetting, NetworkStatus, Post, Put
+        Article, Item, UserProfile, AccessToken, UserSetting, NetworkStatus, Post, Put,Get,JsonStatusResult
     }
 
     private String streamToString(InputStream is) throws IOException {
