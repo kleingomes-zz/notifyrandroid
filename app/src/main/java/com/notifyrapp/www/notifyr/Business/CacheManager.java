@@ -60,7 +60,6 @@ public final class CacheManager {
         return null;
     }
 
-
     //endregion
 
     //region Image

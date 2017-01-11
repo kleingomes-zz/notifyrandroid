@@ -25,12 +25,16 @@ public class GcmIntentService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        // String message = data.getString("message");
+        String articleTitle = data.getString("articleTitle");
+        String articleUrl = data.getString("articleUrl");
+        String articleId = data.getString("articleId");
+        String articleDescription = data.getString("articleDescription");
+
         Log.d("NOTIFICATION", from);
         android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.article_gradient_shape) // notification icon
-                .setContentTitle("Notification!") // title for notification
-                .setContentText("Hello word") // message for notification
+                .setSmallIcon(R.mipmap.ic_launcher) // notification icon
+                .setContentTitle(articleTitle) // title for notification
+                .setContentText(articleDescription) // message for notification
                 .setAutoCancel(true); // clear notification after click
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -40,3 +44,4 @@ public class GcmIntentService extends GcmListenerService {
         mNotificationManager.notify(0, mBuilder.build());
     }
 }
+
