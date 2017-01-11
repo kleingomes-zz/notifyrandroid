@@ -119,7 +119,7 @@ public class ArticleAdapter extends BaseAdapter {
             String imageUrl = article.getIurl();
 
             // Check if the image is in cache
-            Bitmap image = CacheManager.getImageFromMemoryCache("article_" + String.valueOf(article.getId()));
+            Bitmap image = CacheManager.getArticleImageFromMemoryCache("article_" + String.valueOf(article.getId()));
             if (image != null) {
                 imageView.setImageBitmap(image);
             }
@@ -130,7 +130,7 @@ public class ArticleAdapter extends BaseAdapter {
                     public void onSuccess() {
                         mProgressBar.setVisibility(View.GONE);
                         Bitmap image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                        CacheManager.saveImageToMemoryCache("article_" + String.valueOf(article.getId()), image);
+                        CacheManager.saveArticleImageToMemoryCache("article_" + String.valueOf(article.getId()), image);
                     }
 
                     @Override

@@ -25,10 +25,12 @@ import java.util.Map;
 public final class CacheManager {
 
     private CacheManager() {  }
-
-    private static final int maxCacheSize = 100;
+    private static final int maxImageCacheSize = 50;
+    private static final int maxArticleImageCacheSize = 50;
+    private static final int maxObjectCacheSize = 50;
     private static Map<String, Object> objectCache = new HashMap<String, Object>();
     private static Map<String, Bitmap> imageCache = new HashMap<String, Bitmap>();
+    private static Map<String, Bitmap> articleImageCache = new HashMap<String, Bitmap>();
 
     //region Object
 
@@ -38,12 +40,12 @@ public final class CacheManager {
         {
             // Cache is too big remove an old entry
             // to make room for new entry
-            if(objectCache.size() > maxCacheSize)
+            if(objectCache.size() > maxObjectCacheSize)
             {
                 List<String> list = new ArrayList<String>(objectCache.keySet());
                 objectCache.remove(list.get(0));
             }
-            objectCache.put(key,obj);
+           // objectCache.put(key,obj);
         }
     }
 
@@ -57,6 +59,8 @@ public final class CacheManager {
         Log.d("CACHE_MISS",key);
         return null;
     }
+
+
     //endregion
 
     //region Image
@@ -66,12 +70,10 @@ public final class CacheManager {
         {
             // Cache is too big remove an old entry
             // to make room for new entry
-            if(imageCache.size() > maxCacheSize)
+            if(imageCache.size() < maxImageCacheSize)
             {
-                List<String> list = new ArrayList<String>(imageCache.keySet());
-                imageCache.remove(list.get(0));
+               imageCache.put(key,image);
             }
-            imageCache.put(key,image);
         }
     }
 
@@ -84,6 +86,37 @@ public final class CacheManager {
         }
         Log.d("CACHE_MISS",key);
         return null;
+    }
+
+    public static void saveArticleImageToMemoryCache(String key,Bitmap image)
+    {
+        if(!articleImageCache.containsKey(key))
+        {
+            // Cache is too big remove an old entry
+            // to make room for new entry
+            if(articleImageCache.size() < maxArticleImageCacheSize)
+            {
+                List<String> list = new ArrayList<String>(objectCache.keySet());
+                articleImageCache.clear();
+            }
+            articleImageCache.put(key,image);
+        }
+    }
+
+    public static Bitmap getArticleImageFromMemoryCache(String key)
+    {
+        if(articleImageCache.containsKey(key))
+        {
+            Log.d("CACHE_HIT",key);
+            return articleImageCache.get(key);
+        }
+        Log.d("CACHE_MISS",key);
+        return null;
+    }
+
+    public static void clearArticleImageMemoryCache()
+    {
+        articleImageCache.clear();
     }
 
     public static void clearImageMemoryCache()

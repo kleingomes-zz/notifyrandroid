@@ -257,7 +257,6 @@ public class ArticleListFragment extends Fragment {
         pbFooter = (ProgressBar) progressView.findViewById(R.id.pb_main);
         pbFooter.setVisibility(View.GONE);
         mListView.addFooterView(progressView);
-
         // Add the onclick listener to open the web view
         mListView.setClickable(true);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -466,8 +465,6 @@ public class ArticleListFragment extends Fragment {
         articleListOnScreen.clear();
         currentPage = 0;
     }
-
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
