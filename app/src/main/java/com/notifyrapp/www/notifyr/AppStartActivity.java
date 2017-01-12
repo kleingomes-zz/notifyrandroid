@@ -46,7 +46,7 @@ public class AppStartActivity extends AppCompatActivity{
         userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userid", "");
         // TODO: Remove this line (Hardcoded Klein account)
         //PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "6e43f43b-b86d-4eca-ae98-78938fa239af").commit();
-        PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "77dbbcbf-ef0d-42b6-91c8-5d830b6b004b").commit();
+        //PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "77dbbcbf-ef0d-42b6-91c8-5d830b6b004b").commit();
 
         if(userId.equals(""))
         {
@@ -84,7 +84,7 @@ public class AppStartActivity extends AppCompatActivity{
         else
         {
             // TODO: remove this
-            this.deleteDatabase("NotifyrLocal.db");
+            //this.deleteDatabase("NotifyrLocal.db");
             final Business business = new Business(ctx);
             if(!business.checkIfDatabaseExists()) {
                 business.createNotifyrDatabase(userId);
@@ -101,7 +101,10 @@ public class AppStartActivity extends AppCompatActivity{
             business.updateToken(new CallbackInterface() {
                 @Override
                 public void onCompleted(Object data) {
-                    business.getUserItemsFromServer(new CallbackInterface()
+
+                    /* SYNC USER ITEMS AND SETTINGS WITH SERVER */
+                    new Business(ctx).syncUserItems();
+                   /* business.getUserItemsFromServer(new CallbackInterface()
                     {
                         @Override
                         public void onCompleted(Object data) {
@@ -112,7 +115,7 @@ public class AppStartActivity extends AppCompatActivity{
                                 business.saveUserItemLocal(currentItem);
                             }
                         }
-                    });
+                    });*/
                     // TODO: remove this
                     PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("LastUpdateUserNotifiedArticles", "").commit();
                     String lastUpdate = PreferenceManager.getDefaultSharedPreferences(ctx).getString("LastUpdateUserNotifiedArticles", "");
@@ -140,8 +143,13 @@ public class AppStartActivity extends AppCompatActivity{
         // Intent i = new Intent(ctx, BackgroundService.class);
         // ctx.startService(i);
 
+
+
+
+
+
         /* REGISTER FOR REMOTE NOTIFICATIONS */
-        Thread thread = new Thread(new Runnable() {
+        Thread registerNotificationsThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -168,8 +176,6 @@ public class AppStartActivity extends AppCompatActivity{
             }
         });
 
-        thread.start();
-
+        registerNotificationsThread.start();
     }
-
 }

@@ -16,6 +16,7 @@ import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,8 +55,6 @@ public class Business {
         new WebApi(context).getAllItems(callback);
     }
 
-
-
     public List<Item> getUserItemsFromLocal()
     {
         return new Repository(context).getUserItems();
@@ -79,6 +78,11 @@ public class Business {
     public void deleteUserItemFromServer(int itemId,CallbackInterface callback)
     {
         new WebApi(context).deleteUserItem(itemId,callback);
+    }
+
+    public void saveUserItemToServer(Item item,CallbackInterface callback)
+    {
+        new WebApi(context).saveUserItem(item,callback);
     }
 
     public void updateUserItemPriorityFromServer(int itemId,int priorityId,CallbackInterface callback)
@@ -119,7 +123,62 @@ public class Business {
 
     public void syncUserItems()
     {
+        //new WebApi(context).registerUserProfile(userName,password,callback);
+        // 1. get the local user items
+        final List<Item> userItemsLocal = getUserItemsFromLocal();
 
+        // 2. get the server user items
+        getUserItemsFromServer(new CallbackInterface() {
+            @Override
+            public void onCompleted(Object data) {
+                List<Item> saveItemsToServer = new ArrayList<Item>();
+                List<Item> deleteItemsFromServer = new ArrayList<Item>();
+
+                List<Item> userItemsServer = (List<Item>)data;
+                boolean isFound = false;
+
+                for (Item currentLocalItem : userItemsLocal)
+                {
+                    for (Item currentServerItem : userItemsServer)
+                    {
+                        if(currentLocalItem.getId() == currentServerItem.getId())
+                        {
+                            isFound = true;
+                        }
+                    }
+                    if(!isFound)
+                    {
+                        saveUserItemToServer(currentLocalItem, new CallbackInterface() {
+                            @Override
+                            public void onCompleted(Object data) {
+
+                            }
+                        });
+                    }
+                }
+
+                for (Item currentServerItem : userItemsServer)
+                {
+                    for (Item currentLocalItem : userItemsLocal)
+                    {
+                        if(currentLocalItem.getId() == currentServerItem.getId())
+                        {
+                            isFound = true;
+                        }
+                    }
+                    if(!isFound)
+                    {
+                        deleteItemsFromServer.add(currentServerItem);
+                        deleteUserItemFromServer(currentServerItem.getId(), new CallbackInterface() {
+                            @Override
+                            public void onCompleted(Object data) {
+
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -235,7 +294,8 @@ public class Business {
     }
 
     public void syncUserSettingWithServer(UserSetting userSetting){
-        //new WebApi(context).registerUserProfile(userName,password,callback);
+
+
     }
 
     //endregion

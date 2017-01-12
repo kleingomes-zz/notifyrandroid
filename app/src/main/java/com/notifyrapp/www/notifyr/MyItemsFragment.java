@@ -163,6 +163,7 @@ public class MyItemsFragment extends Fragment {
         itemAdapter = new ItemAdapter(ctx, userItemsList,itemsToDelete,(MainActivity)getActivity());
         mListView.setAdapter(itemAdapter);
         View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
+        mListView.setFooterDividersEnabled(false);
         mListView.addFooterView(emptyFooter);
         btnEditDoneDelete.setText("Edit");
 
@@ -274,6 +275,7 @@ public class MyItemsFragment extends Fragment {
     public void getUserItems() {
         final Business business = new Business(ctx);
         List<Item> localItems = business.getUserItemsFromLocal();
+        userItemsList.clear();
         userItemsList.addAll(localItems);
         itemAdapter.notifyDataSetChanged();
     }

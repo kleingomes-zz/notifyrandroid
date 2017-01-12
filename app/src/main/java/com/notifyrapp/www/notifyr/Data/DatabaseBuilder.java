@@ -131,7 +131,7 @@ public class DatabaseBuilder {
         this.notifyrDB.execSQL("INSERT INTO "
                 + TableName
                 + " (MaxNotifications, ArticleDisplayType,ArticleReaderMode)"
-                + " VALUES (3,2,0);");
+                + " VALUES (5,2,0);");
     }
 
     public String getCreateArticleTableString(String tableName)

@@ -158,6 +158,15 @@ public class WebApi {
         }
     }
 
+    public void saveUserItem(Item item, CallbackInterface callback) {
+        String params = "itemId=" + item.getId();
+        String urlPath = "Item/AddUserItem?" + params;
+        String url = apiBaseUrl + urlPath;
+        if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url, context, callback, Post, params);
+        }
+    }
+
     public void deleteUserItem(int itemId, CallbackInterface callback) {
         String params = "itemId=" + itemId;
         String urlPath = "Item/DeleteUserItem?" + params;
