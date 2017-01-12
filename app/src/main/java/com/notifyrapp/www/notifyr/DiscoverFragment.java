@@ -71,7 +71,7 @@ public class DiscoverFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        ((MainActivity)getActivity()).getSupportActionBar().hide();
         final View view = inflater.inflate(R.layout.fragment_discover, container, false);
         final Business business = new Business(getContext());
         this.ctx = getContext();
@@ -98,7 +98,6 @@ public class DiscoverFragment extends Fragment {
         mInfiniteScrollListener = new InfiniteScrollListener(2) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
-
                 if(totalItemsCount > 10) {
                     pbFooter.setVisibility(View.VISIBLE);
                     getPopularItems((currentPage+1) * pageSize, pageSize,true);
@@ -117,8 +116,6 @@ public class DiscoverFragment extends Fragment {
         mInfiniteScrollListener.setCurrentPage(0);
         mPopularListView.setOnScrollListener(mInfiniteScrollListener);
 
-
-
         //Define your Searchview
         final SearchView searchView = (SearchView) view.findViewById(R.id.search_view);
         topResultsTextView = (TextView) view.findViewById(R.id.txtSettings);
@@ -134,8 +131,6 @@ public class DiscoverFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
-
 
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,12 +199,8 @@ public class DiscoverFragment extends Fragment {
         suggestedItemsList = new ArrayList<Item>();
         mSuggestedAdapter = new DiscoverRecyclerAdapter(suggestedItemsList);
         mRecyclerView.setAdapter(mSuggestedAdapter);
-
-
-
         getSuggestedItems(false);
         getPopularItems(0,pageSize,false);
-
 
         return view;
     }
@@ -237,7 +228,6 @@ public class DiscoverFragment extends Fragment {
                 }
             });
         }
-
     }
 
     private void getPopularItems(int skip,int take,Boolean forceServerLoad)

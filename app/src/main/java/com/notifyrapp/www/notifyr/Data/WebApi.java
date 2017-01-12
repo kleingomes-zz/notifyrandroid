@@ -376,7 +376,6 @@ public class WebApi {
                 }
                 try {
 
-
                     if (notifyrType == NotifyrObjects.UserProfile) {
                         //Repository repo = new Repository(context);
                         //UserProfile userProfile = new UserProfile();

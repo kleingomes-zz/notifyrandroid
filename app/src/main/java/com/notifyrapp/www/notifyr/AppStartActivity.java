@@ -70,6 +70,7 @@ public class AppStartActivity extends AppCompatActivity{
                         business.updateToken(new CallbackInterface() {
                             @Override
                             public void onCompleted(Object data) {
+                                PreferenceManager.getDefaultSharedPreferences(ctx).edit().putBoolean("isFirstTime",true).commit();
                                 startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                             }
                         });
@@ -129,7 +130,7 @@ public class AppStartActivity extends AppCompatActivity{
                             business.saveUserNotificationLocalAsync(articles);
                         }
                     });
-
+                    PreferenceManager.getDefaultSharedPreferences(ctx).edit().putBoolean("isFirstTime",false).commit();
                     startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                 }
             });

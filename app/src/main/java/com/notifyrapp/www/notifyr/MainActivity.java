@@ -3,6 +3,7 @@ package com.notifyrapp.www.notifyr;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,12 +51,14 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private DiscoverFragment discoverFragment;
     private MyItemsFragment myItemsFragment;
     private MyNotificationsFragment myNotificationsFragment;
+    private BottomNavigationView bottomNavigationView;
     public TextView abTitle;
     public Business.MenuTab currentMenu = Business.MenuTab.Home;
     public boolean isBookmarkDirty;
     private Button btnEditDone;
     private Button btnTrashCanDelete;
     private int currentMenuPage = 0;
+    private boolean isFirstTime = false;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -103,25 +107,55 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
 
         super.onCreate(savedInstanceState);
+
         // INIT
         this.ctx = this;
         setContentView(R.layout.activity_main);
         getSupportActionBar().setShowHideAnimationEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorNotifyrLightBlue)));
         getSupportActionBar().hide();
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
+        abTitle = (TextView) findViewById(R.id.abTitle);
+        btnEditDone = (Button) findViewById(R.id.btnEditDone);
+        btnTrashCanDelete = (Button) findViewById(R.id.btnTrashCanDelete);
 
+        // INIT Fabric
         Fabric.with(this, new Answers());
         Fabric.with(this, new Crashlytics());
 
+        // Check if it's the first time the user opens app to default discover page
+        isFirstTime = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isFirstTime", false);
+        // Now set it to false since the app has been opened
+        PreferenceManager.getDefaultSharedPreferences(ctx).edit().putBoolean("isFirstTime",false).commit();
 
-        //String PACKAGE_NAME = getApplicationContext().getPackageName();
+        if (isFirstTime) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            View view = bottomNavigationView.findViewById(R.id.action_discover);
+            view.performClick();
+            Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
+            if(pos2 != null) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setShowHideAnimationEnabled(false);
+            getSupportActionBar().hide();
+            setAppBarVisibility(true);
+            ViewPager viewPager = (ViewPager) findViewById(R.id.container);
+            viewPager.setVisibility(View.GONE);
+            btnEditDone.setVisibility(View.GONE);
+            btnTrashCanDelete.setVisibility(View.GONE);
+            currentMenu = Business.MenuTab.Discover;
+            abTitle.setText(R.string.menu_tab_2);
+            discoverFragment = discoverFragment == null ? new DiscoverFragment() : discoverFragment;
+            fragmentTransaction.add(R.id.fragment_container, discoverFragment, "discover_frag");
+            fragmentTransaction.commit();
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
 
-        abTitle =  (TextView)findViewById(R.id.abTitle);
-        btnEditDone = (Button)findViewById(R.id.btnEditDone);
-        btnTrashCanDelete = (Button)findViewById(R.id.btnTrashCanDelete);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -134,21 +168,23 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-               // if(isBookmarkDirty && tab.getPosition() == 2 && bookmarksFrag != null) {
-               //     bookmarksFrag.getArticles(0, 20, "");
-               // }
+                // if(isBookmarkDirty && tab.getPosition() == 2 && bookmarksFrag != null) {
+                //     bookmarksFrag.getArticles(0, 20, "");
+                // }
                 mViewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
+
+
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -194,6 +230,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         if(pos3 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
                         if(pos4 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
 
+
+
                         // SHOW/HIDE the app bar depending on which menu tab you're on
                         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
@@ -216,13 +254,17 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                             getSupportActionBar().setShowHideAnimationEnabled(false);
-                            getSupportActionBar().show();
+                            if(position == 2) {
+                                getSupportActionBar().hide();
+                            } else {
+                                getSupportActionBar().show();
+                            }
                             setAppBarVisibility(true);
                             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             viewPager.setVisibility(View.GONE);
                         }
 
-                        // LOAD THE NEW FRAGMENT (BUT NOT IF IT'S ALREADY LOADED!
+                        // LOAD THE NEW FRAGMENT (BUT NOT IF IT'S ALREADY LOADED!)
                         switch(position)
                         {
                             case 1 :
@@ -275,6 +317,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                     }
                 });
 
+
     }
 
     @Override
@@ -322,16 +365,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 btnTrashCanDelete.setVisibility(View.GONE);
             }
 */
-    }
-
-    private void commitFragment(String fragmentName,String title,Fragment fragment)
-    {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        abTitle.setText(title);
-        settingsFragment = new SettingsFragment();
-        fragmentTransaction.add(R.id.fragment_container, fragment,fragmentName);
-        fragmentTransaction.commit();
     }
 
     private void setAppBarVisibility(Boolean isHidden)
@@ -403,7 +436,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 return 1;
             }
         }
-
 
 
         @Override
