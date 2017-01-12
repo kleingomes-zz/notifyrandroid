@@ -301,10 +301,50 @@ public class ItemAdapter extends BaseAdapter {
                                 }
                             }
                         })
+                        .addAction("Frequency", R.drawable.bubble_more, new Callback() {
+                            @Override
+                            public void doAction() {
+
+                                new MaterialDialog.Builder(v.getContext())
+                                        .title("Set Frequency")
+                                        .content("How often would you like to receive notifications about "+ item.getName() +"?")
+                                        .positiveText("Save")
+                                        .negativeText("Cancel")
+                                        .items(R.array.freq_options)
+                                        .itemsCallbackSingleChoice(3-item.getPriority(), new MaterialDialog.ListCallbackSingleChoice() {
+                                            @Override
+                                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                                                int selectPriority = 3-which;
+                                                Business business = new Business(mContext);
+                                                item.setPriority(selectPriority);
+                                                business.saveUserItemLocal(item);
+                                                business.updateUserItemPriorityFromServer(item.getId(), selectPriority, new CallbackInterface() {
+                                                    @Override
+                                                    public void onCompleted(Object data) {
+                                                        // TODO: Check for a fail here!!
+                                                    }
+                                                });
+                                                adapter.notifyDataSetChanged();
+                                                Log.d("SELECTED RADIO BUTTON:",text + ":" + which);
+                                                Toast.makeText(act,"Saved", Toast.LENGTH_SHORT).show();
+                                                return true;
+                                            }
+
+                                        })
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                            }
+                                        })
+                                        .show();
+                            }
+                        })
                         .addAction("Close", R.drawable.bubble_hide, new Callback() {
                             @Override
                             public void doAction() {
-                                Toast.makeText(v.getContext(), "Hide pressed!", Toast.LENGTH_SHORT).show();
+
                             }
                         })
                         .show();
@@ -317,3 +357,4 @@ public class ItemAdapter extends BaseAdapter {
 
 
 }
+

@@ -135,17 +135,13 @@ public class AppStartActivity extends AppCompatActivity{
 
         /* HOUSE KEEPING  */
         // MAKE SURE CACHE IS CLEAR
-        CacheManager.clearCacheAsync(ctx);
+        //CacheManager.clearCacheAsync(ctx);
 
         /* BACKGROUND SERVICE **/
         // START THE BACKGROUND SERVICE TO GET ARTICLES
         // use this to start and trigger a service
         // Intent i = new Intent(ctx, BackgroundService.class);
         // ctx.startService(i);
-
-
-
-
 
 
         /* REGISTER FOR REMOTE NOTIFICATIONS */

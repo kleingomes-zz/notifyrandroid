@@ -3,7 +3,7 @@
     <item>
         <shape android:shape="oval">
             <solid android:color="#00000000"/>
-            />
+            <string android:name="vertical_ellipsis">&#8942;</string>
         </shape>
     </item>
 

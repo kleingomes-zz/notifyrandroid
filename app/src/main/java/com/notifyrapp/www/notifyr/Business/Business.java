@@ -123,7 +123,6 @@ public class Business {
 
     public void syncUserItems()
     {
-        //new WebApi(context).registerUserProfile(userName,password,callback);
         // 1. get the local user items
         final List<Item> userItemsLocal = getUserItemsFromLocal();
 
@@ -131,12 +130,12 @@ public class Business {
         getUserItemsFromServer(new CallbackInterface() {
             @Override
             public void onCompleted(Object data) {
-                List<Item> saveItemsToServer = new ArrayList<Item>();
-                List<Item> deleteItemsFromServer = new ArrayList<Item>();
 
-                List<Item> userItemsServer = (List<Item>)data;
                 boolean isFound = false;
+                List<Item> userItemsServer = (List<Item>)data;
 
+                // Check if the item is found locally but not on the server
+                // If true then save the local item to the server
                 for (Item currentLocalItem : userItemsLocal)
                 {
                     for (Item currentServerItem : userItemsServer)
@@ -151,12 +150,14 @@ public class Business {
                         saveUserItemToServer(currentLocalItem, new CallbackInterface() {
                             @Override
                             public void onCompleted(Object data) {
-
                             }
                         });
                     }
                 }
 
+                // Check if the item is found on the server but not locally
+                // If true delete the item from the server
+                isFound = false;
                 for (Item currentServerItem : userItemsServer)
                 {
                     for (Item currentLocalItem : userItemsLocal)
@@ -168,11 +169,9 @@ public class Business {
                     }
                     if(!isFound)
                     {
-                        deleteItemsFromServer.add(currentServerItem);
                         deleteUserItemFromServer(currentServerItem.getId(), new CallbackInterface() {
                             @Override
                             public void onCompleted(Object data) {
-
                             }
                         });
                     }

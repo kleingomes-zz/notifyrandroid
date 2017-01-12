@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CacheManager;
+import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.R;
 import com.squareup.picasso.Picasso;
@@ -67,12 +68,24 @@ public class DiscoverRecyclerAdapter extends RecyclerView
                     if (!isChecked) {
                         Boolean isSuccess = mBusiness.saveUserItemLocal(item);
                         if (isSuccess) {
+                            mBusiness.saveUserItemToServer(item, new CallbackInterface() {
+                                @Override
+                                public void onCompleted(Object data) {
+
+                                }
+                            });
                             itemIsChecked.setImageResource(R.mipmap.ic_check_circle_black_24dp);
                             itemIsChecked.setTag("checked");
                         }
                     } else {
                         Boolean isSuccess = mBusiness.deleteUserItemLocal(item);
                         if (isSuccess) {
+                            mBusiness.deleteUserItemFromServer(item.getId(), new CallbackInterface() {
+                                @Override
+                                public void onCompleted(Object data) {
+
+                                }
+                            });
                             itemIsChecked.setImageResource(R.mipmap.ic_add_circle_outline_black_24dp);
                             itemIsChecked.setTag("unchecked");
                         }
