@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -317,6 +318,7 @@ public class WebApi {
                     is = conn.getInputStream();
                 } else {
                     is = conn.getErrorStream();
+                    Toast.makeText(context,"Unable To Connect To Server!", Toast.LENGTH_SHORT).show();
                 }
 
                 InputStream stream = conn.getInputStream();
@@ -325,6 +327,7 @@ public class WebApi {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                Toast.makeText(context,"Unable To Connect To Server!", Toast.LENGTH_SHORT).show();
             }
 
             try {

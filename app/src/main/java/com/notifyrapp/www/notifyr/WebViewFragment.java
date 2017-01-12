@@ -1,6 +1,7 @@
 package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -43,6 +44,7 @@ public class WebViewFragment extends Fragment {
 
     public WebViewFragment() {
         // Required empty public constructor
+
     }
 
     /**
@@ -65,7 +67,9 @@ public class WebViewFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         ((MainActivity)getActivity()).getSupportActionBar().show();
         if (getArguments() != null) {
             article = (Article) getArguments().getSerializable(ARG_PARAM1);
@@ -76,7 +80,6 @@ public class WebViewFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
         MainActivity act = (MainActivity)getActivity();
         act.abTitle.setText(R.string.empty);
-
 
 
     }
@@ -125,6 +128,7 @@ public class WebViewFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

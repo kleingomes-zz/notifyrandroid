@@ -8,6 +8,7 @@ import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -78,6 +79,7 @@ public class AppStartActivity extends AppCompatActivity{
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("ACCOUNT_CHECK","Account Failed: " + e.getMessage());
+                Toast.makeText(ctx,"Unable To Connect To Server!", Toast.LENGTH_SHORT).show();
             }
             Log.d("ACCOUNT_CHECK","Account Created: " + userId);
         }
