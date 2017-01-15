@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,7 +145,12 @@ public class WebApi {
     }
 
     public void getItemsByQuery(String query, CallbackInterface callback) {
-        String urlPath = "Item/GetItems?query=" + query;
+        String urlPath = null;
+        try {
+            urlPath = "Item/GetItems?query=" +  URLEncoder.encode(query, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         String url = apiBaseUrl + urlPath;
         if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
             postJSONObjectFromURL.execute(url, context, callback, Item);
@@ -244,7 +251,7 @@ public class WebApi {
             NotifyrObjects notifyrObjectType = (NotifyrObjects) params[3];
             Log.d("URL_REQUEST", urlString);
             String result = "";
-
+            Boolean hasErrors = false;
             try {
 
                 URL url = new URL(urlString);
@@ -318,7 +325,8 @@ public class WebApi {
                     is = conn.getInputStream();
                 } else {
                     is = conn.getErrorStream();
-                    Toast.makeText(context,"Unable To Connect To Server!", Toast.LENGTH_SHORT).show();
+                    hasErrors = true;
+                    //Toast.makeText(context,"Unable To Connect To Server!", Toast.LENGTH_SHORT).show();
                 }
 
                 InputStream stream = conn.getInputStream();
@@ -327,12 +335,14 @@ public class WebApi {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(context,"Unable To Connect To Server!", Toast.LENGTH_SHORT).show();
+                hasErrors = true;
+                //Toast.makeText(context,"Unable To Connect To Server!", Toast.LENGTH_SHORT).show();
             }
 
             try {
                 List<Object> returnObj = new ArrayList<>();
-                if (!result.equals("")) {
+                returnObj.add(hasErrors);
+                if (result != null && !result.equals("")) {
                     if (notifyrObjectType == NotifyrObjects.Article || notifyrObjectType == NotifyrObjects.Item) {
                         returnObj.add(new JSONArray(result));
                     } else if (notifyrObjectType == NotifyrObjects.NetworkStatus) {
@@ -349,6 +359,7 @@ public class WebApi {
                 }
                 return returnObj;//new JSONObject(result);
             } catch (JSONException e) {
+                Log.d("WEB_API",e.getMessage());
                 e.printStackTrace();
             }
             return null;
@@ -357,22 +368,25 @@ public class WebApi {
         @Override
         protected void onPostExecute(List<Object> returnObjects) {
             // Save to Local SettingsActivity and Database
+            Boolean hasErrors = (Boolean) returnObjects.get(0);
+            if(hasErrors) {
+                Toast.makeText(context, "Unable To Connect To Server!", Toast.LENGTH_SHORT).show();
+            }
+            if (returnObjects != null && returnObjects.size() == 5 && hasErrors == false) {
 
-            if (returnObjects != null && returnObjects.size() == 4) {
-
-                CallbackInterface callback = (CallbackInterface) returnObjects.get(1);
-                NotifyrObjects notifyrType = (NotifyrObjects) returnObjects.get(2);
+                CallbackInterface callback = (CallbackInterface) returnObjects.get(2);
+                NotifyrObjects notifyrType = (NotifyrObjects) returnObjects.get(3);
                 JSONObject jsonObject = null;
                 JSONArray jsonArray = null;
                 String response = null;
                 if (notifyrType == NotifyrObjects.Article || notifyrType == NotifyrObjects.Item) {
-                    jsonArray = (JSONArray) returnObjects.get(0);
+                    jsonArray = (JSONArray) returnObjects.get(1);
                 } else if (notifyrType == NotifyrObjects.NetworkStatus) {
-                    jsonObject = (JSONObject) returnObjects.get(0);
+                    jsonObject = (JSONObject) returnObjects.get(1);
                 } else if (notifyrType == NotifyrObjects.Post || notifyrType == NotifyrObjects.Put || notifyrType == NotifyrObjects.JsonStatusResult) {
-                    response = (String) returnObjects.get(0);
+                    response = (String) returnObjects.get(1);
                 } else {
-                    jsonObject = (JSONObject) returnObjects.get(0);
+                    jsonObject = (JSONObject) returnObjects.get(1);
                 }
                 try {
 

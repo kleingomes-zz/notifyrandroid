@@ -161,7 +161,7 @@ public class DiscoverFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 // your text view here
-                if(newText.equals("")) {
+                if(newText!= null && newText.equals("")) {
 
                     topResultsTextView.setText(R.string.header_you_might_like);
                     suggestedItemsList.clear();
