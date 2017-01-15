@@ -1,4 +1,5 @@
 package com.notifyrapp.www.notifyr.Data;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -37,15 +38,13 @@ public class Repository {
     private SQLiteDatabase notifyrDB;
 
     /* Constructor */
-    public Repository(Context context)
-    {
+    public Repository(Context context) {
         this.context = context;
     }
 
     /* Member Functions */
     //region Items
-    public Boolean saveUserItemLocal(Item userItem)
-    {
+    public Boolean saveUserItemLocal(Item userItem) {
 
         String tableName = "UserItem";
         SQLiteDatabase db = null;
@@ -53,8 +52,8 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
-            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()),db);
-            if(!exists) {
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ItemId", String.valueOf(userItem.getId()), db);
+            if (!exists) {
                 // Insert the useritem
                 db.execSQL("INSERT INTO "
                         + tableName
@@ -64,25 +63,22 @@ public class Repository {
                         + "'" + userItem.getName() + "'" + ","
                         + "'" + userItem.getIurl() + "'" + ","
                         + userItem.getItemTypeId() + ","
-                        + "'" +userItem.getItemTypeName() + "'"  + ","
+                        + "'" + userItem.getItemTypeName() + "'" + ","
                         + userItem.getUserItemId() + ","
                         + userItem.getPriority() + ");");
-            }
-            else
-            {
+            } else {
                 db.execSQL("UPDATE "
                         + tableName
                         + " SET "
-                        + "Name="+ "'" +userItem.getName() + "'"+ ","
-                        + "IUrl="+ "'" +userItem.getIurl() + "'"+ ","
-                        + "ItemTypeId=" +userItem.getItemTypeId() + ","
-                        + "ItemTypeName="+ "'" +userItem.getItemTypeName()+ "'" + ","
-                        + "UserItemId=" +userItem.getUserItemId() + ","
-                        + "Priority="+ userItem.getPriority()
+                        + "Name=" + "'" + userItem.getName() + "'" + ","
+                        + "IUrl=" + "'" + userItem.getIurl() + "'" + ","
+                        + "ItemTypeId=" + userItem.getItemTypeId() + ","
+                        + "ItemTypeName=" + "'" + userItem.getItemTypeName() + "'" + ","
+                        + "UserItemId=" + userItem.getUserItemId() + ","
+                        + "Priority=" + userItem.getPriority()
                         + " WHERE ItemId = " + userItem.getId());
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             isSuccess = false;
             Log.e("exception", e.getMessage());
         } finally {
@@ -93,22 +89,20 @@ public class Repository {
         return isSuccess;
     }
 
-    public Boolean deleteUserItem(Item userItem)
-    {
+    public Boolean deleteUserItem(Item userItem) {
         String tableName = "UserItem";
         SQLiteDatabase db = null;
         boolean isSuccess = true;
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
-            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()),db);
-            if(exists) {
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ItemId", String.valueOf(userItem.getId()), db);
+            if (exists) {
                 db.execSQL("DELETE FROM "
                         + tableName
                         + " WHERE ItemId = " + userItem.getId());
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             isSuccess = false;
             Log.e("exception", e.getMessage());
         } finally {
@@ -119,18 +113,17 @@ public class Repository {
         return isSuccess;
     }
 
-    public List<Item> getUserItems()
-    {
+    public List<Item> getUserItems() {
         String TableName = "UserItem";
-        String Data="";
-        String PrintToConsole="";
+        String Data = "";
+        String PrintToConsole = "";
         SQLiteDatabase db = null;
         ArrayList<Item> items = new ArrayList<Item>();
 
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
-            Cursor c =  db.rawQuery("SELECT * FROM " + TableName + " ORDER BY NAME", null);
+            Cursor c = db.rawQuery("SELECT * FROM " + TableName + " ORDER BY NAME", null);
 
             int col_itemid = c.getColumnIndex("ItemId");
             int col_name = c.getColumnIndex("Name");
@@ -154,11 +147,10 @@ public class Repository {
                     item.setUserItemId(c.getInt(col_useritemid));
                     item.setPriority(c.getInt(col_priority));
                     items.add(item);
-                }while(c.moveToNext());
+                } while (c.moveToNext());
             }
 
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Log.e("exception", e.getMessage());
         } finally {
             if (db != null) {
@@ -168,8 +160,7 @@ public class Repository {
         return items;
     }
 
-    public List<ItemType> getItemCategories()
-    {
+    public List<ItemType> getItemCategories() {
         String TableName = "UserItem";
         SQLiteDatabase db = null;
         List<ItemType> itemCategories = new ArrayList<ItemType>();
@@ -177,7 +168,7 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
-            Cursor c =  db.rawQuery("SELECT" +
+            Cursor c = db.rawQuery("SELECT" +
                     " ItemTypeId, ItemTypeName" +
                     " FROM " + TableName +
                     " GROUP BY ItemTypeId,ItemTypeName" +
@@ -187,7 +178,7 @@ public class Repository {
             int col_itemtypename = c.getColumnIndex("ItemTypeName");
 
             // Check if our result was valid.
-            if( c != null && c.moveToFirst() ){
+            if (c != null && c.moveToFirst()) {
                 // Loop through all Results
                 do {
                     ItemType itemType = new ItemType();
@@ -195,10 +186,9 @@ public class Repository {
                     itemType.setItemTypeName(c.getString(col_itemtypename));
                     itemCategories.add(itemType);
 
-                }while(c.moveToNext());
+                } while (c.moveToNext());
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Log.e("exception", e.getMessage());
         } finally {
             if (db != null) {
@@ -208,18 +198,16 @@ public class Repository {
         return itemCategories;
     }
 
-    public Boolean isUserFollowingItem(Item userItem)
-    {
+    public Boolean isUserFollowingItem(Item userItem) {
         String tableName = "UserItem";
         SQLiteDatabase db = null;
 
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
-            Boolean exists = checkIsDataAlreadyInDBorNot(tableName,"ItemId",String.valueOf(userItem.getId()),db);
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ItemId", String.valueOf(userItem.getId()), db);
             return exists;
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Log.e("exception", e.getMessage());
         } finally {
             if (db != null) {
@@ -233,8 +221,7 @@ public class Repository {
     //endregion
 
     //region Article
-    public Boolean saveArticles(List<Article> articles)
-    {
+    public Boolean saveArticles(List<Article> articles) {
         String tableName = "Article";
         SQLiteDatabase db = null;
         boolean isSuccess = true;
@@ -248,8 +235,7 @@ public class Repository {
                     db.insert(tableName, null, getArticleParams(article));
                 }
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             isSuccess = false;
             Log.e("exception", e.getMessage());
         } finally {
@@ -260,17 +246,16 @@ public class Repository {
         return isSuccess;
     }
 
-    public List<Article> getArticles(int skip, int take, String sortBy)
-    {
+    public List<Article> getArticles(int skip, int take, String sortBy) {
         String TableName = "Article";
-        String Data="";
-        String PrintToConsole="";
+        String Data = "";
+        String PrintToConsole = "";
         ArrayList<Article> articles = new ArrayList<Article>();
         this.notifyrDB = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
         try {
 
-            Cursor c =  this.notifyrDB.rawQuery("SELECT * FROM " + TableName , null);
+            Cursor c = this.notifyrDB.rawQuery("SELECT * FROM " + TableName, null);
 
             int col_userId = c.getColumnIndex("ArticleId");
             int col_email = c.getColumnIndex("Email");
@@ -283,13 +268,12 @@ public class Repository {
                 do {
                     String Id = c.getString(col_userId);
                     String Name = c.getString(col_email);
-                    PrintToConsole = PrintToConsole + Id +"/"+Name+"\n";
+                    PrintToConsole = PrintToConsole + Id + "/" + Name + "\n";
                     Log.e("CreateUserProfileTable", PrintToConsole);
-                }while(c.moveToNext());
+                } while (c.moveToNext());
             }
 
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Log.e("exception", e.getMessage());
         } finally {
             if (notifyrDB != null) {
@@ -299,10 +283,9 @@ public class Repository {
         return new ArrayList<Article>();
     }
 
-    public List<Article> getUserArticles(int skip, int take,String sortBy, int itemTypeId)
-    {
+    public List<Article> getUserArticles(int skip, int take, String sortBy, int itemTypeId) {
         String TableName = "Article";
-        String Data="";
+        String Data = "";
         SQLiteDatabase db = null;
         List<Article> articles = new ArrayList<Article>();
         try {
@@ -311,20 +294,16 @@ public class Repository {
             Cursor c = null;
             /* TODO: finish this query */
 
-            if(sortBy == Business.SortBy.Newest.toString())
-            {
-                c =  db.rawQuery("SELECT * FROM " + TableName
-                        + " ORDER BY PublishDateUnix DESC LIMIT "+take+" OFFSET " + skip, null);
-            }
-            else
-            {
-                c =  db.rawQuery("SELECT * FROM " + TableName
-                        + " ORDER BY Score DESC LIMIT "+take+" OFFSET " + skip, null);
+            if (sortBy == Business.SortBy.Newest.toString()) {
+                c = db.rawQuery("SELECT * FROM " + TableName
+                        + " ORDER BY PublishDateUnix DESC LIMIT " + take + " OFFSET " + skip, null);
+            } else {
+                c = db.rawQuery("SELECT * FROM " + TableName
+                        + " ORDER BY Score DESC LIMIT " + take + " OFFSET " + skip, null);
             }
 
             articles = getArticles(c);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Log.e("exception", e.getMessage());
         } finally {
             if (db != null) {
@@ -337,24 +316,22 @@ public class Repository {
 
     //region User
 
-    public Boolean saveUserProfile(UserProfile userProfile)
-    {
+    public Boolean saveUserProfile(UserProfile userProfile) {
         String tableName = "UserProfile";
         SQLiteDatabase notifyrDB;
         notifyrDB = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
         Boolean accountExists = checkIfTableHasRows(tableName);
 
-        if(accountExists)
-        {
+        if (accountExists) {
             // Clear the Account Row
-            notifyrDB.execSQL("DELETE FROM "+tableName);
+            notifyrDB.execSQL("DELETE FROM " + tableName);
         }
         // Insert the profile
         notifyrDB.execSQL("INSERT INTO "
                 + tableName
                 + " (Id, Email,AccountType)"
-                + " VALUES ('"+userProfile.UserId+"', null,null);");
+                + " VALUES ('" + userProfile.UserId + "', null,null);");
 
         if (notifyrDB != null) {
             notifyrDB.close();
@@ -363,15 +340,14 @@ public class Repository {
         return true;
     }
 
-    public UserProfile getUserProfile()
-    {
+    public UserProfile getUserProfile() {
         return new UserProfile();
     }
 
     public UserSetting getUserSettings() {
         String TableName = "UserSetting";
-        String Data="";
-        String PrintToConsole="";
+        String Data = "";
+        String PrintToConsole = "";
         UserSetting userSetting = new UserSetting();
         SQLiteDatabase db = null;
 
@@ -380,25 +356,33 @@ public class Repository {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
 
-            Cursor c =  db.rawQuery("SELECT * FROM " + TableName , null);
+            Cursor c = db.rawQuery("SELECT * FROM " + TableName, null);
 
-            int col_maxNotifications = c.getColumnIndex("MaxNotifications");
-            int col_displayType = c.getColumnIndex("ArticleDisplayType");
-            int col_readerMode = c.getColumnIndex("ArticleReaderMode");
+            int col_settingName = c.getColumnIndex("SettingName");
+            int col_settingValue = c.getColumnIndex("SettingValue");
 
             // Check if our result was valid.
             c.moveToFirst();
             if (c != null) {
                 // Loop through all Results
                 do {
-                    //Log.d("getUserSettings:",String.valueOf(c.getInt(col_maxNotifications)));
-                    userSetting.setMaxNotificaitons(c.getInt(col_maxNotifications));
-                    userSetting.setArticleDisplayType(c.getInt(col_displayType));
-                    userSetting.setArticleReaderMode(c.getInt(col_readerMode) > 0);
-                }while(c.moveToNext());
+                    String settingName = c.getString(col_settingName);
+                    String settingValue = c.getString(col_settingValue);
+
+                    switch (settingName) {
+                        case "MaxNotifications":
+                            userSetting.setMaxNotificaitons(Integer.parseInt(settingValue));
+                            break;
+                        case "ArticleDisplayType":
+                            userSetting.setArticleDisplayType(Integer.parseInt(settingValue));
+                            break;
+                        case "ArticleReaderMode":
+                            userSetting.setArticleReaderMode(Boolean.parseBoolean(settingValue));
+                            break;
+                    }
+                } while (c.moveToNext());
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Log.e("exception", e.getMessage());
         } finally {
             if (db != null) {
@@ -408,24 +392,30 @@ public class Repository {
         return userSetting;
     }
 
-    public Boolean saveUserSettings(UserSetting userSetting)
-    {
+    public Boolean saveUserSettings(UserSetting userSetting) {
         String tableName = "UserSetting";
         SQLiteDatabase notifyrDB;
         SQLiteDatabase db = null;
         boolean isSuccess = true;
-        int isArticleReaderMode = (userSetting.isArticleReaderMode()) ? 1:0;
+        int isArticleReaderMode = (userSetting.isArticleReaderMode()) ? 1 : 0;
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             // Insert the profile
             db.execSQL("UPDATE " //update
                     + tableName
-                   // + " (MaxNotifications , ArticleDisplayType, ArticleReaderMode)"
-                    + " SET MaxNotifications = "+String.valueOf(userSetting.getMaxNotificaitons())+", ArticleDisplayType = "+String.valueOf(userSetting.getArticleDisplayType())+", ArticleReaderMode = "+String.valueOf(isArticleReaderMode)+";");
+                    + " SET SettingValue = '" + String.valueOf(userSetting.getMaxNotificaitons()+"'")
+                    + " WHERE SettingName = 'MaxNotifications'");
+            db.execSQL("UPDATE " //update
+                    + tableName
+                    + " SET SettingValue = '" + String.valueOf(userSetting.isArticleReaderMode()+"'")
+                    + " WHERE SettingName = 'ArticleReaderMode'");
+            db.execSQL("UPDATE " //update
+                    + tableName
+                    + " SET SettingValue = '" + String.valueOf(userSetting.getArticleDisplayType()+"'")
+                    + " WHERE SettingName = 'ArticleDisplayType'");
 
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             isSuccess = false;
             Log.e("exception", e.getMessage());
         } finally {
@@ -440,7 +430,7 @@ public class Repository {
     //endregion
 
     //region Notifications
-    public Boolean saveUserNotifications(List<Article> articles){
+    public Boolean saveUserNotifications(List<Article> articles) {
 
         String tableName = "UserNotification";
         SQLiteDatabase db = null;
@@ -456,8 +446,7 @@ public class Repository {
                     db.insert(tableName, null, getArticleParams(article));
                 }
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             isSuccess = false;
             Log.e("exception", e.getMessage());
         } finally {
@@ -468,22 +457,20 @@ public class Repository {
         return isSuccess;
     }
 
-    public List<Article> getUserNotifications(int skip, int take) /* TODO ADD PARAMS FOR PAGING) */
-    {
+    public List<Article> getUserNotifications(int skip, int take) /* TODO ADD PARAMS FOR PAGING) */ {
         String TableName = "UserNotification";
-        String Data="";
+        String Data = "";
         SQLiteDatabase db = null;
         List<Article> articles = new ArrayList<Article>();
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
-            Cursor c =  db.rawQuery("SELECT * FROM " + TableName
-                    + " ORDER BY ArticleNotifiedDateUnix DESC LIMIT "+take+" OFFSET " + skip, null);
+            Cursor c = db.rawQuery("SELECT * FROM " + TableName
+                    + " ORDER BY ArticleNotifiedDateUnix DESC LIMIT " + take + " OFFSET " + skip, null);
 
             articles = getArticles(c);
 
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Log.e("exception", e.getMessage());
         } finally {
             if (db != null) {
@@ -498,22 +485,20 @@ public class Repository {
     //region Bookmarks
 
 
-    public List<Article> getBookmarks(int skip, int take)
-    {
+    public List<Article> getBookmarks(int skip, int take) {
         String TableName = "ArticleBookmark";
-        String Data="";
+        String Data = "";
         SQLiteDatabase db = null;
         List<Article> articles = new ArrayList<Article>();
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
-            Cursor c =  db.rawQuery("SELECT * FROM " + TableName
-                    + " ORDER BY ArticleNotifiedDate DESC LIMIT "+take+" OFFSET " + skip, null);
+            Cursor c = db.rawQuery("SELECT * FROM " + TableName
+                    + " ORDER BY ArticleNotifiedDate DESC LIMIT " + take + " OFFSET " + skip, null);
 
             articles = getArticles(c);
 
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Log.e("exception", e.getMessage());
         } finally {
             if (db != null) {
@@ -523,9 +508,8 @@ public class Repository {
         return articles;
     }
 
-    public boolean saveBookmark(Article article)
-    {
-        Log.d("saveBookmark",article.getTitle());
+    public boolean saveBookmark(Article article) {
+        Log.d("saveBookmark", article.getTitle());
         String tableName = "ArticleBookmark";
         SQLiteDatabase db = null;
         boolean isSuccess = true;
@@ -534,10 +518,9 @@ public class Repository {
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ArticleId", String.valueOf(article.getId()), db);
             if (!exists) {
-                    db.insert(tableName, null, getArticleParams(article));
+                db.insert(tableName, null, getArticleParams(article));
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             isSuccess = false;
             Log.e("exception", e.getMessage());
         } finally {
@@ -545,12 +528,11 @@ public class Repository {
                 db.close();
             }
         }
-        Log.d("saveBookmark","Status("+isSuccess+") " + article.getTitle());
+        Log.d("saveBookmark", "Status(" + isSuccess + ") " + article.getTitle());
         return isSuccess;
     }
 
-    public boolean deleteBookmark(Article article)
-    {
+    public boolean deleteBookmark(Article article) {
         String tableName = "ArticleBookmark";
         SQLiteDatabase db = null;
         boolean isSuccess = true;
@@ -558,10 +540,9 @@ public class Repository {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             db.execSQL("DELETE FROM "
-                        + tableName
-                        + " WHERE ArticleId =" + article.getId());
-        }
-        catch(Exception e) {
+                    + tableName
+                    + " WHERE ArticleId =" + article.getId());
+        } catch (Exception e) {
             isSuccess = false;
             Log.e("exception", e.getMessage());
         } finally {
@@ -574,8 +555,7 @@ public class Repository {
     //endregion
 
     //region Helpers
-    private List<Article> getArticles(Cursor c)
-    {
+    private List<Article> getArticles(Cursor c) {
         List<Article> articles = new ArrayList<Article>();
         int col_articleid = c.getColumnIndex("ArticleId");
         int col_source = c.getColumnIndex("Source");
@@ -627,13 +607,12 @@ public class Repository {
                 article.setRelatedInterestsURL(c.getString(col_realtedInterestsURL));
                 articles.add(article);
 
-            }while(c.moveToNext());
+            } while (c.moveToNext());
         }
         return articles;
     }
 
-    private ContentValues getArticleParams(Article article)
-    {
+    private ContentValues getArticleParams(Article article) {
         ContentValues param = new ContentValues();
         param.put("ArticleId", article.getId());
         param.put("Source", article.getSource());
@@ -661,7 +640,7 @@ public class Repository {
         //SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         String Query = "Select * from " + TableName + " where " + dbfield + " = " + fieldValue;
         Cursor cursor = sqldb.rawQuery(Query, null);
-        if(cursor.getCount() <= 0){
+        if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
         }
@@ -674,7 +653,7 @@ public class Repository {
         SQLiteDatabase sqldb = this.context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         String Query = "Select * from " + TableName;
         Cursor cursor = sqldb.rawQuery(Query, null);
-        if(cursor.getCount() <= 0){
+        if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
         }

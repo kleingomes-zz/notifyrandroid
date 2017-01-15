@@ -125,13 +125,33 @@ public class DatabaseBuilder {
     private void createUserSettingsTable()
     {
         String TableName = "UserSetting";
+     //   this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
+     //           + TableName
+     //           + " (MaxNotifications INTEGER, ArticleDisplayType INTEGER,ArticleReaderMode INTEGER);");
+
+        //this.notifyrDB.execSQL("INSERT INTO "
+        //        + TableName
+        //        + " (MaxNotifications, ArticleDisplayType,ArticleReaderMode)"
+        //        + " VALUES (5,2,0);");
+
         this.notifyrDB.execSQL("CREATE TABLE IF NOT EXISTS "
                 + TableName
-                + " (MaxNotifications INTEGER, ArticleDisplayType INTEGER,ArticleReaderMode INTEGER);");
+                + " (SettingName VARCHAR, SettingValue VARCHAR);");
+
         this.notifyrDB.execSQL("INSERT INTO "
                 + TableName
-                + " (MaxNotifications, ArticleDisplayType,ArticleReaderMode)"
-                + " VALUES (5,2,0);");
+                + " (SettingName, SettingValue)"
+                + " VALUES ('MaxNotifications','5');");
+
+        this.notifyrDB.execSQL("INSERT INTO "
+                + TableName
+                + " (SettingName, SettingValue)"
+                + " VALUES ('ArticleDisplayType','2');");
+
+        this.notifyrDB.execSQL("INSERT INTO "
+                + TableName
+                + " (SettingName, SettingValue)"
+                + " VALUES ('ArticleReaderMode','0');");
     }
 
     public String getCreateArticleTableString(String tableName)

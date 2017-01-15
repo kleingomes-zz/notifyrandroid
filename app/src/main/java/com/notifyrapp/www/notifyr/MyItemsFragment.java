@@ -103,6 +103,7 @@ public class MyItemsFragment extends Fragment {
     public int visibility = 0;
     private Map<Integer, Item> itemsToDelete;
     public static MyItemsFragment fragment;
+    private View nothingFoundView;
     private int position;
 
 
@@ -155,6 +156,8 @@ public class MyItemsFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);
+        nothingFoundView = inflater.inflate(R.layout.list_item_no_content, container, false);
+
         this.ctx = view.getContext();
         btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
         btnEditDoneDelete.setVisibility(View.VISIBLE);
@@ -275,9 +278,9 @@ public class MyItemsFragment extends Fragment {
     public void getUserItems() {
         final Business business = new Business(ctx);
         List<Item> localItems = business.getUserItemsFromLocal();
-        userItemsList.clear();
-        userItemsList.addAll(localItems);
-        itemAdapter.notifyDataSetChanged();
+            userItemsList.clear();
+            userItemsList.addAll(localItems);
+            itemAdapter.notifyDataSetChanged();
     }
 
 

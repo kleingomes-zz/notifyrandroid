@@ -89,7 +89,7 @@ public class ItemAdapter extends BaseAdapter {
     //1
     @Override
     public int getCount() {
-        return mDataSource.size();
+        return mDataSource == null ? 0 : mDataSource.size();
     }
 
     //2

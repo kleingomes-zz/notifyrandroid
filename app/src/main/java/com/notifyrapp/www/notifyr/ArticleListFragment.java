@@ -266,7 +266,7 @@ public class ArticleListFragment extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
                 appBar.setVisibility(View.INVISIBLE);
-                Article article = articleListOnScreen.get(position);
+                Article article = articleListOnScreen.get(position-1);
                 mWebViewFragment = new WebViewFragment().newInstance(article);
                 fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
                 fragmentTransaction.addToBackStack("articlelist_frag");

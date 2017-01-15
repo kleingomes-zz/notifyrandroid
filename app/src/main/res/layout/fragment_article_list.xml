@@ -1,10 +1,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    xmlns:app="http://schemas.android.com/tools">
+    android:animateLayoutChanges="true">
 
 
     <LinearLayout
@@ -49,7 +47,6 @@
     android:layout_alignParentBottom="true"
     android:layout_marginBottom="60dp"
     android:layout_marginRight="16dp"
-    android:src="@android:drawable/ic_menu_upload_you_tube"
-    app:srcCompat="@android:drawable/ic_menu_upload_you_tube" />
+    android:src="@android:drawable/ic_menu_upload_you_tube" />
 
 </RelativeLayout>
