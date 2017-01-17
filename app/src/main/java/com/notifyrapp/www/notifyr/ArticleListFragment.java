@@ -163,6 +163,7 @@ public class ArticleListFragment extends Fragment {
         btnTrashcanDelete.setVisibility(View.GONE);
 
         abTitle =  (TextView)act.findViewById(R.id.abTitle);
+        abTitle.setPadding(0,0,150,0);
         if(itemName!= null && !itemName.equals("")) {
             abTitle.setText(itemName);
          }

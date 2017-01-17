@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                     abTitle.setText(R.string.menu_tab_4);
                 }
-
+                abTitle.setPadding(0,0,0,0);
                 return true;
 
             default:
