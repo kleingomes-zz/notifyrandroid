@@ -271,6 +271,9 @@ public class ItemAdapter extends BaseAdapter {
                 transaction.addToBackStack("myitems_frag");
                 final Drawable upArrow = act.getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
                 upArrow.setColorFilter(act.getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
+                TextView abTitle =  (TextView)act.findViewById(R.id.abTitle);
+                abTitle.setText("");
+                abTitle.setPadding(0,0,150,0);
                 transaction.commit();
             }
         });

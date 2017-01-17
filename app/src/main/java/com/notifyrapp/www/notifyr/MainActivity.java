@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
         abTitle = (TextView) findViewById(R.id.abTitle);
+        abTitle.setPadding(0,0,0,0);
         btnEditDone = (Button) findViewById(R.id.btnEditDone);
         btnTrashCanDelete = (Button) findViewById(R.id.btnTrashCanDelete);
 

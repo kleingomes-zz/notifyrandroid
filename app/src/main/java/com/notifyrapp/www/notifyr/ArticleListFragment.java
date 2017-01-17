@@ -163,7 +163,7 @@ public class ArticleListFragment extends Fragment {
         btnTrashcanDelete.setVisibility(View.GONE);
 
         abTitle =  (TextView)act.findViewById(R.id.abTitle);
-        abTitle.setPadding(0,0,150,0);
+
         if(itemName!= null && !itemName.equals("")) {
             abTitle.setText(itemName);
          }
@@ -193,6 +193,10 @@ public class ArticleListFragment extends Fragment {
             this.sortBy = Business.SortBy.Bookmark;
         }
 
+        if(isItemMode) {
+            radioButtonBookmark.setVisibility(View.GONE);
+        }
+        
         mListView = (ListView) view.findViewById(R.id.article_list_view);
         mListView.setFooterDividersEnabled(false);
         mListView.setHeaderDividersEnabled(false);
