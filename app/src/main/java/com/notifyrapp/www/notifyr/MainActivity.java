@@ -323,49 +323,61 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     @Override
     public void onBackPressed() {
-        //final Myfragment fragment = (Myfragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
-
-        //if (fragment.allowBackPressed()) { // and then you define a method allowBackPressed with the logic to allow back pressed or not
-       //     super.onBackPressed();
-       // }
         // FRAGMENT MANAGER
-        /*FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
         // DROP THE CURRENT FRAGMENT
         Fragment fragment = null;
 
         // Check which fragment is active, inactive ones return null
-        Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
+        //Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
         Fragment pos1 = getSupportFragmentManager().findFragmentByTag("myitems_frag");
-        Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
-        Fragment pos3 = getSupportFragmentManager().findFragmentByTag("notifications_frag");
-        Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
+
+        Fragment webFrag = getSupportFragmentManager().findFragmentByTag("webview_frag");
 
         // Remove the fragment that is not null from the manager
-        if(pos0 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos0).commit(); }
-        if(pos1 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
-        if(pos2 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
-        if(pos3 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
-        if(pos4 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
+        //if(pos0 != null ) {  getSupportFragmentManager().beginTransaction().remove(pos0).commit(); }
+        if(pos1 != null && currentMenu != Business.MenuTab.Interests) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
 
-        // SHOW/HIDE the app bar depending on which menu tab you're on
-        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
+        if(webFrag != null ) {  getSupportFragmentManager().beginTransaction().remove(webFrag).commit(); }
 
-            if(currentMenuPage != 0) {
-                getSupportActionBar().setShowHideAnimationEnabled(false);
-                currentMenu = Business.MenuTab.Home;
+        if(pos1 != null && webFrag != null)
+        {
+            abTitle.setPadding(0,0,0,0);
+            fm.popBackStack("myitems_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            abTitle.setText(R.string.menu_tab_1);
+        }
+        else if(pos1 != null)
+        {
+            abTitle.setPadding(0,0,0,0);
+            fm.popBackStack("myitems_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            abTitle.setText(R.string.menu_tab_1);
+        }
+        else if (webFrag != null  ) {
+            // SHOW/HIDE the app bar depending on which menu tab you're on
+            abTitle.setPadding(0,0,0,0);
+            if (currentMenu == Business.MenuTab.Notifications) {
+                fm.popBackStack("notificationlist_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                abTitle.setText(R.string.menu_tab_3);
+            } else if (currentMenu == Business.MenuTab.Home) {
+                fm.popBackStack("articlelist_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getSupportActionBar().hide();
                 setAppBarVisibility(false);
-                abTitle.setText(R.string.empty);
-                // NEED TO REDRAW THE APP BAR (in case the user added categories)
-                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-                mViewPager.setAdapter(mSectionsPagerAdapter);
-                viewPager.setVisibility(View.VISIBLE);
-                btnEditDone.setVisibility(View.GONE);
-                btnTrashCanDelete.setVisibility(View.GONE);
+            } else if (currentMenu == Business.MenuTab.Interests) {
+                fm.popBackStack("myitems_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                abTitle.setText(R.string.menu_tab_1);
+            } else if (currentMenu == Business.MenuTab.Settings) {
+                fm.popBackStack("settings_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                abTitle.setText(R.string.menu_tab_4);
             }
-*/
+        }
+
     }
 
     private void setAppBarVisibility(Boolean isHidden)

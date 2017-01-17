@@ -196,7 +196,7 @@ public class ArticleListFragment extends Fragment {
         if(isItemMode) {
             radioButtonBookmark.setVisibility(View.GONE);
         }
-        
+
         mListView = (ListView) view.findViewById(R.id.article_list_view);
         mListView.setFooterDividersEnabled(false);
         mListView.setHeaderDividersEnabled(false);
