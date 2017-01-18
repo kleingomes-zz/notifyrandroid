@@ -27,13 +27,24 @@
     <string name="title">My Description</string>
     <string name="context_menu">Context menu</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- ARTICLES/HOMEE -->
+    <string name="noArticlesNothingFoundTopText">Nothing Here.</string>
+    <string name="noArticlesNothingFoundBottomText"></string>
+
+    <!-- MY INTERESTS -->
+    <string name="mi_nothingFoundTopText">You have no interests.</string>
+    <string name="mi_nothingFoundBottomText">Add interests by pressing the + button to start receiving notifications</string>
+
+    <!-- NOTIFICATIONS -->
+    <string name="notif_nothingFoundTopText">You have no new notifications.</string>
+    <string name="notif_nothingFoundBottomText">Notifications sent to your device will appear here.</string>
 
     <!-- DISCOVER -->
     <string name="header_you_might_like">You might be interested in...</string>
     <string name="people_like">Popular right now...</string>
+
+
 
 
 </resources>

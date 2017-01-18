@@ -58,7 +58,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/darkGray"
                 android:layout_centerHorizontal="true"
-                android:text="You have no interests." />
+                android:text="@string/mi_nothingFoundTopText" />
 
             <TextView
 
@@ -73,6 +73,6 @@
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/darkGray"
                 android:textSize="13sp"
-                android:text="Add interests by pressing the + button to start receiving notifications" />
+                android:text="@string/mi_nothingFoundBottomText" />
         </RelativeLayout>
 </RelativeLayout>

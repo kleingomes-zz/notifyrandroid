@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.notifyrapp.www.notifyr.Business.Business;
@@ -76,7 +77,7 @@ public class ArticleListFragment extends Fragment {
     private Boolean showFooterLoader = true;
     // The actual articles display on the screen
     private List<Article> articleListOnScreen;
-
+    private RelativeLayout nothingFoundView;
     // Temp buffers to hold contents of sort types
     // These will be swapped with articleListOnScreen
     // if selected index of the checkbox is active
@@ -163,6 +164,7 @@ public class ArticleListFragment extends Fragment {
         btnTrashcanDelete.setVisibility(View.GONE);
 
         abTitle =  (TextView)act.findViewById(R.id.abTitle);
+        nothingFoundView = (RelativeLayout) view.findViewById(R.id.article_not_found);
 
         if(itemName!= null && !itemName.equals("")) {
             abTitle.setText(itemName);
@@ -416,8 +418,13 @@ public class ArticleListFragment extends Fragment {
         if(sortBy == Business.SortBy.Bookmark.toString()) {
             List<Article> bookmarks = business.getBookmarks(skip, take);
             if(bookmarks != null && bookmarks.size() > 0) {
+                nothingFoundView.setVisibility(View.GONE);
                 articleListOnScreen.addAll(bookmarks);
                 adapter.notifyDataSetChanged();
+            }
+            else
+            {
+                nothingFoundView.setVisibility(View.VISIBLE);
             }
             if (pbFooter != null && articleListOnScreen.size() < pageSize) {
                 pbFooter.setVisibility(View.GONE);
@@ -454,6 +461,15 @@ public class ArticleListFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                         currentPage++;
                     }
+
+                    /// Show or hide the nothing found view
+                    if(articleListOnScreen.size() == 0) {
+                        nothingFoundView.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        nothingFoundView.setVisibility(View.GONE);
+                    }
+
                     mSwipeContainer.setRefreshing(false);
                 }
             });

@@ -1,7 +1,7 @@
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true">
 
 
@@ -36,6 +36,49 @@
     </LinearLayout>
 
 
+    <RelativeLayout
+        android:id="@+id/article_not_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:padding="5dp">
+
+
+        <ImageView
+            android:id="@+id/noArticlesImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/no_articles" />
+
+        <TextView
+            android:id="@+id/noArticleTopText"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/noArticlesImage"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/darkGray"
+            android:layout_centerHorizontal="true"
+            android:text="@string/noArticlesNothingFoundTopText" />
+
+        <TextView
+
+            android:id="@+id/noArticleBottomText"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/noArticleTopText"
+            android:textStyle="normal"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/darkGray"
+            android:textSize="13sp"
+            android:text="@string/noArticlesNothingFoundBottomText" />
+    </RelativeLayout>
 
 <android.support.design.widget.FloatingActionButton
     android:id="@+id/fab"

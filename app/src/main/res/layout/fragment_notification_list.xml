@@ -1,19 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 <android.support.v4.widget.SwipeRefreshLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:tools="http://schemas.android.com/tools"
-       android:id = "@+id/swipeNotificationContainer"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeNotificationContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
     <ListView
-        android:layout_width="match_parent"
         android:id="@+id/notification_list_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        />
+        android:layout_alignParentTop="true" />
     <!--    android:scrollbars="none" -->
-  </android.support.v4.widget.SwipeRefreshLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
+
+<RelativeLayout
+android:id="@+id/notify_not_found"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:visibility="gone"
+android:padding="5dp">
+
+
+<ImageView
+    android:id="@+id/noNotificationsImage"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_marginTop="100dp"
+    android:layout_marginBottom="20dp"
+    android:layout_centerHorizontal="true"
+    app:srcCompat="@drawable/no_notifications" />
+
+<TextView
+    android:id="@+id/notifTopText"
+    android:gravity="center"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_below="@+id/noNotificationsImage"
+    android:textSize="15sp"
+    android:textStyle="bold"
+    android:textColor="@color/darkGray"
+    android:layout_centerHorizontal="true"
+    android:text="@string/notif_nothingFoundTopText" />
+
+<TextView
+
+    android:id="@+id/notifBottomText"
+    android:gravity="center"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/notifTopText"
+    android:textStyle="normal"
+    android:layout_centerHorizontal="true"
+    android:textColor="@color/darkGray"
+    android:textSize="13sp"
+    android:text="@string/notif_nothingFoundBottomText" />
+</RelativeLayout>
+</RelativeLayout>

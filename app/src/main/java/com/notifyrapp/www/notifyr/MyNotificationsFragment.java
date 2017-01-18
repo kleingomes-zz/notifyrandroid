@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ public class MyNotificationsFragment extends Fragment {
     private WebViewFragment mWebViewFragment;
     private final int pageSize = 20;
     private NotificationAdapter adapter;
+    private RelativeLayout nothingFoundView;
     // private String sortBy = "ArticleNotifiedDate";
 
 
@@ -111,6 +113,7 @@ public class MyNotificationsFragment extends Fragment {
         // Lookup the swipe container view
         mSwipeNotificationContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeNotificationContainer);
         mListView = (ListView) view.findViewById(R.id.notification_list_view);
+        nothingFoundView = (RelativeLayout) view.findViewById(R.id.notify_not_found);
 
         //Get the first batch of articles
         adapter = new NotificationAdapter(ctx, notificationList);
@@ -176,8 +179,16 @@ public class MyNotificationsFragment extends Fragment {
     public void getNotifications(int skip, int take) {
         final Business business = new Business(ctx);
         List<Article> localNotifications = business.getUserNotificationsLocal(skip, take);
-        notificationList.addAll(localNotifications);
-        adapter.notifyDataSetChanged();
+
+        if(localNotifications.size() == 0) {
+            nothingFoundView.setVisibility(View.VISIBLE);
+        }
+        else {
+            nothingFoundView.setVisibility(View.GONE);
+            notificationList.addAll(localNotifications);
+            adapter.notifyDataSetChanged();
+        }
+
         mSwipeNotificationContainer.setRefreshing(false);
     }
 
