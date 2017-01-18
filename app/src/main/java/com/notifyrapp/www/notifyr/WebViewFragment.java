@@ -92,6 +92,7 @@ public class WebViewFragment extends Fragment {
 
         // INIT WEB VIEW
         WebView webView =  (WebView) view.findViewById(R.id.web_view);
+        webView.setWebViewClient(new WebViewClient());
         final ProgressBar Pbar;
         Pbar = (ProgressBar) view.findViewById(R.id.progressBar);
         Pbar.setVisibility(ProgressBar.VISIBLE);
@@ -99,7 +100,7 @@ public class WebViewFragment extends Fragment {
                 Color.argb(255,0,157,255), android.graphics.PorterDuff.Mode.SRC_IN);
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
-                Log.d("PROGRESS",String.valueOf(progress));
+                //Log.d("PROGRESS",String.valueOf(progress));
                 if(progress < 100 && Pbar.getVisibility() == ProgressBar.GONE){
                     Pbar.setVisibility(ProgressBar.VISIBLE);
                 }

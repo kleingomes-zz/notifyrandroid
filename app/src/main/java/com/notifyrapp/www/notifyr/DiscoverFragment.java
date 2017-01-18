@@ -174,6 +174,7 @@ public class DiscoverFragment extends Fragment {
                         business.getItemsByQuery(newText, new CallbackInterface() {
                             @Override
                             public void onCompleted(Object data) {
+                                suggestedItemsList.clear();
                                 List<Item> results = (List<Item>) data;
                                 suggestedItemsList.addAll(results);
                                 mSuggestedAdapter.notifyDataSetChanged();
@@ -217,7 +218,7 @@ public class DiscoverFragment extends Fragment {
         }
         else
         {
-            new Business(ctx).getPopularItemsByItemTypeIdFromServer(0, 40,0, new CallbackInterface() {
+            new Business(ctx).getPopularItemsByItemTypeIdFromServer(0, 40,-1, new CallbackInterface() {
                 @Override
                 public void onCompleted(Object data) {
                     List<Item> downloadedItems = (List<Item>) data;
