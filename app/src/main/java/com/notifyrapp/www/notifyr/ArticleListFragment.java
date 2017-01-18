@@ -201,7 +201,7 @@ public class ArticleListFragment extends Fragment {
         mListView.setFooterDividersEnabled(false);
         mListView.setHeaderDividersEnabled(false);
         mListView.addHeaderView(sortViewHeader);
-        mListView.addFooterView(new View(ctx, null, 0));
+       // mListView.addFooterView(new View(ctx, null, 0));
         // Config adapter and get the first batch of articles
         adapter = new ArticleAdapter(ctx, articleListOnScreen);
         mListView.setAdapter(adapter);
@@ -260,7 +260,7 @@ public class ArticleListFragment extends Fragment {
 
         View progressView = inflater.inflate(R.layout.progress_circle, null);
         pbFooter = (ProgressBar) progressView.findViewById(R.id.pb_main);
-        pbFooter.setVisibility(View.GONE);
+        pbFooter.setVisibility(View.VISIBLE);
         mListView.addFooterView(progressView);
         // Add the onclick listener to open the web view
         mListView.setClickable(true);
@@ -445,7 +445,7 @@ public class ArticleListFragment extends Fragment {
                         if(pbFooter != null && articles.size() > 0) articleListOnScreen.addAll(articleListPopularBuffer);
                     }
 
-                    if (pbFooter != null && articleListOnScreen.size() == 0) {
+                    if (pbFooter != null && articleListOnScreen.size() <  pageSize) {
                         pbFooter.setVisibility(View.GONE);
                     } else {
                         pbFooter.setVisibility(View.VISIBLE);

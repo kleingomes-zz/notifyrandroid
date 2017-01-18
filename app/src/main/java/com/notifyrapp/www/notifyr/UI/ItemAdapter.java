@@ -26,6 +26,7 @@ package com.notifyrapp.www.notifyr.UI;
         import android.widget.CompoundButton;
         import android.widget.ImageView;
         import android.widget.ProgressBar;
+        import android.widget.RelativeLayout;
         import android.widget.TextView;
         import android.widget.Toast;
         import android.support.v4.app.Fragment;
@@ -68,7 +69,7 @@ public class ItemAdapter extends BaseAdapter {
     private MainActivity act;
     private ItemAdapter adapter;
     private Business mBusiness;
-
+    private RelativeLayout mNothingFoundView;
 
     public CheckBox checkBoxDelete;
     public View rowView;
@@ -76,13 +77,14 @@ public class ItemAdapter extends BaseAdapter {
 
 
 
-    public ItemAdapter(Context context, List<Item> items, Map<Integer, Item> deleteItemsQueue, MainActivity activity) {
+    public ItemAdapter(Context context, List<Item> items, Map<Integer, Item> deleteItemsQueue, MainActivity activity, RelativeLayout nothingFoundView) {
         mContext = context;
         mDataSource = items;
         mDeleteQueue = deleteItemsQueue;
         act = activity;
         adapter = this;
         mBusiness = new Business(context);
+        mNothingFoundView = nothingFoundView;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -113,7 +115,7 @@ public class ItemAdapter extends BaseAdapter {
 
     //4
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
 
         rowView = mInflater.inflate(R.layout.list_item, parent, false);
         rowView.setClickable(true);
@@ -179,11 +181,12 @@ public class ItemAdapter extends BaseAdapter {
         }
 
 
+
         // Get the name of the item
-        TextView itemTextView = (TextView) rowView.findViewById(R.id.item_name);
+        final TextView itemTextView = (TextView) rowView.findViewById(R.id.item_name);
 
         // get frequency
-        TextView frequencyTextView = ((TextView) rowView.findViewById(R.id.item_frequency));
+        final TextView frequencyTextView = ((TextView) rowView.findViewById(R.id.item_frequency));
 
 
         // Get image of the item
@@ -296,6 +299,11 @@ public class ItemAdapter extends BaseAdapter {
                                         }
                                     });
 
+
+                                    if(mDataSource.size() == 0)
+                                    {
+                                        mNothingFoundView.setVisibility(View.VISIBLE);
+                                    }
                                     adapter.notifyDataSetChanged();
                                     Toast.makeText(v.getContext(), "Removed " + item.getName(), Toast.LENGTH_SHORT).show();
                                 }

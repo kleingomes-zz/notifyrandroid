@@ -1,30 +1,78 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-<android.support.v4.widget.SwipeRefreshLayout
-    android:id="@+id/swipeContainerItems"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/items_list_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainerItems"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="#eaeaea"
-        android:dividerHeight="1dp"
-        android:clickable="true">
+        android:layout_height="match_parent">
 
-    </ListView>
-    <TextView
-        android:id="@android:id/empty"
-        android:text="Nothing Here."
-        android:fontFamily="sans-serif"
-        android:textSize="15dp"
-        android:layout_width="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_height="match_parent"
-        />
-    <!--    android:scrollbars="none" -->
-</android.support.v4.widget.SwipeRefreshLayout>
+        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/items_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:divider="#eaeaea"
+            android:dividerHeight="1dp">
 
+        </ListView>
+
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif"
+            android:text="Nothing Here."
+            android:textSize="15dp" />
+        <!--    android:scrollbars="none" -->
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <RelativeLayout
+            xmlns:geekui="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/nothing_found"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" android:padding="20dp">
+
+
+            <ImageView
+                android:id="@+id/noInterestsImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginBottom="20dp"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/no_interests" />
+
+            <TextView
+                android:id="@+id/topText"
+                android:gravity="center"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/noInterestsImage"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/darkGray"
+                android:layout_centerHorizontal="true"
+                android:text="You have no interests." />
+
+            <TextView
+
+                android:id="@+id/bottomText"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/topText"
+                android:textStyle="normal"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/darkGray"
+                android:textSize="13sp"
+                android:text="Add interests by pressing the + button to start receiving notifications" />
+        </RelativeLayout>
 </RelativeLayout>

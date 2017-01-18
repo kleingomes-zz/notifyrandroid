@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -103,7 +104,7 @@ public class MyItemsFragment extends Fragment {
     public int visibility = 0;
     private Map<Integer, Item> itemsToDelete;
     public static MyItemsFragment fragment;
-    private View nothingFoundView;
+    private RelativeLayout nothingFoundView;
     private int position;
 
 
@@ -156,14 +157,13 @@ public class MyItemsFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);
-        nothingFoundView = inflater.inflate(R.layout.list_item_no_content, container, false);
-
+        nothingFoundView = (RelativeLayout) view.findViewById(R.id.nothing_found);
         this.ctx = view.getContext();
         btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
         btnEditDoneDelete.setVisibility(View.VISIBLE);
         btnTrashcanDelete = (Button) act.findViewById(R.id.btnTrashCanDelete);
         mListView = (ListView) view.findViewById(R.id.items_list_view);
-        itemAdapter = new ItemAdapter(ctx, userItemsList,itemsToDelete,(MainActivity)getActivity());
+        itemAdapter = new ItemAdapter(ctx, userItemsList,itemsToDelete,(MainActivity)getActivity(),nothingFoundView);
         mListView.setAdapter(itemAdapter);
         View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
         mListView.setFooterDividersEnabled(false);
@@ -260,7 +260,10 @@ public class MyItemsFragment extends Fragment {
 
                 itemsToDelete.clear();
                 itemAdapter.notifyDataSetChanged();
-
+                if(userItemsList.size() == 0)
+                {
+                    nothingFoundView.setVisibility(View.VISIBLE);
+                }
                 if(hasErrors) {
                     Toast.makeText(getActivity(), "An unknown error occurred while deleting an item.",Toast.LENGTH_SHORT).show();
                 }
@@ -278,9 +281,15 @@ public class MyItemsFragment extends Fragment {
     public void getUserItems() {
         final Business business = new Business(ctx);
         List<Item> localItems = business.getUserItemsFromLocal();
+        if(localItems.size() == 0) {
+            nothingFoundView.setVisibility(View.VISIBLE);
+        }
+        else {
+            nothingFoundView.setVisibility(View.GONE);
             userItemsList.clear();
             userItemsList.addAll(localItems);
             itemAdapter.notifyDataSetChanged();
+        }
     }
 
 
