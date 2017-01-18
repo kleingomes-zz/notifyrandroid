@@ -180,7 +180,7 @@ public class MyNotificationsFragment extends Fragment {
         final Business business = new Business(ctx);
         List<Article> localNotifications = business.getUserNotificationsLocal(skip, take);
 
-        if(localNotifications.size() == 0) {
+        if(localNotifications.size() == 0 && skip == 0) {
             nothingFoundView.setVisibility(View.VISIBLE);
         }
         else {
