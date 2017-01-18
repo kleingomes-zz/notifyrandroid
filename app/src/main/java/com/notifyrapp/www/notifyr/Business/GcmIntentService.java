@@ -5,6 +5,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -15,6 +18,8 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.notifyrapp.www.notifyr.MainActivity;
 import com.notifyrapp.www.notifyr.R;
+
+import java.util.Date;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -28,20 +33,30 @@ public class GcmIntentService extends GcmListenerService {
         String articleTitle = data.getString("articleTitle");
         String articleUrl = data.getString("articleUrl");
         String articleId = data.getString("articleId");
-        String articleDescription = data.getString("articleDescription");
+     //   String articleDescription = data.getString("articleDescription");
 
         Log.d("NOTIFICATION", from);
         android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher) // notification icon
+          //      .setSmallIcon(R.mipmap.ic_launcher) // notification icon
                 .setContentTitle(articleTitle) // title for notification
-                .setContentText(articleDescription) // message for notification
+               //.setContentText(articleDescription) // message for notification
                 .setAutoCancel(true); // clear notification after click
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        } else {
+            mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        }
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.large_icon);
+     //   mBuilder.setLargeIcon(largeIcon);
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         mBuilder.setContentIntent(pi);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mBuilder.build());
+
+        int random_id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        int aId = Integer.parseInt(articleId);
+        mNotificationManager.notify(random_id, mBuilder.build());
     }
 }
 

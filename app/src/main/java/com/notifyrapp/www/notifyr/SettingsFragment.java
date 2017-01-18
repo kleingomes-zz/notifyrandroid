@@ -25,6 +25,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Switch;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
@@ -311,6 +312,21 @@ public class SettingsFragment extends Fragment {
                 fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
                 fragmentTransaction.addToBackStack("settings_frag");
                 fragmentTransaction.commit();
+            }
+        });
+
+        // SEND TEST
+        btnSendTestNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Business business = new Business(ctx);
+                business.sendTestNotification(new CallbackInterface() {
+                    @Override
+                    public void onCompleted(Object data) {
+
+                    }
+                });
+                Toast.makeText(ctx, "Sent!", Toast.LENGTH_SHORT).show();
             }
         });
 

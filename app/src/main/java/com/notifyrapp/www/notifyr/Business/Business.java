@@ -376,6 +376,11 @@ public class Business {
     {
         new WebApi(context).getNetworkStatus(callback);
     }
+
+    public void sendTestNotification(CallbackInterface callback)
+    {
+        new WebApi(context).sendTestNotification(callback);
+    }
     //endregion
 
     //region ENUM

@@ -40,8 +40,8 @@ import static java.lang.Thread.sleep;
 public class WebApi {
 
     /* Private Fields */
-    private final String apiBaseUrl = "http://www.notifyr.ca/service/v2/api/";
-    private final String tokenUrl = "http://www.notifyr.ca/service/v2/token";
+    private final String apiBaseUrl = "https://www.notifyr.ca/service/v2/api/";
+    private final String tokenUrl = "https://www.notifyr.ca/service/v2/token";
     private final String defaultPassword = "2014$NotifyrPassword$2014";
 
     //private String apiBaseUrlDev = "http://www.notifyr.ca/dev/service/api/";
@@ -226,6 +226,14 @@ public class WebApi {
         }
     }
 
+    public void sendTestNotification(CallbackInterface callback){
+        String urlPath = "User/SendAndroidTestNotification?userId="+this.userId;
+        String url = apiBaseUrl + urlPath;
+        if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url, context, callback, NotifyrObjects.Get);
+        }
+    }
+
     //endregions
 
     //region MISC
@@ -370,7 +378,7 @@ public class WebApi {
             // Save to Local SettingsActivity and Database
             Boolean hasErrors = (Boolean) returnObjects.get(0);
             if(hasErrors) {
-                Toast.makeText(context, "Unable To Connect To Server!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Unable To Connect To Server!", Toast.LENGTH_LONG).show();
             }
             if (returnObjects != null && returnObjects.size() == 5 && hasErrors == false) {
 
