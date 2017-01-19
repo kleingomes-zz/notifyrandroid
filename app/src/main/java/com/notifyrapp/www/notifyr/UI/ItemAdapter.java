@@ -268,18 +268,21 @@ public class ItemAdapter extends BaseAdapter {
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment newFragment = new ArticleListFragment().newInstance(item.getId(),item.getName());
-                android.support.v4.app.FragmentTransaction transaction =  act.getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack("myitems_frag");
-                final Drawable upArrow = act.getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
-                upArrow.setColorFilter(act.getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
-                TextView abTitle =  (TextView)act.findViewById(R.id.abTitle);
-                abTitle.setText("");
-                abTitle.setPadding(0,0,150,0);
-                transaction.commit();
+                if(!GlobalShared.getIsInEditMode()) {
+                    Fragment newFragment = new ArticleListFragment().newInstance(item.getId(), item.getName());
+                    android.support.v4.app.FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, newFragment);
+                    transaction.addToBackStack("myitems_frag");
+                    final Drawable upArrow = act.getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+                    upArrow.setColorFilter(act.getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
+                    TextView abTitle = (TextView) act.findViewById(R.id.abTitle);
+                    abTitle.setText("");
+                    abTitle.setPadding(0, 0, 150, 0);
+                    transaction.commit();
+                }
             }
         });
+
 
         rowView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

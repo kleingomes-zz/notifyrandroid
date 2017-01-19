@@ -174,12 +174,24 @@ public class PopularItemAdapter extends BaseAdapter {
                 if (!isChecked) {
                     Boolean isSuccess = mBusiness.saveUserItemLocal(item);
                     if (isSuccess) {
+                        mBusiness.saveUserItemToServer(item, new CallbackInterface() {
+                            @Override
+                            public void onCompleted(Object data) {
+
+                            }
+                        });
                         imageAdd.setImageResource(R.mipmap.ic_check_circle_black_24dp);
                         imageAdd.setTag("checked");
                     }
                 } else {
                     Boolean isSuccess = mBusiness.deleteUserItemLocal(item);
                     if (isSuccess) {
+                        mBusiness.deleteUserItemFromServer(item.getId(), new CallbackInterface() {
+                            @Override
+                            public void onCompleted(Object data) {
+
+                            }
+                        });
                         imageAdd.setImageResource(R.mipmap.ic_add_circle_outline_black_24dp);
                         imageAdd.setTag("unchecked");
                     }

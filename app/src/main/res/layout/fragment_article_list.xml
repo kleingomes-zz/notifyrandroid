@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_below="@+id/noArticlesImage"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/darkGray"
             android:layout_centerHorizontal="true"

@@ -203,7 +203,7 @@ public class ArticleListFragment extends Fragment {
         mListView.setFooterDividersEnabled(false);
         mListView.setHeaderDividersEnabled(false);
         mListView.addHeaderView(sortViewHeader);
-       // mListView.addFooterView(new View(ctx, null, 0));
+
         // Config adapter and get the first batch of articles
         adapter = new ArticleAdapter(ctx, articleListOnScreen);
         mListView.setAdapter(adapter);
@@ -266,7 +266,7 @@ public class ArticleListFragment extends Fragment {
         mListView.addFooterView(progressView);
         // Add the onclick listener to open the web view
         mListView.setClickable(true);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+     /*   mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -279,7 +279,7 @@ public class ArticleListFragment extends Fragment {
                 fragmentTransaction.addToBackStack("articlelist_frag");
                 fragmentTransaction.commit();
             }
-        });
+        });*/
         mListView.setLongClickable(true);
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
