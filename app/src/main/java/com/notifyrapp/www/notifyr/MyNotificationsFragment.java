@@ -15,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -64,6 +66,7 @@ public class MyNotificationsFragment extends Fragment {
     private final int pageSize = 20;
     private NotificationAdapter adapter;
     private RelativeLayout nothingFoundView;
+    private ProgressBar pbFooter;
     // private String sortBy = "ArticleNotifiedDate";
 
 
@@ -114,10 +117,17 @@ public class MyNotificationsFragment extends Fragment {
         mSwipeNotificationContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeNotificationContainer);
         mListView = (ListView) view.findViewById(R.id.notification_list_view);
         nothingFoundView = (RelativeLayout) view.findViewById(R.id.notify_not_found);
-
+        View progressView = inflater.inflate(R.layout.progress_circle, null);
+        View footerViewLoadMore = ((LayoutInflater) this.getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                R.layout.progress_circle, null, false);
         //Get the first batch of articles
         adapter = new NotificationAdapter(ctx, notificationList);
+        mListView.addFooterView(footerViewLoadMore);
+        pbFooter = (ProgressBar) footerViewLoadMore.findViewById(R.id.pb_main);
+        pbFooter.setVisibility(View.VISIBLE);
         mListView.setAdapter(adapter);
+
         getNotifications(0, pageSize);
 
         //Setup refresh listener which triggers new data loading
@@ -178,6 +188,7 @@ public class MyNotificationsFragment extends Fragment {
 
     public void getNotifications(int skip, int take) {
         final Business business = new Business(ctx);
+        if(pbFooter != null)  pbFooter.setVisibility(View.VISIBLE);
         List<Article> localNotifications = business.getUserNotificationsLocal(skip, take);
 
         if(localNotifications.size() == 0 && skip == 0) {
@@ -188,7 +199,7 @@ public class MyNotificationsFragment extends Fragment {
             notificationList.addAll(localNotifications);
             adapter.notifyDataSetChanged();
         }
-
+        pbFooter.setVisibility(View.GONE);
         mSwipeNotificationContainer.setRefreshing(false);
     }
 
