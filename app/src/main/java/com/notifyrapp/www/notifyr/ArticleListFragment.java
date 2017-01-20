@@ -235,7 +235,7 @@ public class ArticleListFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
+        mSwipeContainer.setProgressViewOffset(true ,0,150);
         // Add the scroll listener to know when we hit the bottom
         mInfiniteScrollListener = new InfiniteScrollListener(1) {
             @Override
