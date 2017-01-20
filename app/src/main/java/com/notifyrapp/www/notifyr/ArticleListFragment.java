@@ -368,6 +368,7 @@ public class ArticleListFragment extends Fragment {
         radioGroupArticleSort.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                nothingFoundView.setVisibility(View.GONE);
                 articleListOnScreen.clear();
                 if (radioButtonNewest.isChecked())
                 {

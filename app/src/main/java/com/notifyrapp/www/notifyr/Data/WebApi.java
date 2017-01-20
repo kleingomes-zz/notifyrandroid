@@ -113,7 +113,7 @@ public class WebApi {
     }
 
     public void getPopularItems(int skip, int take, CallbackInterface callback) {
-        String urlPath = "Item/getPopularItems?skip=" + skip + "&take=" + take;
+        String urlPath = "Item/GetPopularItemsByType?skip=" + skip + "&take=" + take+ "&type=0";
         String url = apiBaseUrl + urlPath;
         if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
             postJSONObjectFromURL.execute(url, context, callback, Item);

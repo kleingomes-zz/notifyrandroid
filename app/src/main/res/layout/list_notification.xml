@@ -37,8 +37,8 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="MacBook Pro With OLED Touchbar Too Expensive? Laptop Priced At $4,300"
-            android:textColor="#000000"
-            android:textSize="16sp"
+            android:textColor="#303030"
+            android:textSize="17sp"
             android:textStyle="normal|bold" />
 
         <TextView
@@ -49,7 +49,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="100dp"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="50dp"
             android:layout_toEndOf="@+id/imgNotification"
             android:layout_toRightOf="@+id/imgNotification"
             android:ellipsize="end"
@@ -64,10 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="15dp"
-
-
             android:layout_marginLeft="15dp"
-
             android:layout_marginTop="70dp"
             android:maxLines="1"
             android:text="one month ago"
@@ -93,6 +90,8 @@
             android:textSize="15sp"
             android:textStyle="normal|bold" />
 
-
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
     </RelativeLayout>
 

@@ -49,6 +49,15 @@ public final class CacheManager {
         }
     }
 
+
+    public static void deleteObjectFromCache(String key)
+    {
+        if(objectCache.containsKey(key))
+        {
+             objectCache.remove(key);
+        }
+    }
+
     public static Object getObjectFromMemoryCache(String key)
     {
         if(objectCache.containsKey(key))

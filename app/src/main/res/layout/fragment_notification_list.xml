@@ -14,6 +14,8 @@
         android:id="@+id/notification_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:divider="#eaeaea"
+        android:dividerHeight="1dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
     <!--    android:scrollbars="none" -->

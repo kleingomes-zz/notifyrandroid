@@ -22,6 +22,7 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.UI.DiscoverRecyclerAdapter;
 import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
 import com.notifyrapp.www.notifyr.UI.PopularItemAdapter;
+import com.squareup.picasso.Cache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,9 @@ public class DiscoverFragment extends Fragment {
     private InfiniteScrollListener mInfiniteScrollListener;
     private SwipeRefreshLayout swipeSuggested;
     private ProgressBar pbFooter;
+    private boolean footerRemoved = false;
+    private View footerViewInitLoad;
+    private View footerViewLoadMore;
 
     public DiscoverFragment() {
         // Required empty public constructor
@@ -75,12 +79,16 @@ public class DiscoverFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_discover, container, false);
         final Business business = new Business(getContext());
         this.ctx = getContext();
-
+        footerRemoved = false;
         View progressView = inflater.inflate(R.layout.progress_circle, null);
 
-        View footerView = ((LayoutInflater) this.getActivity()
+        footerViewInitLoad = ((LayoutInflater) this.getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                R.layout.progress_circle_padded, null, false);
+        footerViewLoadMore = ((LayoutInflater) this.getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
                 R.layout.progress_circle, null, false);
+
         pbFooter = (ProgressBar) progressView.findViewById(R.id.pb_main);
         pbFooter.setVisibility(View.VISIBLE);
 
@@ -89,7 +97,7 @@ public class DiscoverFragment extends Fragment {
         mPopularListView = (ListView) view.findViewById(R.id.popular_list_view);
         //mPopularListView.setHeaderDividersEnabled(false);
         mPopularListView.addHeaderView(header);
-        mPopularListView.addFooterView(footerView);
+        mPopularListView.addFooterView(footerViewInitLoad);
         popularItemsList = new ArrayList<Item>();
         mPopularAdapter = new PopularItemAdapter(ctx, popularItemsList);
         mPopularListView.setAdapter(mPopularAdapter);
@@ -222,6 +230,7 @@ public class DiscoverFragment extends Fragment {
                 @Override
                 public void onCompleted(Object data) {
                     List<Item> downloadedItems = (List<Item>) data;
+                    CacheManager.deleteObjectFromCache("suggested_items");
                     CacheManager.saveObjectToMemoryCache("suggested_items", data);
                     suggestedItemsList.addAll(downloadedItems);
                     swipeSuggested.setRefreshing(false);
@@ -231,7 +240,7 @@ public class DiscoverFragment extends Fragment {
         }
     }
 
-    private void getPopularItems(int skip,int take,Boolean forceServerLoad)
+    private void getPopularItems(int skip, int take, final Boolean forceServerLoad)
     {
         if(pbFooter != null)  pbFooter.setVisibility(View.VISIBLE);
         // First check if popular items is cached else get it from server
@@ -247,6 +256,7 @@ public class DiscoverFragment extends Fragment {
                 @Override
                 public void onCompleted(Object data) {
                     List<Item> downloadedItems = (List<Item>) data;
+                    CacheManager.deleteObjectFromCache("popular_items");
                     CacheManager.saveObjectToMemoryCache("popular_items", data);
                     popularItemsList.addAll(downloadedItems);
                     currentPage++;
@@ -255,6 +265,14 @@ public class DiscoverFragment extends Fragment {
                     {
                         if(pbFooter != null)  pbFooter.setVisibility(View.GONE);
                     }
+
+                    // Need to swap the padded loading icon with the load more icon
+                    if(footerRemoved == false) {
+                        mPopularListView.removeFooterView(footerViewInitLoad);
+                        mPopularListView.addFooterView(footerViewLoadMore);
+                        footerRemoved = true;
+                    }
+
                 }
             });
         }
