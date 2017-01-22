@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -27,9 +28,11 @@ import android.os.Handler;
 
 
 import com.notifyrapp.www.notifyr.Business.Business;
+import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
+import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.UI.ArticleAdapter;
 import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
 import com.notifyrapp.www.notifyr.UI.NotificationAdapter;
@@ -64,11 +67,9 @@ public class MyNotificationsFragment extends Fragment {
     private List<Article> notificationList;
     private WebViewFragment mWebViewFragment;
     private final int pageSize = 20;
+    private int currentPage = 0;
     private NotificationAdapter adapter;
     private RelativeLayout nothingFoundView;
-    private ProgressBar pbFooter;
-    // private String sortBy = "ArticleNotifiedDate";
-
 
     public MyNotificationsFragment() {
         // Required empty public constructor
@@ -117,27 +118,19 @@ public class MyNotificationsFragment extends Fragment {
         mSwipeNotificationContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeNotificationContainer);
         mListView = (ListView) view.findViewById(R.id.notification_list_view);
         nothingFoundView = (RelativeLayout) view.findViewById(R.id.notify_not_found);
-        View progressView = inflater.inflate(R.layout.progress_circle, null);
-        View footerViewLoadMore = ((LayoutInflater) this.getActivity()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-                R.layout.progress_circle, null, false);
-        //Get the first batch of articles
         adapter = new NotificationAdapter(ctx, notificationList);
-        mListView.addFooterView(footerViewLoadMore);
-        pbFooter = (ProgressBar) footerViewLoadMore.findViewById(R.id.pb_main);
-        pbFooter.setVisibility(View.VISIBLE);
+        View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
+        mListView.addFooterView(emptyFooter);
         mListView.setAdapter(adapter);
-
+        mListView.setFooterDividersEnabled(false);
         getNotifications(0, pageSize);
 
         //Setup refresh listener which triggers new data loading
         mSwipeNotificationContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
                 notificationList.clear();
+                currentPage = 0;
                 adapter.notifyDataSetChanged();
                 getNotifications(0, pageSize);
             }
@@ -153,7 +146,10 @@ public class MyNotificationsFragment extends Fragment {
         mListView.setOnScrollListener(new InfiniteScrollListener(5) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
-                getNotifications(page * pageSize, pageSize);
+                if(totalItemsCount > 10) {
+                    getNotifications(currentPage * pageSize, pageSize);
+                }
+
             }
 
             @Override
@@ -186,21 +182,47 @@ public class MyNotificationsFragment extends Fragment {
         return view;
     }
 
-    public void getNotifications(int skip, int take) {
+    public void getNotifications(final int skip, int take) {
         final Business business = new Business(ctx);
-        if(pbFooter != null)  pbFooter.setVisibility(View.VISIBLE);
         List<Article> localNotifications = business.getUserNotificationsLocal(skip, take);
-
-        if(localNotifications.size() == 0 && skip == 0) {
-            nothingFoundView.setVisibility(View.VISIBLE);
+        nothingFoundView.setVisibility(View.GONE);
+        notificationList.addAll(localNotifications);
+        adapter.notifyDataSetChanged();
+        if(localNotifications.size() > 0) {
+            currentPage++;
         }
-        else {
-            nothingFoundView.setVisibility(View.GONE);
-            notificationList.addAll(localNotifications);
+
+        mSwipeNotificationContainer.setRefreshing(false);
+
+     /*   List<Article> cachedItems = (List<Article>) CacheManager.getObjectFromMemoryCache("user_notifications");
+
+        if(cachedItems != null && skip == 0)
+        {
+            notificationList.addAll(cachedItems);
             adapter.notifyDataSetChanged();
         }
-        pbFooter.setVisibility(View.GONE);
-        mSwipeNotificationContainer.setRefreshing(false);
+        else {
+            business.getUserNotificationsFromServer(skip, take, new CallbackInterface() {
+                @Override
+                public void onCompleted(Object data) {
+                    if (localNotifications.size() == 0 && skip == 0) {
+                        nothingFoundView.setVisibility(View.VISIBLE);
+                    } else {
+                        if(skip == 0) {
+                            CacheManager.deleteObjectFromCache("user_notifications");
+                            CacheManager.saveObjectToMemoryCache("user_notifications", data);
+                        }
+                        nothingFoundView.setVisibility(View.GONE);
+                        notificationList.addAll(localNotifications);
+                        adapter.notifyDataSetChanged();
+                        currentPage++;
+                    }
+                    pbFooter.setVisibility(View.GONE);
+                    mSwipeNotificationContainer.setRefreshing(false);
+                }
+            });
+        }
+*/
     }
 
     // TODO: Rename method, update argument and hook method into UI event

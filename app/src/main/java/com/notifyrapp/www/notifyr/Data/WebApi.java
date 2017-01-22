@@ -375,6 +375,7 @@ public class WebApi {
 
         @Override
         protected void onPostExecute(List<Object> returnObjects) {
+
             // Save to Local SettingsActivity and Database
             Boolean hasErrors = (Boolean) returnObjects.get(0);
             if(hasErrors) {

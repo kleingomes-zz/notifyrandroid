@@ -240,7 +240,7 @@ public class DiscoverFragment extends Fragment {
         }
     }
 
-    private void getPopularItems(int skip, int take, final Boolean forceServerLoad)
+    private void getPopularItems(final int skip, int take, final Boolean forceServerLoad)
     {
         if(pbFooter != null)  pbFooter.setVisibility(View.VISIBLE);
         // First check if popular items is cached else get it from server
@@ -256,8 +256,11 @@ public class DiscoverFragment extends Fragment {
                 @Override
                 public void onCompleted(Object data) {
                     List<Item> downloadedItems = (List<Item>) data;
-                    CacheManager.deleteObjectFromCache("popular_items");
-                    CacheManager.saveObjectToMemoryCache("popular_items", data);
+
+                    if(skip == 0) {
+                        CacheManager.deleteObjectFromCache("popular_items");
+                        CacheManager.saveObjectToMemoryCache("popular_items", data);
+                    }
                     popularItemsList.addAll(downloadedItems);
                     currentPage++;
                     mPopularAdapter.notifyDataSetChanged();

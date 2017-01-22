@@ -341,19 +341,18 @@ public class SettingsFragment extends Fragment {
         business.getNetworkStatus(new CallbackInterface() {
             @Override
             public void onCompleted(Object data) {
-                String status = (String) data;
-                if(status.equals("true"))
-                {
-                    txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchGreen));
-                    txtNetworkStatusGreen.setText("Online");
+                if(isAdded()) {
+                    String status = (String) data;
+                    if (status.equals("true")) {
+                        txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchGreen));
+                        txtNetworkStatusGreen.setText("Online");
+                    } else {
+                        txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchRed));
+                        txtNetworkStatusGreen.setText("Offline");
+                    }
+                    txtNetworkStatusGreen.setVisibility(View.VISIBLE);
+                    pbNetworkStatus.setVisibility(View.GONE);
                 }
-                else
-                {
-                    txtNetworkStatusGreen.setTextColor(getResources().getColor(R.color.switchRed));
-                    txtNetworkStatusGreen.setText("Offline");
-                }
-                txtNetworkStatusGreen.setVisibility(View.VISIBLE);
-                pbNetworkStatus.setVisibility(View.GONE);
             }
         });
     }
