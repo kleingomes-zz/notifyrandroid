@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -27,6 +29,8 @@ import android.widget.ImageView;
 import android.os.Handler;
 
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CacheManager;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
@@ -70,7 +74,7 @@ public class MyNotificationsFragment extends Fragment {
     private int currentPage = 0;
     private NotificationAdapter adapter;
     private RelativeLayout nothingFoundView;
-
+    private Button clearAllBtn;
     public MyNotificationsFragment() {
         // Required empty public constructor
     }
@@ -104,6 +108,12 @@ public class MyNotificationsFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        clearAllBtn.setVisibility(View.GONE);
+        super.onDestroyView();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -116,7 +126,9 @@ public class MyNotificationsFragment extends Fragment {
 
         // Lookup the swipe container view
         mSwipeNotificationContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeNotificationContainer);
-        mListView = (ListView) view.findViewById(R.id.notification_list_view);
+        mListView = (ListView)  view.findViewById(R.id.notification_list_view);
+        clearAllBtn = (Button) ((MainActivity) getActivity()).findViewById(R.id.btnClearAll);
+        clearAllBtn.setVisibility(View.VISIBLE);
         nothingFoundView = (RelativeLayout) view.findViewById(R.id.notify_not_found);
         adapter = new NotificationAdapter(ctx, notificationList);
         View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
@@ -178,6 +190,26 @@ public class MyNotificationsFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+
+        // Handle clear all button click
+        clearAllBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MaterialDialog dialog = new MaterialDialog.Builder(ctx)
+                        .title("Confirmation")
+                        .content("Are you sure?")
+                        .positiveText("Yes")
+                        .negativeText("Cancel")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                new Business(ctx).deleteUserNotificationsLocal();
+                            }
+                        })
+                        .show();
+            }
+        });
+
 
         return view;
     }

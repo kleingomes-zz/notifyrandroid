@@ -480,6 +480,28 @@ public class Repository {
         return articles;
     }
 
+    public Boolean deleteUserNotifications()
+    {
+        String tableName = "UserNotification";
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+            db.execSQL("DELETE FROM " + tableName);
+        } catch (Exception e) {
+            isSuccess = false;
+            Log.e("DATABASE_QUERY", "Error in deleteUserNotifications(): " + e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+                Log.d("DATABASE_QUERY", "Success deleting all user notifications - deleteUserNotifications()");
+            }
+        }
+        return isSuccess;
+    }
+
+
     //endregion
 
     //region Bookmarks

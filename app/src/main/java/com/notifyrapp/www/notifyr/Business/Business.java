@@ -339,6 +339,11 @@ public class Business {
         }
     }
 
+    public Boolean deleteUserNotificationsLocal()
+    {
+        return  new Repository(context).deleteUserNotifications();
+    }
+
     private AsyncTask<Object, Void, List<Object>> saveUserNotificationLocalAsync = new AsyncTask<Object, Void, List<Object>>() {
 
         @Override
