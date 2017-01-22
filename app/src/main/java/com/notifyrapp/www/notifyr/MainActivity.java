@@ -249,8 +249,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         if(pos3 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
                         if(pos4 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
 
-
-
                         // SHOW/HIDE the app bar depending on which menu tab you're on
                         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
@@ -293,8 +291,10 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     btnTrashCanDelete.setVisibility(View.GONE);
                                     currentMenu = Business.MenuTab.Interests;
                                     myItemsFragment = myItemsFragment == null ? new MyItemsFragment() : myItemsFragment;
-                                    fragmentTransaction.add(R.id.fragment_container, myItemsFragment, "myitems_frag");
-                                    fragmentTransaction.commit();
+                                    if(!myItemsFragment.isAdded()) {
+                                        fragmentTransaction.add(R.id.fragment_container, myItemsFragment, "myitems_frag");
+                                        fragmentTransaction.commit();
+                                    }
                                 }
                                     break;
                             case 2 :
@@ -304,8 +304,10 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     currentMenu = Business.MenuTab.Discover;
                                     abTitle.setText(R.string.menu_tab_2);
                                     discoverFragment = discoverFragment == null ? new DiscoverFragment() : discoverFragment;
-                                    fragmentTransaction.add(R.id.fragment_container, discoverFragment, "discover_frag");
-                                    fragmentTransaction.commit();
+                                    if(!discoverFragment.isAdded()) {
+                                        fragmentTransaction.add(R.id.fragment_container, discoverFragment, "discover_frag");
+                                        fragmentTransaction.commit();
+                                    }
                                 }
                                 break;
                             case 3 :
@@ -315,8 +317,10 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     abTitle.setText(R.string.menu_tab_3);
                                     currentMenu = Business.MenuTab.Notifications;
                                     myNotificationsFragment = myNotificationsFragment == null ? new MyNotificationsFragment() : myNotificationsFragment;
-                                    fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
-                                    fragmentTransaction.commit();
+                                    if(!myNotificationsFragment.isAdded()) {
+                                        fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
+                                        fragmentTransaction.commit();
+                                    }
                                 }
                                 break;
                             case 4 :
@@ -326,8 +330,10 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     currentMenu = Business.MenuTab.Settings;
                                     abTitle.setText(R.string.menu_tab_4);
                                     settingsFragment = settingsFragment == null ? new SettingsFragment() : settingsFragment;
-                                    fragmentTransaction.add(R.id.fragment_container, settingsFragment, "settings_frag");
-                                    fragmentTransaction.commit();
+                                    if(!settingsFragment.isAdded()) {
+                                        fragmentTransaction.add(R.id.fragment_container, settingsFragment, "settings_frag");
+                                        fragmentTransaction.commit();
+                                    }
                                 }
                                 break;
                         }
