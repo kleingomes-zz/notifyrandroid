@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CacheManager;
+import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.ItemType;
 import com.notifyrapp.www.notifyr.UI.BottomNavigationViewHelper;
 
@@ -59,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private Button btnTrashCanDelete;
     private int currentMenuPage = 0;
     private boolean isFirstTime = false;
-
+    private String notificationUrl;
+    private boolean isIncomingNotification = false;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
@@ -108,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
         super.onCreate(savedInstanceState);
 
+        // Get INCOMING Notification DATA
+        notificationUrl = getIntent().getStringExtra("articleUrl");
+        isIncomingNotification = getIntent().getBooleanExtra("isIncomingNotification",false);
         // INIT
         this.ctx = this;
         setContentView(R.layout.activity_main);
@@ -155,6 +160,19 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             fragmentTransaction.add(R.id.fragment_container, discoverFragment, "discover_frag");
             fragmentTransaction.commit();
             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        if(isIncomingNotification)
+        {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+            appBar.setVisibility(View.INVISIBLE);
+            Article article = new Article();
+            article.setUrl(notificationUrl);
+            WebViewFragment mWebViewFragment = new WebViewFragment().newInstance(article);
+            fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
+            fragmentTransaction.addToBackStack("articlelist_frag");
+            fragmentTransaction.commit();
         }
 
 
