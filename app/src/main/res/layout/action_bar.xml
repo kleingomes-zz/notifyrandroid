@@ -42,6 +42,6 @@
             android:textColor="@color/colorWhite"
             android:textSize="14sp"
             android:visibility="gone"
-            android:background="@drawable/ic_del" />
+            android:background="@mipmap/ic_delete" />
 
     </RelativeLayout>
