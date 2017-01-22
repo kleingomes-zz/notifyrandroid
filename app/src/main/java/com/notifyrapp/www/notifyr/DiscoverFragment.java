@@ -153,7 +153,7 @@ public class DiscoverFragment extends Fragment {
             }
         });
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+        /*searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
                 if(!searchView.isIconified())
@@ -163,7 +163,7 @@ public class DiscoverFragment extends Fragment {
                 }
                 return false;
             }
-        });
+        });*/
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

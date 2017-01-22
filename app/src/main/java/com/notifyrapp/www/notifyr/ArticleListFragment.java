@@ -132,19 +132,16 @@ public class ArticleListFragment extends Fragment {
 
         }
 
-
         // Init the Widgets
-       // final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
-      //  upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+        upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
-
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
         articleListOnScreen = new ArrayList<>();
         articleListNewestBuffer = new ArrayList<>();
         articleListBookmarkBuffer = new ArrayList<>();
         articleListPopularBuffer = new ArrayList<>();
-
     }
 
     @Override

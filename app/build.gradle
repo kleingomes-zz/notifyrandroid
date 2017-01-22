@@ -22,9 +22,10 @@ android {
         applicationId "com.notifyrapp.www.notifyr"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 7
-        versionName "1.1.1"
+        versionCode 8
+        versionName "1.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {

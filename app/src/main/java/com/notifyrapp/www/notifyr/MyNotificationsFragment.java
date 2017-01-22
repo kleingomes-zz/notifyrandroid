@@ -188,6 +188,14 @@ public class MyNotificationsFragment extends Fragment {
         nothingFoundView.setVisibility(View.GONE);
         notificationList.addAll(localNotifications);
         adapter.notifyDataSetChanged();
+
+        if (localNotifications.size() == 0 && skip == 0) {
+            nothingFoundView.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            nothingFoundView.setVisibility(View.GONE);
+        }
         if(localNotifications.size() > 0) {
             currentPage++;
         }

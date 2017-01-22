@@ -2,9 +2,11 @@ package com.notifyrapp.www.notifyr.UI;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,7 +127,9 @@ public class ArticleAdapter extends BaseAdapter {
             }
             else {
                 mProgressBar.setVisibility(View.VISIBLE);
-                Picasso.with(mContext).load(article.getIurl()).into(imageView, new com.squareup.picasso.Callback() {
+                Picasso.with(mContext).load(article.getIurl())
+                        .error(ContextCompat.getDrawable(mContext, R.drawable.large_logo))
+                        .into(imageView, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
                         mProgressBar.setVisibility(View.GONE);
@@ -135,7 +139,12 @@ public class ArticleAdapter extends BaseAdapter {
 
                     @Override
                     public void onError() {
-                        Log.d("FAILED", article.getTitle() + " " + article.getIurl());
+                        Bitmap largeIcon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.large_icon);
+                        mProgressBar.setVisibility(View.GONE);
+                        imageView.setScaleType(ImageView.ScaleType.CENTER);
+                        imageView.setImageBitmap(largeIcon);
+                        Log.d("IMAGE_DOWNLOAD_FAILED", article.getTitle() + " " + article.getIurl());
+                        CacheManager.saveArticleImageToMemoryCache("article_" + String.valueOf(article.getId()), largeIcon);
                     }
                 });
             }

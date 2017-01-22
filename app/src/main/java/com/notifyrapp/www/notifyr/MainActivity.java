@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +45,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         MyNotificationsFragment.OnFragmentInteractionListener,
         DiscoverFragment.OnFragmentInteractionListener
 {
-
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private Context ctx;
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private boolean isFirstTime = false;
     private String notificationUrl;
     private boolean isIncomingNotification = false;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
