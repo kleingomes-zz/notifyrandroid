@@ -296,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     currentMenu = Business.MenuTab.Interests;
                                     myItemsFragment = myItemsFragment == null ? new MyItemsFragment() : myItemsFragment;
                                     if(!myItemsFragment.isAdded()) {
+                                        clearFragments();
                                         fragmentTransaction.add(R.id.fragment_container, myItemsFragment, "myitems_frag");
                                         fragmentTransaction.commit();
                                     }
@@ -309,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     abTitle.setText(R.string.menu_tab_2);
                                     discoverFragment = discoverFragment == null ? new DiscoverFragment() : discoverFragment;
                                     if(!discoverFragment.isAdded()) {
+                                        clearFragments();
                                         fragmentTransaction.add(R.id.fragment_container, discoverFragment, "discover_frag");
                                         fragmentTransaction.commit();
                                     }
@@ -322,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     currentMenu = Business.MenuTab.Notifications;
                                     myNotificationsFragment = myNotificationsFragment == null ? new MyNotificationsFragment() : myNotificationsFragment;
                                     if(!myNotificationsFragment.isAdded()) {
+                                        clearFragments();
                                         fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
                                         fragmentTransaction.commit();
                                     }
@@ -335,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     abTitle.setText(R.string.menu_tab_4);
                                     settingsFragment = settingsFragment == null ? new SettingsFragment() : settingsFragment;
                                     if(!settingsFragment.isAdded()) {
+                                        clearFragments();
                                         fragmentTransaction.add(R.id.fragment_container, settingsFragment, "settings_frag");
                                         fragmentTransaction.commit();
                                     }
@@ -347,6 +351,43 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 });
 
 
+    }
+
+    private void clearFragments()
+    {
+        List<Fragment> frags = getSupportFragmentManager().getFragments();
+        if(frags != null && frags.size() > 0) {
+            // FRAGMENT MANAGER
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            // DROP THE CURRENT FRAGMENT
+            Fragment fragment = null;
+
+            // Check which fragment is active, inactive ones return null
+            Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
+            Fragment pos1 = getSupportFragmentManager().findFragmentByTag("myitems_frag");
+            Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
+            Fragment pos3 = getSupportFragmentManager().findFragmentByTag("notifications_frag");
+            Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
+
+            // Remove the fragment that is not null from the manager
+            if (pos0 != null) {
+                getSupportFragmentManager().beginTransaction().remove(pos0).commit();
+            }
+            if (pos1 != null) {
+                getSupportFragmentManager().beginTransaction().remove(pos1).commit();
+            }
+            if (pos2 != null) {
+                getSupportFragmentManager().beginTransaction().remove(pos2).commit();
+            }
+            if (pos3 != null) {
+                getSupportFragmentManager().beginTransaction().remove(pos3).commit();
+            }
+            if (pos4 != null) {
+                getSupportFragmentManager().beginTransaction().remove(pos4).commit();
+            }
+        }
     }
 
     @Override

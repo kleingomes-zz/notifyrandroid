@@ -57,6 +57,8 @@ public class DiscoverFragment extends Fragment {
     private boolean footerRemoved = false;
     private View footerViewInitLoad;
     private View footerViewLoadMore;
+    private View suggestedProgressView;
+    private ProgressBar pbSuggested;
 
     public DiscoverFragment() {
         // Required empty public constructor
@@ -88,7 +90,6 @@ public class DiscoverFragment extends Fragment {
         footerViewLoadMore = ((LayoutInflater) this.getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
                 R.layout.progress_circle, null, false);
-
         pbFooter = (ProgressBar) progressView.findViewById(R.id.pb_main);
         pbFooter.setVisibility(View.VISIBLE);
 
@@ -169,13 +170,15 @@ public class DiscoverFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 // your text view here
-                if(newText!= null && newText.equals("")) {
+                if((newText!= null && newText.equals("")) || newText.length() <= 1) {
 
                     topResultsTextView.setText(R.string.header_you_might_like);
                     suggestedItemsList.clear();
                     getSuggestedItems(false);
                 }
                 else {
+                    DiscoverRecyclerAdapter.noResultsFound = false;
+                    mRecyclerView.setAdapter(mSuggestedAdapter);
                     topResultsTextView.setText("Results...");
                     suggestedItemsList.clear();
                     if(newText.length() > 2) {
@@ -185,6 +188,12 @@ public class DiscoverFragment extends Fragment {
                                 suggestedItemsList.clear();
                                 List<Item> results = (List<Item>) data;
                                 suggestedItemsList.addAll(results);
+                                if(results.size() == 0)
+                                {
+                                    DiscoverRecyclerAdapter.noResultsFound = true;
+                                    mRecyclerView.setAdapter(mSuggestedAdapter);
+                                }
+
                                 mSuggestedAdapter.notifyDataSetChanged();
                             }
                         });
@@ -234,6 +243,14 @@ public class DiscoverFragment extends Fragment {
                     CacheManager.saveObjectToMemoryCache("suggested_items", data);
                     suggestedItemsList.addAll(downloadedItems);
                     swipeSuggested.setRefreshing(false);
+                    if(downloadedItems.size() == 0)
+                    {
+                        DiscoverRecyclerAdapter.noResultsFound = true;
+                    }
+                    else
+                    {
+                        DiscoverRecyclerAdapter.noResultsFound = false;
+                    }
                     mSuggestedAdapter.notifyDataSetChanged();
                 }
             });

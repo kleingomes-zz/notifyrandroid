@@ -35,6 +35,8 @@ public class DiscoverRecyclerAdapter extends RecyclerView
     private static MyClickListener myClickListener;
     private static Business mBusiness;
 
+    public static Boolean noResultsFound = false;
+
     public class EmptyViewHolder extends RecyclerView.ViewHolder {
         public EmptyViewHolder(View itemView) {
             super(itemView);
@@ -115,8 +117,13 @@ public class DiscoverRecyclerAdapter extends RecyclerView
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                       int viewType) {
 
-        if (viewType == EMPTY_VIEW) {
+        if (viewType == EMPTY_VIEW && DiscoverRecyclerAdapter.noResultsFound == false) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_circle_center, parent, false);
+            EmptyViewHolder emptyViewHolder = new EmptyViewHolder(v);
+            return emptyViewHolder;
+        }
+        else if (viewType == EMPTY_VIEW && DiscoverRecyclerAdapter.noResultsFound == true) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.nothing_found_center, parent, false);
             EmptyViewHolder emptyViewHolder = new EmptyViewHolder(v);
             return emptyViewHolder;
         }
