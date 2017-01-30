@@ -94,7 +94,7 @@ public class ArticleAdapter extends BaseAdapter {
         View rowView;
 
         // Image Mode
-        if(viewMode == 1) {
+       // if(viewMode == 1) {
             // Get view for row item
             rowView = mInflater.inflate(R.layout.list_item_article_image, parent, false);
 
@@ -148,9 +148,9 @@ public class ArticleAdapter extends BaseAdapter {
                     }
                 });
             }
-        }
+      //  }
         // Text Mode
-        else
+      /*  else
         {
             // Get view for row item
             rowView = mInflater.inflate(R.layout.list_item_article_noimage, parent, false);
@@ -168,7 +168,7 @@ public class ArticleAdapter extends BaseAdapter {
             titleTextView.setText(article.getTitle());
 
             subtitleTextView.setText(article.getSource() + " - " + article.getTimeAgo());
-        }
+        }*/
 
         return rowView;
     }

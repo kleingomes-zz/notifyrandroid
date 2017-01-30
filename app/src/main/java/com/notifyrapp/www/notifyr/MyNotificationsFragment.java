@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -198,6 +199,7 @@ public class MyNotificationsFragment extends Fragment {
                 MaterialDialog dialog = new MaterialDialog.Builder(ctx)
                         .title("Confirmation")
                         .content("Are you sure?")
+                        .contentColor(ContextCompat.getColor(ctx,R.color.notifyrBlue))
                         .positiveText("Yes")
                         .negativeText("Cancel")
                         .onPositive(new MaterialDialog.SingleButtonCallback() {

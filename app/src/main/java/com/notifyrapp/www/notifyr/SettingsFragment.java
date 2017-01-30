@@ -123,8 +123,7 @@ public class SettingsFragment extends Fragment {
         txtsettings = (TextView) view.findViewById(R.id.txtSettings);
         txtMaxNotification = (TextView) view.findViewById(R.id.txtMaxNotification);
         txtMaxNotificationDescription = (TextView) view.findViewById(R.id.txtMaxNotificationDescription);
-        txtNotificationsPerDay = (TextView) view.findViewById(R.id.txtSeekBarValue);
-        txtDownloadArticleImages = (TextView) view.findViewById(R.id.txtDownloadArticleImages);
+
         txtArticleReaderMode = (TextView) view.findViewById(R.id.txtArticleReaderMode);
         txtArticleReaderModeDescription = (TextView) view.findViewById(R.id.txtArticleReaderModeDescription);
         txtAccountInformation = (TextView) view.findViewById(R.id.txtAccountInformation);
@@ -138,10 +137,12 @@ public class SettingsFragment extends Fragment {
         btnTerms = (Button) view.findViewById(R.id.btnTerms);
         btnRateOnAppStore = (Button) view.findViewById(R.id.btnRateOnAppStore);
         btnSendFeedback = (Button) view.findViewById(R.id.btnSendFeedback);
-        radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        RadioBtnNever = (RadioButton) view.findViewById(R.id.radioButtonNever);
-        RadioBtnWifiOnly = (RadioButton) view.findViewById(R.id.radioButtonWifiOnly);
-        RadioBtnAlways = (RadioButton) view.findViewById(R.id.radioButtonAlways);
+        txtNotificationsPerDay = (TextView) view.findViewById(R.id.txtSeekBarValue);
+        //  txtDownloadArticleImages = (TextView) view.findViewById(R.id.txtDownloadArticleImages);
+    //    radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+    //    RadioBtnNever = (RadioButton) view.findViewById(R.id.radioButtonNever);
+    //    RadioBtnWifiOnly = (RadioButton) view.findViewById(R.id.radioButtonWifiOnly);
+    //    RadioBtnAlways = (RadioButton) view.findViewById(R.id.radioButtonAlways);
         pbNetworkStatus = (ProgressBar) view.findViewById(R.id.pbNetworkStatus);
         openSansRegular = Typeface.createFromAsset(getActivity().getAssets(), "fonts/OpenSans-Regular.ttf");
         openSansLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/OpenSans-Light.ttf");
@@ -150,9 +151,9 @@ public class SettingsFragment extends Fragment {
         txtMaxNotification.setTypeface(openSansRegular);
         txtMaxNotificationDescription.setTypeface(openSansLight);
         txtNotificationsPerDay.setTypeface(openSansRegular);
-        txtDownloadArticleImages.setTypeface(openSansRegular);
-        txtArticleReaderMode.setTypeface(openSansRegular);
-        txtArticleReaderModeDescription.setTypeface(openSansLight);
+       // txtDownloadArticleImages.setTypeface(openSansRegular);
+       // txtArticleReaderMode.setTypeface(openSansRegular);
+       // txtArticleReaderModeDescription.setTypeface(openSansLight);
         txtAccountInformation.setTypeface(openSansRegular);
         txtNetworkStatus.setTypeface(openSansRegular);
         txtNetworkStatusGreen.setTypeface(openSansRegular);
@@ -164,17 +165,19 @@ public class SettingsFragment extends Fragment {
         btnTerms.setTypeface(openSansRegular);
         btnRateOnAppStore.setTypeface(openSansRegular);
         btnSendFeedback.setTypeface(openSansRegular);
-        RadioBtnNever.setTypeface(openSansRegular);
-        RadioBtnWifiOnly.setTypeface(openSansRegular);
-        RadioBtnAlways.setTypeface(openSansRegular);
+        //RadioBtnNever.setTypeface(openSansRegular);
+        //RadioBtnWifiOnly.setTypeface(openSansRegular);
+        //RadioBtnAlways.setTypeface(openSansRegular);
         seekBarMaxNotificationsPerDay = (SeekBar) view.findViewById(R.id.seekBarMaxNotificationsPerDay);
         txtSeekBarValue = (TextView) view.findViewById(R.id.txtSeekBarValue);
-        swtchArticleReaderMode = (Switch) view.findViewById(R.id.btnArticleReaderMode);
+
+      //  swtchArticleReaderMode = (Switch) view.findViewById(R.id.btnArticleReaderMode);
 
 
         //RADIO BUTTONS
         //need to change server value from 1-3 to 0-2 instead in order for this to work
-        serverRadioButtonValue = settings.getArticleDisplayType();
+                /*  userRadioButtonValue = settings.getArticleDisplayType();
+  serverRadioButtonValue = settings.getArticleDisplayType();
 
         if (serverRadioButtonValue == 0)
         {
@@ -189,7 +192,7 @@ public class SettingsFragment extends Fragment {
             RadioBtnAlways.setChecked(true);
         }
 
-        userRadioButtonValue = settings.getArticleDisplayType();
+
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -221,7 +224,7 @@ public class SettingsFragment extends Fragment {
 
             }
         });
-
+*/
         //NETWORK STATUS
         getNetworkStatus();
         rowNetworkStatus.setOnClickListener(new View.OnClickListener() {
@@ -261,8 +264,6 @@ public class SettingsFragment extends Fragment {
                             txtSeekBarValue.setText(progress + " per day");
                         } else
                             txtSeekBarValue.setText("No Limit");
-
-
                     }
 
                     @Override
@@ -272,7 +273,9 @@ public class SettingsFragment extends Fragment {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-
+                        settings.setMaxNotificaitons(seekBar.getProgress());
+                        business.saveUserSettingsLocal(settings);
+                        business.saveUserSettingsServer(settings,null);
                     }
                 }
         );
@@ -327,6 +330,20 @@ public class SettingsFragment extends Fragment {
                     }
                 });
                 Toast.makeText(ctx, "Sent!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Send Feedback
+        btnSendFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                emailIntent.setType("vnd.android.cursor.item/email");
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] {"feedback@notifyrapp.com"});
+                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Notifyr Android App Feedback");
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Feedback");
+                startActivity(Intent.createChooser(emailIntent, "Send mail using..."));
             }
         });
 

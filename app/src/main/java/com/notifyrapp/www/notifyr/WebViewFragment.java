@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -93,23 +94,24 @@ public class WebViewFragment extends Fragment {
         // INIT WEB VIEW
         WebView webView =  (WebView) view.findViewById(R.id.web_view);
         webView.setWebViewClient(new WebViewClient());
-        final ProgressBar Pbar;
-        Pbar = (ProgressBar) view.findViewById(R.id.progressBar);
-        Pbar.setVisibility(ProgressBar.VISIBLE);
-        Pbar.getProgressDrawable().setColorFilter(
+        final ProgressBar progressBar;
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+        progressBar.getProgressDrawable().setColorFilter(
                 Color.argb(255,0,157,255), android.graphics.PorterDuff.Mode.SRC_IN);
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 //Log.d("PROGRESS",String.valueOf(progress));
-                if(progress < 100 && Pbar.getVisibility() == ProgressBar.GONE){
-                    Pbar.setVisibility(ProgressBar.VISIBLE);
+                if(progress < 100 && progressBar.getVisibility() == ProgressBar.GONE){
+                    progressBar.setVisibility(ProgressBar.VISIBLE);
                 }
-                Pbar.setProgress(progress);
+                progressBar.setProgress(progress);
                 if(progress < 0 || progress >= 100) {
-                    Pbar.setVisibility(ProgressBar.GONE);
+                    progressBar.setVisibility(ProgressBar.GONE);
                 }
             }
         });
+
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
