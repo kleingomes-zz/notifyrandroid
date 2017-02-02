@@ -91,6 +91,7 @@ public class ArticleListFragment extends Fragment {
         // Required empty public constructor
     }
 
+
     public static ArticleListFragment newInstance(int position,int itemTypeId, String itemName) {
         ArticleListFragment fragment = new ArticleListFragment();
         Bundle args = new Bundle();
@@ -98,9 +99,7 @@ public class ArticleListFragment extends Fragment {
         args.putInt("itemTypeId", itemTypeId);
         args.putString("itemName", itemName);
         args.putBoolean("isItemMode", false);
-
         fragment.setArguments(args);
-
         return fragment;
     }
 

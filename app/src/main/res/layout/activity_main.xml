@@ -11,7 +11,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="-100dp"
+        android:paddingTop="0dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         android:background="@color/colorWhite"
         app:elevation="0dp">

@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragmentNotificationsContainer">
+
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <android.support.v4.widget.SwipeRefreshLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeNotificationContainer"
@@ -36,7 +43,7 @@ android:padding="5dp">
     android:layout_marginTop="100dp"
     android:layout_marginBottom="20dp"
     android:layout_centerHorizontal="true"
-    app:srcCompat="@drawable/no_notifications" />
+    android:src="@drawable/no_notifications" />
 
 <TextView
     android:id="@+id/notifTopText"
@@ -64,4 +71,4 @@ android:padding="5dp">
     android:textSize="13sp"
     android:text="@string/notif_nothingFoundBottomText" />
 </RelativeLayout>
-</RelativeLayout>
+</RelativeLayout></RelativeLayout>
