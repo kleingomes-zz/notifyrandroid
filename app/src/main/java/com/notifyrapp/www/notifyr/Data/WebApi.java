@@ -129,7 +129,7 @@ public class WebApi {
     }
 
     public void getAllItems(CallbackInterface callback) {
-        String urlPath = "Item/getAllItems";
+        String urlPath = "Item/GetAllItems";
         String url = apiBaseUrl + urlPath;
         if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
             postJSONObjectFromURL.execute(url, context, callback, Item);

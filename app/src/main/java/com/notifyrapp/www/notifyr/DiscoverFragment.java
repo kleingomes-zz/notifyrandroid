@@ -182,7 +182,18 @@ public class DiscoverFragment extends Fragment {
                     topResultsTextView.setText("Results...");
                     suggestedItemsList.clear();
                     if(newText.length() > 2) {
-                        business.getItemsByQuery(newText, new CallbackInterface() {
+                        List<Item> results = business.getLocalItemsByQuery(newText);
+                        suggestedItemsList.clear();
+                        suggestedItemsList.addAll(results);
+                        if(results.size() == 0)
+                        {
+                            DiscoverRecyclerAdapter.noResultsFound = true;
+                            mRecyclerView.setAdapter(mSuggestedAdapter);
+                        }
+
+                        mSuggestedAdapter.notifyDataSetChanged();
+
+                     /*   business.getItemsByQuery(newText, new CallbackInterface() {
                             @Override
                             public void onCompleted(Object data) {
                                 suggestedItemsList.clear();
@@ -197,6 +208,7 @@ public class DiscoverFragment extends Fragment {
                                 mSuggestedAdapter.notifyDataSetChanged();
                             }
                         });
+                        */
                     }
                 }
                 return true;

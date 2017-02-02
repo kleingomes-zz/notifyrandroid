@@ -55,6 +55,30 @@ public class Business {
         new WebApi(context).getAllItems(callback);
     }
 
+    public void saveAllAvailableItems(CallbackInterface callback)
+    {
+        new WebApi(context).getAllItems(new CallbackInterface() {
+            @Override
+            public void onCompleted(Object data) {
+                List<Item> itemsList = (List<Item>) data;
+                for (Item item: itemsList)
+                {
+                    saveItem(item);
+                }
+            }
+        });
+    }
+
+    public List<Item> getLocalItemsByQuery(String query)
+    {
+        return new Repository(context).getItemsByQuery(query);
+    }
+
+    public List<Item>  getItemsLocal()
+    {
+        return new Repository(context).getItems();
+    }
+
     public List<Item> getUserItemsFromLocal()
     {
         return new Repository(context).getUserItems();
@@ -63,6 +87,16 @@ public class Business {
     public void getUserItemsFromServer(CallbackInterface callback)
     {
         new WebApi(context).getUserItems(callback);
+    }
+
+    public Boolean saveItem(Item userItem)
+    {
+        return new Repository(context).saveItem(userItem);
+    }
+
+    public Boolean deleteAllItems()
+    {
+        return new Repository(context).deleteAllItems();
     }
 
     public Boolean saveUserItemLocal(Item userItem)

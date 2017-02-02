@@ -44,6 +44,154 @@ public class Repository {
 
     /* Member Functions */
     //region Items
+
+    public List<Item> getItems() {
+        String TableName = "Item";
+        String Data = "";
+        String PrintToConsole = "";
+        SQLiteDatabase db = null;
+        ArrayList<Item> items = new ArrayList<Item>();
+
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+            Cursor c = db.rawQuery("SELECT * FROM " + TableName + " ORDER BY NAME", null);
+
+            int col_itemid = c.getColumnIndex("ItemId");
+            int col_name = c.getColumnIndex("Name");
+            int col_iurl = c.getColumnIndex("IUrl");
+            int col_itemtypeid = c.getColumnIndex("ItemTypeId");
+            int col_itemtypename = c.getColumnIndex("ItemTypeName");
+
+            // Check if our result was valid.
+            c.moveToFirst();
+            if (c != null) {
+                // Loop through all Results
+                do {
+                    Item item = new Item();
+                    item.setId(c.getInt(col_itemid));
+                    item.setName(c.getString(col_name));
+                    item.setIurl(c.getString(col_iurl));
+                    item.setItemTypeId(c.getInt(col_itemtypeid));
+                    item.setItemTypeName(c.getString(col_itemtypename));
+                    items.add(item);
+                } while (c.moveToNext());
+            }
+
+        } catch (Exception e) {
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return items;
+    }
+
+    public List<Item> getItemsByQuery(String query) {
+        String TableName = "Item";
+        String Data = "";
+        String PrintToConsole = "";
+        SQLiteDatabase db = null;
+        ArrayList<Item> items = new ArrayList<Item>();
+
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+            Cursor c = db.rawQuery("SELECT * FROM " + TableName + " WHERE Name like '% "+query+" %' ORDER BY NAME", null);
+
+            int col_itemid = c.getColumnIndex("ItemId");
+            int col_name = c.getColumnIndex("Name");
+            int col_iurl = c.getColumnIndex("IUrl");
+            int col_itemtypeid = c.getColumnIndex("ItemTypeId");
+            int col_itemtypename = c.getColumnIndex("ItemTypeName");
+
+            // Check if our result was valid.
+            c.moveToFirst();
+            if (c != null) {
+                // Loop through all Results
+                do {
+                    Item item = new Item();
+                    item.setId(c.getInt(col_itemid));
+                    item.setName(c.getString(col_name));
+                    item.setIurl(c.getString(col_iurl));
+                    item.setItemTypeId(c.getInt(col_itemtypeid));
+                    item.setItemTypeName(c.getString(col_itemtypename));
+                    items.add(item);
+                } while (c.moveToNext());
+            }
+
+        } catch (Exception e) {
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return items;
+    }
+
+    public Boolean saveItem(Item item) {
+
+        String tableName = "Item";
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+            Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ItemId", String.valueOf(item.getId()), db);
+            if (!exists) {
+                // Insert the useritem
+                db.execSQL("INSERT INTO "
+                        + tableName
+                        + " (ItemId, Name,IUrl,ItemTypeId,ItemTypeName)"
+                        + " VALUES ("
+                        + item.getId() + ","
+                        + "'" + item.getName() + "'" + ","
+                        + "'" + item.getIurl() + "'" + ","
+                        + item.getItemTypeId() + ","
+                        + "'" + item.getItemTypeName() + "'"+");");
+            } else {
+                db.execSQL("UPDATE "
+                        + tableName
+                        + " SET "
+                        + "Name=" + "'" + item.getName() + "'" + ","
+                        + "IUrl=" + "'" + item.getIurl() + "'" + ","
+                        + "ItemTypeId=" + item.getItemTypeId() + ","
+                        + "ItemTypeName=" + "'" + item.getItemTypeName() + "'" + ","
+                        + " WHERE ItemId = " + item.getId());
+            }
+        } catch (Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return isSuccess;
+    }
+
+    public Boolean deleteAllItems() {
+        String tableName = "Item";
+        SQLiteDatabase db = null;
+        boolean isSuccess = true;
+        try {
+            File path = context.getDatabasePath(dbName);
+            db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+            db.execSQL("DELETE FROM " + tableName);
+
+        } catch (Exception e) {
+            isSuccess = false;
+            Log.e("exception", e.getMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return isSuccess;
+    }
+
     public Boolean saveUserItemLocal(Item userItem) {
 
         String tableName = "UserItem";

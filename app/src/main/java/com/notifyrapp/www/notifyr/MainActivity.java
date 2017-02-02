@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             activeFragments.clear();
             fragmentTransaction.commit();
         }
-        
+
         if(frags != null && frags.size() > 0) {
 
             // Check which fragment is active, inactive ones return null
