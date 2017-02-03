@@ -98,7 +98,7 @@ public class Repository {
         try {
             File path = context.getDatabasePath(dbName);
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
-            Cursor c = db.rawQuery("SELECT * FROM " + TableName + " WHERE Name like '% "+query+" %' ORDER BY NAME", null);
+            Cursor c = db.rawQuery("SELECT * FROM " + TableName + " WHERE Name like '%"+query+"%' ORDER BY NAME", null);
 
             int col_itemid = c.getColumnIndex("ItemId");
             int col_name = c.getColumnIndex("Name");
@@ -141,25 +141,9 @@ public class Repository {
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ItemId", String.valueOf(item.getId()), db);
             if (!exists) {
-                // Insert the useritem
-                db.execSQL("INSERT INTO "
-                        + tableName
-                        + " (ItemId, Name,IUrl,ItemTypeId,ItemTypeName)"
-                        + " VALUES ("
-                        + item.getId() + ","
-                        + "'" + item.getName() + "'" + ","
-                        + "'" + item.getIurl() + "'" + ","
-                        + item.getItemTypeId() + ","
-                        + "'" + item.getItemTypeName() + "'"+");");
+                db.insert(tableName, null, getItemParams(item));
             } else {
-                db.execSQL("UPDATE "
-                        + tableName
-                        + " SET "
-                        + "Name=" + "'" + item.getName() + "'" + ","
-                        + "IUrl=" + "'" + item.getIurl() + "'" + ","
-                        + "ItemTypeId=" + item.getItemTypeId() + ","
-                        + "ItemTypeName=" + "'" + item.getItemTypeName() + "'" + ","
-                        + " WHERE ItemId = " + item.getId());
+                db.update(tableName, getItemParams(item),String.format("%s = ?", "ItemId"), new String[]{"ItemId"});
             }
         } catch (Exception e) {
             isSuccess = false;
@@ -202,29 +186,9 @@ public class Repository {
             db = SQLiteDatabase.openDatabase(String.valueOf(path), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             Boolean exists = checkIsDataAlreadyInDBorNot(tableName, "ItemId", String.valueOf(userItem.getId()), db);
             if (!exists) {
-                // Insert the useritem
-                db.execSQL("INSERT INTO "
-                        + tableName
-                        + " (ItemId, Name,IUrl,ItemTypeId,ItemTypeName,UserItemId,Priority)"
-                        + " VALUES ("
-                        + userItem.getId() + ","
-                        + "'" + userItem.getName() + "'" + ","
-                        + "'" + userItem.getIurl() + "'" + ","
-                        + userItem.getItemTypeId() + ","
-                        + "'" + userItem.getItemTypeName() + "'" + ","
-                        + userItem.getUserItemId() + ","
-                        + userItem.getPriority() + ");");
+                db.insert(tableName, null, getItemParams(userItem));
             } else {
-                db.execSQL("UPDATE "
-                        + tableName
-                        + " SET "
-                        + "Name=" + "'" + userItem.getName() + "'" + ","
-                        + "IUrl=" + "'" + userItem.getIurl() + "'" + ","
-                        + "ItemTypeId=" + userItem.getItemTypeId() + ","
-                        + "ItemTypeName=" + "'" + userItem.getItemTypeName() + "'" + ","
-                        + "UserItemId=" + userItem.getUserItemId() + ","
-                        + "Priority=" + userItem.getPriority()
-                        + " WHERE ItemId = " + userItem.getId());
+                db.update(tableName, getItemParams(userItem),String.format("%s = ?", "ItemId"), new String[]{"ItemId"});
             }
         } catch (Exception e) {
             isSuccess = false;
@@ -782,6 +746,28 @@ public class Repository {
         return articles;
     }
 
+    private ContentValues getItemParams(Item item) {
+        ContentValues param = new ContentValues();
+        param.put("ItemId", item.getId());
+        param.put("Name", item.getName());
+        param.put("IUrl", item.getIurl());
+        param.put("ItemTypeId", item.getItemTypeId());
+        param.put("ItemTypeName", item.getItemTypeName());
+        return param;
+    }
+
+    private ContentValues getUserItemParams(Item item) {
+        ContentValues param = new ContentValues();
+        param.put("ItemId", item.getId());
+        param.put("Name", item.getName());
+        param.put("IUrl", item.getIurl());
+        param.put("ItemTypeId", item.getItemTypeId());
+        param.put("ItemTypeName", item.getItemTypeName());
+        param.put("UserItemId", item.getUserItemId());
+        param.put("Priority", item.getPriority());
+        return param;
+    }
+
     private ContentValues getArticleParams(Article article) {
         ContentValues param = new ContentValues();
         param.put("ArticleId", article.getId());
@@ -804,6 +790,8 @@ public class Repository {
         param.put("ArticleNotifiedDateUnix", article.getArticleNotifiedDate().getMillis());
         return param;
     }
+
+
 
     private boolean checkIsDataAlreadyInDBorNot(String TableName,
                                                 String dbfield, String fieldValue, SQLiteDatabase sqldb) {
