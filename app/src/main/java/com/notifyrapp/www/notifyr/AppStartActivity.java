@@ -107,12 +107,24 @@ public class AppStartActivity extends AppCompatActivity{
 
                     /* SYNC USER ITEMS AND SETTINGS WITH SERVER */
                     new Business(ctx).syncUserItems();
-                    business.saveAllAvailableItems(new CallbackInterface() {
-                        @Override
-                        public void onCompleted(Object data) {
+                   /* Thread getItemsThread = new Thread(new Runnable() {
 
+                        @Override
+                        public void run() {
+                            try {
+                                business.saveAllAvailableItems(new CallbackInterface() {
+                                    @Override
+                                    public void onCompleted(Object data) {
+
+                                    }
+                                });
+                            }catch (Exception e) {
+                                Log.d("SAVING_ITEMS", "Failed to Save Items", e);
+                            }
                         }
                     });
+                    getItemsThread.start();*/
+
                    /* business.getUserItemsFromServer(new CallbackInterface()
                     {
                         @Override

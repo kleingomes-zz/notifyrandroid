@@ -27,8 +27,6 @@ import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.notifyrapp.www.notifyr.Business.Business;
@@ -37,7 +35,6 @@ import com.notifyrapp.www.notifyr.Model.Article;
 import com.notifyrapp.www.notifyr.Model.ItemType;
 import com.notifyrapp.www.notifyr.UI.BottomNavigationViewHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -68,16 +65,16 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private boolean isFirstTime = false;
     private String notificationUrl;
     private boolean isIncomingNotification = false;
-    private List<Fragment> activeFragments = new ArrayList<Fragment>();
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         int id = item.getItemId();
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch (item.getItemId()) {
-           // case android.R.id.context_menu:
-          //      mMenuDialogFragment.show(fragmentManager, "ContextMenuDialogFragment");
-           //     break;
+            // case android.R.id.context_menu:
+            //      mMenuDialogFragment.show(fragmentManager, "ContextMenuDialogFragment");
+            //     break;
             case android.R.id.home:
                 FragmentManager fm = this.getSupportFragmentManager();
                 if(currentMenu == Business.MenuTab.Notifications) {
@@ -248,39 +245,29 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
                         Fragment pos3 = getSupportFragmentManager().findFragmentByTag("notifications_frag");
                         Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
-
+                        Fragment webFrag = getSupportFragmentManager().findFragmentByTag("webview_frag");
                         // Remove the fragment that is not null from the manager
-                        if(pos0 != null && currentMenuPage != 0) {
-                            fragmentManager.popBackStack();
+                        if(pos0 != null && currentMenuPage != position) {
                             getSupportFragmentManager().beginTransaction().remove(pos0).commit();
                         }
-                        if(pos1 != null && currentMenuPage != 1) {
-                            fragmentManager.popBackStack();
-                            getSupportFragmentManager().beginTransaction().remove(pos1).commit();
-                        }
-                        if(pos2 != null && currentMenuPage != 2) {
-                            fragmentManager.popBackStack();
-                            getSupportFragmentManager().beginTransaction().remove(pos2).commit();
-                        }
-                        if(pos3 != null && currentMenuPage != 3) {
-                            fragmentManager.popBackStack();
-                            getSupportFragmentManager().beginTransaction().remove(pos3).commit();
-                        }
-                        if(pos4 != null && currentMenuPage != 4) {
-                            fragmentManager.popBackStack();
-                            getSupportFragmentManager().beginTransaction().remove(pos4).commit();
-                        }
-                        clearFragments();
+                        if(pos1 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
+                        if(pos2 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
+                        if(pos3 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
+                        if(pos4 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
+
                         // SHOW/HIDE the app bar depending on which menu tab you're on
                         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
                         {
                             if(currentMenuPage != 0) {
-                                Fragment itemsFrag = getSupportFragmentManager().findFragmentByTag("myitems_frag");
-                                if(itemsFrag != null) {
-                                    fragmentManager.popBackStack();
-                                    getSupportFragmentManager().beginTransaction().remove(itemsFrag).commit();
+                                int backStackCount = fragmentManager.getBackStackEntryCount();
+                                for(int entry = 0; entry < backStackCount; entry++){
+                                    getSupportFragmentManager().popBackStack();
                                 }
+
+                                if(pos1 != null ) getSupportFragmentManager().beginTransaction().remove(pos1).commit();
+                                if(webFrag != null ) getSupportFragmentManager().beginTransaction().remove(webFrag).commit();
+
                                 getSupportActionBar().setShowHideAnimationEnabled(false);
                                 currentMenu = Business.MenuTab.Home;
                                 getSupportActionBar().hide();
@@ -324,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                         fragmentTransaction.commit();
                                     }
                                 }
-                                    break;
+                                break;
                             case 2 :
                                 if(currentMenuPage != 2) {
                                     btnEditDone.setVisibility(View.GONE);
@@ -379,17 +366,13 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private void clearFragments()
     {
         List<Fragment> frags = getSupportFragmentManager().getFragments();
-        // FRAGMENT MANAGER
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (activeFragments.size() > 0) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.remove(activeFragments.get(0));
-            activeFragments.clear();
-            fragmentTransaction.commit();
-        }
-
         if(frags != null && frags.size() > 0) {
+            // FRAGMENT MANAGER
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            // DROP THE CURRENT FRAGMENT
+            Fragment fragment = null;
 
             // Check which fragment is active, inactive ones return null
             Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
@@ -415,35 +398,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 getSupportFragmentManager().beginTransaction().remove(pos4).commit();
             }
         }
-
-
-
-        LinearLayout discoverLayout = (LinearLayout) findViewById(R.id.fragmentDiscoverContainer);
-        RelativeLayout myItemsLayout  = (RelativeLayout) findViewById(R.id.fragmentMyItemsContainer);
-        RelativeLayout notificationsLayout  = (RelativeLayout) findViewById(R.id.fragmentNotificationsContainer);
-        RelativeLayout settingsLayout = (RelativeLayout) findViewById(R.id.fragmentSettingsContainer);
-        RelativeLayout webViewLayout = (RelativeLayout) findViewById(R.id.fragmentWebViewContainer);
-        RelativeLayout articlesListLayout  = (RelativeLayout) findViewById(R.id.fragmentArticlesListContainer);
-
-        if(discoverLayout != null) {
-            discoverLayout.setVisibility(View.GONE);
-        }
-        if(myItemsLayout != null) {
-            myItemsLayout.setVisibility(View.GONE);
-        }
-        if(notificationsLayout != null) {
-            notificationsLayout.setVisibility(View.GONE);
-        }
-        if(settingsLayout != null) {
-            settingsLayout.setVisibility(View.GONE);
-        }
-        if(webViewLayout != null) {
-            webViewLayout.setVisibility(View.GONE);
-        }
-        if(articlesListLayout != null) {
-            articlesListLayout.setVisibility(View.GONE);
-        }
-
     }
 
     @Override
@@ -560,9 +514,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             } else {
                 itemTypeId = itemCategories.get(position-1).getId();
             }
-            Fragment frag = ArticleListFragment.newInstance(position,itemTypeId,"");
-            activeFragments.add(frag);
-            return frag;
+
+            return ArticleListFragment.newInstance(position,itemTypeId,"");
         }
 
         @Override

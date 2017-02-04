@@ -143,7 +143,8 @@ public class Repository {
             if (!exists) {
                 db.insert(tableName, null, getItemParams(item));
             } else {
-                db.update(tableName, getItemParams(item),String.format("%s = ?", "ItemId"), new String[]{"ItemId"});
+                String[] selectionArgs = { String.valueOf(item.getId()) };
+                db.update(tableName, getItemParams(item),String.format("%s = ?", "ItemId"),selectionArgs);
             }
         } catch (Exception e) {
             isSuccess = false;
@@ -188,7 +189,8 @@ public class Repository {
             if (!exists) {
                 db.insert(tableName, null, getItemParams(userItem));
             } else {
-                db.update(tableName, getItemParams(userItem),String.format("%s = ?", "ItemId"), new String[]{"ItemId"});
+                String[] selectionArgs = { String.valueOf(userItem.getId()) };
+                db.update(tableName, getItemParams(userItem),String.format("%s = ?", "ItemId"),selectionArgs);
             }
         } catch (Exception e) {
             isSuccess = false;
