@@ -1,6 +1,8 @@
 package com.notifyrapp.www.notifyr;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -142,6 +144,11 @@ public class MyItemsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+        upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
         userItemsList = new ArrayList<>();
 
     }
@@ -153,7 +160,6 @@ public class MyItemsFragment extends Fragment {
         itemsToDelete = new HashMap<>();
         act = (MainActivity) getActivity();
         act.abTitle.setText("My Interests");
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.menu_tab_1);
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_my_items, container, false);

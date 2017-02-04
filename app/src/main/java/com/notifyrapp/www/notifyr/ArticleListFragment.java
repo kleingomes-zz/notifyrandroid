@@ -156,8 +156,8 @@ public class ArticleListFragment extends Fragment {
         this.ctx = view.getContext();
         Button btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
         Button btnTrashcanDelete = (Button) act.findViewById(R.id.btnTrashCanDelete);
-        btnEditDoneDelete.setVisibility(View.GONE);
-        btnTrashcanDelete.setVisibility(View.GONE);
+        btnEditDoneDelete.setVisibility(View.INVISIBLE);
+        btnTrashcanDelete.setVisibility(View.INVISIBLE);
 
         abTitle =  (TextView)act.findViewById(R.id.abTitle);
         nothingFoundView = (RelativeLayout) view.findViewById(R.id.article_not_found);
@@ -265,15 +265,15 @@ public class ArticleListFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
-                appBar.setVisibility(View.INVISIBLE);
-                Article article = articleListOnScreen.get(position-1);
-                mWebViewFragment = new WebViewFragment().newInstance(article);
-                fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
-                fragmentTransaction.addToBackStack("articlelist_frag");
-                fragmentTransaction.commit();
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
+                    appBar.setVisibility(View.INVISIBLE);
+                    Article article = articleListOnScreen.get(position - 1);
+                    mWebViewFragment = new WebViewFragment().newInstance(article);
+                    fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
+                    fragmentTransaction.addToBackStack("articlelist_frag");
+                    fragmentTransaction.commit();
             }
         });
         mListView.setLongClickable(true);

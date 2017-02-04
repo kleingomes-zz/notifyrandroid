@@ -254,16 +254,16 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         if(pos2 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
                         if(pos3 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
                         if(pos4 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
+                        int backStackCount = fragmentManager.getBackStackEntryCount();
+                        for(int entry = 0; entry < backStackCount; entry++){
+                            getSupportFragmentManager().popBackStack();
+                        }
 
                         // SHOW/HIDE the app bar depending on which menu tab you're on
                         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
                         {
                             if(currentMenuPage != 0) {
-                                int backStackCount = fragmentManager.getBackStackEntryCount();
-                                for(int entry = 0; entry < backStackCount; entry++){
-                                    getSupportFragmentManager().popBackStack();
-                                }
 
                                 if(pos1 != null ) getSupportFragmentManager().beginTransaction().remove(pos1).commit();
                                 if(webFrag != null ) getSupportFragmentManager().beginTransaction().remove(webFrag).commit();
@@ -277,8 +277,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                 mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
                                 mViewPager.setAdapter(mSectionsPagerAdapter);
                                 viewPager.setVisibility(View.VISIBLE);
-                                btnEditDone.setVisibility(View.GONE);
-                                btnTrashCanDelete.setVisibility(View.GONE);
+                                btnEditDone.setVisibility(View.INVISIBLE);
+                                btnTrashCanDelete.setVisibility(View.INVISIBLE);
                             }
                         }
                         else

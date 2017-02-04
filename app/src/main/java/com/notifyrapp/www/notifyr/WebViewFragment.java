@@ -17,6 +17,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -90,7 +91,14 @@ public class WebViewFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_web_view, container, false);
+        //
+        Button clearAllBtn = (Button) ((MainActivity) getActivity()).findViewById(R.id.btnClearAll);
+        Button btnEditDoneDelete = (Button) ((MainActivity) getActivity()).findViewById(R.id.btnClearAll);
+        Button btnTrashcanDelete = (Button) ((MainActivity) getActivity()).findViewById(R.id.btnClearAll);
 
+        clearAllBtn.setVisibility(View.INVISIBLE);
+        btnEditDoneDelete.setVisibility(View.INVISIBLE);
+        btnTrashcanDelete.setVisibility(View.INVISIBLE);
         // INIT WEB VIEW
         WebView webView =  (WebView) view.findViewById(R.id.web_view);
         webView.setWebViewClient(new WebViewClient());
