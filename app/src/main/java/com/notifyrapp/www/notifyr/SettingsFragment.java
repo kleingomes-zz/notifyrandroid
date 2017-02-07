@@ -116,6 +116,11 @@ public class SettingsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         this.ctx = getContext();
+        MainActivity act = (MainActivity) getActivity();
+        act.abTitle.setText("Settings");
+        act.btnEditDone.setVisibility(View.GONE);
+        act.btnTrashCanDelete.setVisibility(View.GONE);
+
         //get settings info from the local database
         business = new Business(getActivity());
         settings = business.getUserSettings();

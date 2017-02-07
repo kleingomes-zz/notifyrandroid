@@ -25,9 +25,9 @@ import java.util.Map;
 public final class CacheManager {
 
     private CacheManager() {  }
-    private static final int maxImageCacheSize = 50;
-    private static final int maxArticleImageCacheSize = 50;
-    private static final int maxObjectCacheSize = 50;
+    private static final int maxImageCacheSize = 25;
+    private static final int maxArticleImageCacheSize = 25;
+    private static final int maxObjectCacheSize = 25;
     private static Map<String, Object> objectCache = new HashMap<String, Object>();
     private static Map<String, Bitmap> imageCache = new HashMap<String, Bitmap>();
     private static Map<String, Bitmap> articleImageCache = new HashMap<String, Bitmap>();

@@ -76,6 +76,9 @@ public class MyNotificationsFragment extends Fragment {
     private NotificationAdapter adapter;
     private RelativeLayout nothingFoundView;
     private Button clearAllBtn;
+    private Button btnEditDone;
+    private Button btnTrashCanDelete;
+
     public MyNotificationsFragment() {
         // Required empty public constructor
     }
@@ -124,6 +127,11 @@ public class MyNotificationsFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         this.ctx = view.getContext();
+        MainActivity act = (MainActivity) getActivity();
+        act.abTitle.setText("Notifications");
+        act.btnEditDone.setVisibility(View.GONE);
+        act.btnTrashCanDelete.setVisibility(View.GONE);
+
 
         // Lookup the swipe container view
         mSwipeNotificationContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeNotificationContainer);
@@ -137,6 +145,7 @@ public class MyNotificationsFragment extends Fragment {
         mListView.setAdapter(adapter);
         mListView.setFooterDividersEnabled(false);
         getNotifications(0, pageSize);
+
 
         //Setup refresh listener which triggers new data loading
         mSwipeNotificationContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

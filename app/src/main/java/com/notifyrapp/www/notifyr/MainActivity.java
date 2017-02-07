@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public TextView abTitle;
     public Business.MenuTab currentMenu = Business.MenuTab.Home;
     public boolean isBookmarkDirty;
-    private Button btnEditDone;
-    private Button btnTrashCanDelete;
+    public Button btnEditDone;
+    public Button btnTrashCanDelete;
     private int currentMenuPage = 0;
     private boolean isFirstTime = false;
     private String notificationUrl;
@@ -356,6 +356,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                 break;
                         }
                         currentMenuPage = position;
+                        abTitle.setPadding(0,0,0,0);
                         return false;
                     }
                 });
