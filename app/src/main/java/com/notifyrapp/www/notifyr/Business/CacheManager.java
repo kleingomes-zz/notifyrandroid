@@ -45,7 +45,7 @@ public final class CacheManager {
                 List<String> list = new ArrayList<String>(objectCache.keySet());
                 objectCache.remove(list.get(0));
             }
-           // objectCache.put(key,obj);
+            objectCache.put(key,obj);
         }
     }
 
