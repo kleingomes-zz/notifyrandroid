@@ -144,7 +144,7 @@ public class AppStartActivity extends AppCompatActivity{
                         }
                     });*/
                     // TODO: remove this
-                    PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("LastUpdateUserNotifiedArticles", "").commit();
+                    //PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("LastUpdateUserNotifiedArticles", "").commit();
                     String lastUpdate = PreferenceManager.getDefaultSharedPreferences(ctx).getString("LastUpdateUserNotifiedArticles", "");
                     business.getUserNotificationsFromServer(lastUpdate,new CallbackInterface()
                     {
@@ -155,8 +155,8 @@ public class AppStartActivity extends AppCompatActivity{
                         }
                     });
                     PreferenceManager.getDefaultSharedPreferences(ctx).edit().putBoolean("isFirstTime",false).commit();
-                    throw new RuntimeException("This is a crash");
-                //    startActivity(new Intent(AppStartActivity.this, MainActivity.class));
+                    //throw new RuntimeException("This is a crash");
+                    startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                 }
             });
         }
