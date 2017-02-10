@@ -3,11 +3,13 @@ package com.notifyrapp.www.notifyr;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +39,8 @@ import com.notifyrapp.www.notifyr.UI.BottomNavigationViewHelper;
 
 import java.util.List;
 
+import static android.support.v4.view.PagerAdapter.POSITION_NONE;
+
 
 public class MainActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener,
         MyItemsFragment.OnFragmentInteractionListener,
@@ -48,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private FragmentStatePagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private Context ctx;
     private SettingsFragment settingsFragment;
@@ -177,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         }
 
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new AppBarAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -257,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         }
 
                         // SHOW/HIDE the app bar depending on which menu tab you're on
-                        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
                         if(position == 0)
                         {
                             if(currentMenuPage != 0) {
@@ -271,9 +274,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                 setAppBarVisibility(false);
                                 abTitle.setText(R.string.empty);
                                 // NEED TO REDRAW THE APP BAR (in case the user added categories)
-                                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+                                mSectionsPagerAdapter = new AppBarAdapter(getSupportFragmentManager());
                                 mViewPager.setAdapter(mSectionsPagerAdapter);
-                                viewPager.setVisibility(View.VISIBLE);
+                                mSectionsPagerAdapter.notifyDataSetChanged();
+                                mViewPager.destroyDrawingCache();
+                                mViewPager.setVisibility(View.VISIBLE);
                                 btnEditDone.setVisibility(View.INVISIBLE);
                                 btnTrashCanDelete.setVisibility(View.INVISIBLE);
                             }
@@ -289,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                             }
                             setAppBarVisibility(true);
                             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            viewPager.setVisibility(View.GONE);
+                            mViewPager.setVisibility(View.GONE);
                         }
 
                         // LOAD THE NEW FRAGMENT (BUT NOT IF IT'S ALREADY LOADED!)
@@ -485,13 +490,13 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class AppBarAdapter extends FragmentStatePagerAdapter {
 
         private Business business;
         private int categoryCount = 1;
         List<ItemType> itemCategories;
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        public AppBarAdapter(FragmentManager fm) {
             super(fm);
             business = new Business(ctx);
             itemCategories = business.getItemCategories();
@@ -527,6 +532,20 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             }
         }
 
+        @Override
+        public Parcelable saveState() {
+            return null;
+        }
+
+        @Override
+        public void restoreState(Parcelable state, ClassLoader loader) {
+
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
 
         @Override
         public CharSequence getPageTitle(int position) {
@@ -544,6 +563,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             }
         }
     }
+
 
     @Override
     protected void onDestroy() {

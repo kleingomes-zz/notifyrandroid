@@ -101,7 +101,7 @@ public class Business {
 
     public Boolean saveUserItemLocal(Item userItem)
     {
-        return new Repository(context).saveUserItemLocal(userItem);
+        return new Repository(context).saveUserItem(userItem);
     }
 
     public Boolean deleteUserItemLocal(Item userItem)

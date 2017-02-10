@@ -177,7 +177,7 @@ public class Repository {
         return isSuccess;
     }
 
-    public Boolean saveUserItemLocal(Item userItem) {
+    public Boolean saveUserItem(Item userItem) {
 
         String tableName = "UserItem";
         SQLiteDatabase db = null;
@@ -190,7 +190,7 @@ public class Repository {
                 db.insert(tableName, null, getItemParams(userItem));
             } else {
                 String[] selectionArgs = { String.valueOf(userItem.getId()) };
-                db.update(tableName, getItemParams(userItem),String.format("%s = ?", "ItemId"),selectionArgs);
+                db.update(tableName, getUserItemParams(userItem),String.format("%s = ?", "ItemId"),selectionArgs);
             }
         } catch (Exception e) {
             isSuccess = false;

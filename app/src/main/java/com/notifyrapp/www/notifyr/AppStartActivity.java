@@ -155,7 +155,6 @@ public class AppStartActivity extends AppCompatActivity{
                         }
                     });
                     PreferenceManager.getDefaultSharedPreferences(ctx).edit().putBoolean("isFirstTime",false).commit();
-                    //throw new RuntimeException("This is a crash");
                     startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                 }
             });
@@ -199,7 +198,6 @@ public class AppStartActivity extends AppCompatActivity{
 
             }
         });
-
         registerNotificationsThread.start();
     }
 }
