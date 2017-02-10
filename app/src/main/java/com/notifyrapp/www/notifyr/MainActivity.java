@@ -134,9 +134,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         btnEditDone = (Button) findViewById(R.id.btnEditDone);
         btnTrashCanDelete = (Button) findViewById(R.id.btnTrashCanDelete);
 
-        // INIT Fabric
-        Fabric.with(this, new Answers());
-        Fabric.with(this, new Crashlytics());
 
         // Check if it's the first time the user opens app to default discover page
         isFirstTime = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isFirstTime", false);

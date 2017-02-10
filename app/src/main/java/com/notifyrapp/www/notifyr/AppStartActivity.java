@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.notifyrapp.www.notifyr.Business.Business;
@@ -20,6 +22,8 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 import static java.lang.Thread.sleep;
 
@@ -37,6 +41,8 @@ public class AppStartActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // INIT Fabric
+        Fabric.with(this,  new Answers(),new Crashlytics());
         setContentView(R.layout.activity_app_start);
         Business biz = new Business(this);
         String userId = "";
@@ -149,7 +155,8 @@ public class AppStartActivity extends AppCompatActivity{
                         }
                     });
                     PreferenceManager.getDefaultSharedPreferences(ctx).edit().putBoolean("isFirstTime",false).commit();
-                    startActivity(new Intent(AppStartActivity.this, MainActivity.class));
+                    throw new RuntimeException("This is a crash");
+                //    startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                 }
             });
         }
