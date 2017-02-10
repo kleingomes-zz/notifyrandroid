@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private boolean isFirstTime = false;
     private String notificationUrl;
     private boolean isIncomingNotification = false;
-
+    private List<ItemType> oldCategories;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
@@ -274,10 +274,14 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                 setAppBarVisibility(false);
                                 abTitle.setText(R.string.empty);
                                 // NEED TO REDRAW THE APP BAR (in case the user added categories)
-                                mSectionsPagerAdapter = new AppBarAdapter(getSupportFragmentManager());
-                                mViewPager.setAdapter(mSectionsPagerAdapter);
-                                mSectionsPagerAdapter.notifyDataSetChanged();
-                                mViewPager.destroyDrawingCache();
+                                // We only redraw if the item categories change since this is
+                                // an expensive operation
+                                if(new Business(ctx).hasItemCategoriesChanged(oldCategories)) {
+                                    mSectionsPagerAdapter = new AppBarAdapter(getSupportFragmentManager());
+                                    mViewPager.setAdapter(mSectionsPagerAdapter);
+                                    mSectionsPagerAdapter.notifyDataSetChanged();
+                                    mViewPager.destroyDrawingCache();
+                                }
                                 mViewPager.setVisibility(View.VISIBLE);
                                 btnEditDone.setVisibility(View.INVISIBLE);
                                 btnTrashCanDelete.setVisibility(View.INVISIBLE);
@@ -500,6 +504,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             super(fm);
             business = new Business(ctx);
             itemCategories = business.getItemCategories();
+            oldCategories = itemCategories;
             categoryCount = itemCategories != null && itemCategories.size() > 0 ? itemCategories.size() : 1;
 
         }

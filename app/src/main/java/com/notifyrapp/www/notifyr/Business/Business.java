@@ -222,6 +222,26 @@ public class Business {
     {
         return new Repository(context).getItemCategories();
     }
+
+    public Boolean hasItemCategoriesChanged(List<ItemType> oldCategories)
+    {
+        List<ItemType> newCategories = getItemCategories();
+
+        if(newCategories.size() != oldCategories.size())
+        {
+            return true;
+        }
+
+        for(int i = 0; i < oldCategories.size(); i++)
+        {
+            if(oldCategories.get(i).getId() != newCategories.get(i).getId())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //endregion
 
     //region Articles
