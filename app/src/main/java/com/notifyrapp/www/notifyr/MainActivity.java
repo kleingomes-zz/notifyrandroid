@@ -117,7 +117,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
 
         super.onCreate(savedInstanceState);
-
+        // INIT Fabric
+        Fabric.with(this,  new Answers(),new Crashlytics());
         // Get INCOMING Notification DATA
         notificationUrl = getIntent().getStringExtra("articleUrl");
         isIncomingNotification = getIntent().getBooleanExtra("isIncomingNotification",false);

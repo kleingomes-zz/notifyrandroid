@@ -41,8 +41,7 @@ public class AppStartActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // INIT Fabric
-        Fabric.with(this,  new Answers(),new Crashlytics());
+
         setContentView(R.layout.activity_app_start);
         Business biz = new Business(this);
         String userId = "";
