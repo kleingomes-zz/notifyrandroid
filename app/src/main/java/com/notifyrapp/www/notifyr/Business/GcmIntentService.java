@@ -37,7 +37,7 @@ public class GcmIntentService extends GcmListenerService {
         String articleTitle = data.getString("articleTitle");
         String articleUrl = data.getString("articleUrl");
         String articleId = data.getString("articleId");
-    //    String articleDescription = data.getString("articleDescription");
+        String articleDescription = data.getString("articleDescription");
         int color = (0x00aaFF);
      ////   int color = getResources().getColor(R.color.my_notif_color);
      //   int color = ContextCompat.getColor(getApplicationContext(), R.color.colorNotifyrLightBlue);
@@ -50,13 +50,15 @@ public class GcmIntentService extends GcmListenerService {
                 .setTicker(articleTitle)
                 .setVisibility(View.VISIBLE)
                 .setPriority(Notification.PRIORITY_HIGH)
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(articleTitle))
                 .setAutoCancel(true); // clear notification after click
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             mBuilder.setSmallIcon(R.mipmap.ic_whitelogo);
+            mBuilder.setStyle(new NotificationCompat.BigTextStyle()
+            .bigText(articleTitle));
         } else {
-            mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            mBuilder.setSmallIcon(R.mipmap.ic_whitelogo);
+            mBuilder.setContentTitle(articleTitle); // title for notification
+            mBuilder.setContentText("Read More...");
         }
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.large_icon);
      //   mBuilder.setLargeIcon(largeIcon);

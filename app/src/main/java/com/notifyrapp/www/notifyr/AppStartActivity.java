@@ -112,7 +112,7 @@ public class AppStartActivity extends AppCompatActivity{
 
                     /* SYNC USER ITEMS AND SETTINGS WITH SERVER */
                     new Business(ctx).syncUserItems();
-                   /* Thread getItemsThread = new Thread(new Runnable() {
+                    /* Thread getItemsThread = new Thread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -130,7 +130,7 @@ public class AppStartActivity extends AppCompatActivity{
                     });
                     getItemsThread.start();*/
 
-                   /* business.getUserItemsFromServer(new CallbackInterface()
+                    /* business.getUserItemsFromServer(new CallbackInterface()
                     {
                         @Override
                         public void onCompleted(Object data) {
