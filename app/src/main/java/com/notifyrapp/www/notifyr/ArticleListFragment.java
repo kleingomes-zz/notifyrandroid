@@ -261,10 +261,10 @@ public class ArticleListFragment extends Fragment {
         pbFooter.setVisibility(View.VISIBLE);
         mListView.addFooterView(progressView);
         // Add the onclick listener to open the web view
-        mListView.setClickable(true);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+                if(articleListOnScreen != null && articleListOnScreen.size() > 0) {
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
@@ -274,6 +274,7 @@ public class ArticleListFragment extends Fragment {
                     fragmentTransaction.add(R.id.fragment_container, mWebViewFragment, "webview_frag");
                     fragmentTransaction.addToBackStack("articlelist_frag");
                     fragmentTransaction.commit();
+                }
             }
         });
         mListView.setLongClickable(true);
@@ -436,6 +437,7 @@ public class ArticleListFragment extends Fragment {
                 @Override
                 public void onCompleted(Object data) {
                     List<Article> articles = (List<Article>) data;
+
                     // At this point we know that the data was saved into the DB
                     //  List<Article> localArticles = new ArrayList<Article>();
 
