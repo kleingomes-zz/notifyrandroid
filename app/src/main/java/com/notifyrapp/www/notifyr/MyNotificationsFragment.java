@@ -215,6 +215,8 @@ public class MyNotificationsFragment extends Fragment {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 new Business(ctx).deleteUserNotificationsLocal();
+                                notificationList.clear();
+                                adapter.notifyDataSetChanged();
                             }
                         })
                         .show();
