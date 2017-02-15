@@ -234,6 +234,17 @@ public class WebApi {
         }
     }
 
+    public void deleteUserNotificationsServer(CallbackInterface callback)
+    {
+        String params = "userId=" + this.userId;
+        String urlPath = "Article/ClearUserNotifications?" + params;
+        String url = apiBaseUrl + urlPath;
+
+        if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
+            postJSONObjectFromURL.execute(url, context, callback, NotifyrObjects.Post,params);
+        }
+    }
+
     //endregions
 
     //region MISC

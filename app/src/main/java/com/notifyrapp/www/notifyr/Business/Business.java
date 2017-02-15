@@ -371,7 +371,7 @@ public class Business {
         new WebApi(context).getUserNotifications(fromDate,new CallbackInterface() {
             @Override
             public void onCompleted(Object data) {
-                org.joda.time.DateTime now = new org.joda.time.DateTime(); // Default time zone.
+                org.joda.time.DateTime now = new org.joda.time.DateTime().plusHours(1); // Default time zone.
                 org.joda.time.DateTime zulu = now.toDateTime( org.joda.time.DateTimeZone.UTC );
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putString("LastUpdateUserNotifiedArticles", zulu.toString()).commit();
                 if (callback != null) {
@@ -391,6 +391,11 @@ public class Business {
         if(saveUserNotificationLocalAsync.getStatus().equals(AsyncTask.Status.PENDING)) {
             saveUserNotificationLocalAsync.execute(articles);
         }
+    }
+
+    public void deleteUserNotificationsServer(CallbackInterface callback)
+    {
+        new WebApi(context).deleteUserNotificationsServer(callback);
     }
 
     public Boolean deleteUserNotificationsLocal()

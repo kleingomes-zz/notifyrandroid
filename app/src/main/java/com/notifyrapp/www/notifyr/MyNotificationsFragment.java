@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -214,11 +215,18 @@ public class MyNotificationsFragment extends Fragment {
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                new Business(ctx).deleteUserNotificationsLocal();
+                                Business biz = new Business(ctx);
+                                biz.deleteUserNotificationsLocal();
+                                biz.deleteUserNotificationsServer(new CallbackInterface() {
+                                    @Override
+                                    public void onCompleted(Object data) {
+
+                                    }
+                                });
                                 notificationList.clear();
                                 adapter.notifyDataSetChanged();
                                 nothingFoundView.setVisibility(View.VISIBLE);
-                            }
+                         }
                         })
                         .show();
             }
