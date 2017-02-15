@@ -217,6 +217,7 @@ public class MyNotificationsFragment extends Fragment {
                                 new Business(ctx).deleteUserNotificationsLocal();
                                 notificationList.clear();
                                 adapter.notifyDataSetChanged();
+                                nothingFoundView.setVisibility(View.VISIBLE);
                             }
                         })
                         .show();
