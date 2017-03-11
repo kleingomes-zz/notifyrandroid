@@ -60,18 +60,20 @@ public class GcmIntentService extends GcmListenerService {
             mBuilder.setContentTitle(articleTitle); // title for notification
             mBuilder.setContentText("Read More...");
         }
+
+        int random_id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        int aId = Integer.parseInt(articleId);
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.large_icon);
      //   mBuilder.setLargeIcon(largeIcon);
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("isIncomingNotification", true);
         intent.putExtra("articleUrl", articleUrl);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pi = PendingIntent.getActivity(this, random_id, intent, PendingIntent.FLAG_ONE_SHOT);
         mBuilder.setContentIntent(pi);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        int random_id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-        int aId = Integer.parseInt(articleId);
+
         mNotificationManager.notify(random_id, mBuilder.build());
     }
 }
