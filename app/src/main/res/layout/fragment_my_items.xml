@@ -3,8 +3,19 @@
     android:layout_width="match_parent"
     android:id="@+id/fragmentMyItemsContainer"
     android:layout_height="wrap_content">
+    <SearchView
+        android:id="@+id/item_filter_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@color/lightGray"
+        android:clickable="true"
+        android:queryHint="Filter Items"
+
+        />
 
     <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_below="@id/item_filter_view"
         android:id="@+id/swipeContainerItems"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

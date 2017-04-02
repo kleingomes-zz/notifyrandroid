@@ -390,7 +390,7 @@ public class WebApi {
             // Save to Local SettingsActivity and Database
             Boolean hasErrors = (Boolean) returnObjects.get(0);
             if(hasErrors) {
-                Toast.makeText(context, "Unable To Connect To Server!", Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "Unable To Connect To Server!", Toast.LENGTH_LONG).show();
             }
             if (returnObjects != null && returnObjects.size() == 5 && hasErrors == false) {
 

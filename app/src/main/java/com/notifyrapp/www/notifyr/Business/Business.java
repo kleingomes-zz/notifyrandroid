@@ -371,9 +371,11 @@ public class Business {
         new WebApi(context).getUserNotifications(fromDate,new CallbackInterface() {
             @Override
             public void onCompleted(Object data) {
+                Log.d("jodooo","here");
                 org.joda.time.DateTime now = new org.joda.time.DateTime().plusHours(1); // Default time zone.
                 org.joda.time.DateTime zulu = now.toDateTime( org.joda.time.DateTimeZone.UTC );
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putString("LastUpdateUserNotifiedArticles", zulu.toString()).commit();
+                Log.d("jodooo","saved");
                 if (callback != null) {
                     callback.onCompleted(data);
                 }
