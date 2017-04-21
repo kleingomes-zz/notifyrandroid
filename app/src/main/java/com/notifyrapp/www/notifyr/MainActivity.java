@@ -264,7 +264,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         // SHOW/HIDE the app bar depending on which menu tab you're on
                         if(position == 0)
                         {
-                            if(currentMenuPage != 0) {
+                            if(isFirstTime)
+                            {
+                                   clearFragments();
+                            }
+                            if(currentMenuPage != 0 || isFirstTime) {
 
                                 if(pos1 != null ) getSupportFragmentManager().beginTransaction().remove(pos1).commit();
                                 if(webFrag != null ) getSupportFragmentManager().beginTransaction().remove(webFrag).commit();
@@ -287,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                 btnEditDone.setVisibility(View.INVISIBLE);
                                 btnTrashCanDelete.setVisibility(View.INVISIBLE);
                             }
+
                         }
                         else
                         {
