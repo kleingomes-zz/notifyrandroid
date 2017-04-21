@@ -54,6 +54,35 @@ public class AppStartActivity extends AppCompatActivity{
         //PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "6e43f43b-b86d-4eca-ae98-78938fa239af").commit();
         //PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("userid", "77dbbcbf-ef0d-42b6-91c8-5d830b6b004b").commit();
 
+        // Create the thread to create a device token
+        /* REGISTER FOR REMOTE NOTIFICATIONS */
+        final Thread registerNotificationsThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    InstanceID instanceID = InstanceID.getInstance(ctx);
+
+                    final String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+                            GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+
+                    new  Business(ctx).registerDevice(token, new CallbackInterface() {
+                        @Override
+                        public void onCompleted(Object data) {
+                            PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("deviceToken", token).commit();
+                            Log.d("DEVICE_REGISTER_TOKEN", "Registered Device with server" );
+                        }
+                    });
+
+                    Log.d("DEVICE_REGISTER_TOKEN", "GCM Registration Token: " + token);
+
+                }catch (Exception e) {
+                    Log.d("DEVICE_REGISTER_TOKEN", "Failed to complete token refresh", e);
+                }
+
+            }
+        });
+
         if(userId.equals(""))
         {
             Log.d("ACCOUNT_CHECK","No Account Found... Contacting Server to create one " + userId);
@@ -76,6 +105,7 @@ public class AppStartActivity extends AppCompatActivity{
                             @Override
                             public void onCompleted(Object data) {
                                 PreferenceManager.getDefaultSharedPreferences(ctx).edit().putBoolean("isFirstTime",true).commit();
+                                registerNotificationsThread.start();
                                 startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                             }
                         });
@@ -154,6 +184,7 @@ public class AppStartActivity extends AppCompatActivity{
                         }
                     });
                     PreferenceManager.getDefaultSharedPreferences(ctx).edit().putBoolean("isFirstTime",false).commit();
+                    registerNotificationsThread.start();
                     startActivity(new Intent(AppStartActivity.this, MainActivity.class));
                 }
             });
@@ -170,33 +201,5 @@ public class AppStartActivity extends AppCompatActivity{
         // ctx.startService(i);
 
 
-        /* REGISTER FOR REMOTE NOTIFICATIONS */
-        Thread registerNotificationsThread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    InstanceID instanceID = InstanceID.getInstance(ctx);
-
-                    final String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-                            GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-
-                    new  Business(ctx).registerDevice(token, new CallbackInterface() {
-                        @Override
-                        public void onCompleted(Object data) {
-                            PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("deviceToken", token).commit();
-                            Log.d("DEVICE_REGISTER_TOKEN", "Registered Device with server" );
-                        }
-                    });
-
-                    Log.d("DEVICE_REGISTER_TOKEN", "GCM Registration Token: " + token);
-
-                }catch (Exception e) {
-                    Log.d("DEVICE_REGISTER_TOKEN", "Failed to complete token refresh", e);
-                }
-
-            }
-        });
-        registerNotificationsThread.start();
     }
 }
