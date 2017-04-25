@@ -77,11 +77,14 @@ public class DiscoverFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).getSupportActionBar().hide();
+        //((MainActivity)getActivity()).getSupportActionBar().hide();
         final View view = inflater.inflate(R.layout.fragment_discover, container, false);
         final Business business = new Business(getContext());
         this.ctx = getContext();
         footerRemoved = false;
+        ((MainActivity)getActivity()).btnEditDone.setVisibility(View.GONE);
+        ((MainActivity)getActivity()).btnTrashCanDelete.setVisibility(View.GONE);
+        ((MainActivity)getActivity()).abTitle.setText(R.string.menu_tab_2);
         View progressView = inflater.inflate(R.layout.progress_circle, null);
 
         footerViewInitLoad = ((LayoutInflater) this.getActivity()
@@ -147,8 +150,8 @@ public class DiscoverFragment extends Fragment {
 
                 if(searchView.isIconified())
                 {
-                    ((MainActivity)getActivity()).getSupportActionBar().setShowHideAnimationEnabled(true);
-                    ((MainActivity)getActivity()).getSupportActionBar().hide();
+                  //  ((MainActivity)getActivity()).getSupportActionBar().setShowHideAnimationEnabled(true);
+                  //  ((MainActivity)getActivity()).getSupportActionBar().hide();
                 }
                 searchView.setIconified(false);
             }

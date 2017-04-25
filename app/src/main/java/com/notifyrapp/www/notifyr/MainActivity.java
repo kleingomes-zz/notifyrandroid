@@ -343,11 +343,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         {
                             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                             getSupportActionBar().setShowHideAnimationEnabled(false);
-                            if(position == 2) {
-                                getSupportActionBar().hide();
-                            } else {
-                                getSupportActionBar().show();
-                            }
+
+                            getSupportActionBar().show();
                             setAppBarVisibility(true);
                             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             mViewPager.setVisibility(View.GONE);
