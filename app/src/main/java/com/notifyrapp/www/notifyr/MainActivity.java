@@ -28,6 +28,7 @@ import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -114,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
         super.onCreate(savedInstanceState);
         // INIT Fabric
@@ -242,23 +242,37 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         Fragment fragment = null;
 
                         // Check which fragment is active, inactive ones return null
-                        Fragment pos0 = getSupportFragmentManager().findFragmentByTag("home_frag");
-                        Fragment pos1 = getSupportFragmentManager().findFragmentByTag("myitems_frag");
-                        Fragment pos2 = getSupportFragmentManager().findFragmentByTag("discover_frag");
-                        Fragment pos3 = getSupportFragmentManager().findFragmentByTag("notifications_frag");
-                        Fragment pos4 = getSupportFragmentManager().findFragmentByTag("settings_frag");
-                        Fragment webFrag = getSupportFragmentManager().findFragmentByTag("webview_frag");
+                        Fragment pos0 = fragmentManager.findFragmentByTag("home_frag");
+                        Fragment pos1 = fragmentManager.findFragmentByTag("myitems_frag");
+                        Fragment pos2 = fragmentManager.findFragmentByTag("discover_frag");
+                        Fragment pos3 = fragmentManager.findFragmentByTag("notifications_frag");
+                        Fragment pos4 = fragmentManager.findFragmentByTag("settings_frag");
+                        Fragment webFrag = fragmentManager.findFragmentByTag("webview_frag");
                         // Remove the fragment that is not null from the manager
+                        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                                android.R.anim.fade_out);
                         if(pos0 != null && currentMenuPage != position) {
                             getSupportFragmentManager().beginTransaction().remove(pos0).commit();
                         }
-                        if(pos1 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos1).commit(); }
-                        if(pos2 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos2).commit(); }
-                        if(pos3 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos3).commit(); }
-                        if(pos4 != null && currentMenuPage != position) {  getSupportFragmentManager().beginTransaction().remove(pos4).commit(); }
+                        if(pos1 != null && currentMenuPage != position) {
+                            fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                                android.R.anim.fade_out).remove(pos1).commit();
+                        }
+                        if(pos2 != null && currentMenuPage != position) {
+                            fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                                android.R.anim.fade_out).remove(pos2).commit();
+                        }
+                        if(pos3 != null && currentMenuPage != position) {
+                            fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                                android.R.anim.fade_out).remove(pos3).commit();
+                        }
+                        if(pos4 != null && currentMenuPage != position) {
+                            fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                                android.R.anim.fade_out).remove(pos4).commit();
+                        }
                         int backStackCount = fragmentManager.getBackStackEntryCount();
                         for(int entry = 0; entry < backStackCount; entry++){
-                            getSupportFragmentManager().popBackStack();
+                            fragmentManager.popBackStack();
                         }
 
                         // SHOW/HIDE the app bar depending on which menu tab you're on
@@ -319,6 +333,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     myItemsFragment = myItemsFragment == null ? new MyItemsFragment() : myItemsFragment;
                                     if(!myItemsFragment.isAdded()) {
                                         clearFragments();
+                                        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                                                android.R.anim.fade_out);
                                         fragmentTransaction.add(R.id.fragment_container, myItemsFragment, "myitems_frag");
                                         fragmentTransaction.commit();
                                     }
@@ -333,6 +349,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     discoverFragment = discoverFragment == null ? new DiscoverFragment() : discoverFragment;
                                     if(!discoverFragment.isAdded()) {
                                         clearFragments();
+                                        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                                                android.R.anim.fade_out);
                                         fragmentTransaction.add(R.id.fragment_container, discoverFragment, "discover_frag");
                                         fragmentTransaction.commit();
                                     }
@@ -347,6 +365,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     myNotificationsFragment = myNotificationsFragment == null ? new MyNotificationsFragment() : myNotificationsFragment;
                                     if(!myNotificationsFragment.isAdded()) {
                                         clearFragments();
+                                        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                                                android.R.anim.fade_out);
                                         fragmentTransaction.add(R.id.fragment_container, myNotificationsFragment, "notifications_frag");
                                         fragmentTransaction.commit();
                                     }
@@ -361,7 +381,10 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                                     settingsFragment = settingsFragment == null ? new SettingsFragment() : settingsFragment;
                                     if(!settingsFragment.isAdded()) {
                                         clearFragments();
+                                        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                                                android.R.anim.fade_out);
                                         fragmentTransaction.add(R.id.fragment_container, settingsFragment, "settings_frag");
+
                                         fragmentTransaction.commit();
                                     }
                                 }
@@ -472,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     }
 
-    private void setAppBarVisibility(Boolean isHidden)
+    public void setAppBarVisibility(Boolean isHidden)
     {
         AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
         if(isHidden) {

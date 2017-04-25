@@ -3,6 +3,7 @@ package com.notifyrapp.www.notifyr;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -86,6 +87,7 @@ public class ArticleListFragment extends Fragment {
     private List<Article> articleListBookmarkBuffer;
 
     public TextView abTitle;
+    public AppBarLayout appBarLayout;
 
     public ArticleListFragment() {
         // Required empty public constructor
@@ -151,7 +153,10 @@ public class ArticleListFragment extends Fragment {
 
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
+        final View view2 = inflater.inflate(R.layout.activity_main, container, false);
         sortViewHeader = View.inflate(getActivity(), R.layout.article_sort, null);
+        appBarLayout = (AppBarLayout)act.findViewById(R.id.appbar);
+
         this.act = act;
         this.ctx = view.getContext();
         Button btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
@@ -277,6 +282,7 @@ public class ArticleListFragment extends Fragment {
                 }
             }
         });
+
         mListView.setLongClickable(true);
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -401,6 +407,35 @@ public class ArticleListFragment extends Fragment {
             }
         });
 
+
+
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            int mLastFirstVisibleItem = 0;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {   }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (view.getId() == mListView.getId()) {
+                    final int currentFirstVisibleItem = mListView.getFirstVisiblePosition();
+
+                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+                        // getSherlockActivity().getSupportActionBar().hide();
+                        //getSupportActionBar().hide();
+                        appBarLayout.setVisibility(View.GONE);
+
+                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+                        // getSherlockActivity().getSupportActionBar().show();
+                        //getSupportActionBar().show();
+                        appBarLayout.setVisibility(View.VISIBLE);
+
+                    }
+
+                    mLastFirstVisibleItem = currentFirstVisibleItem;
+                }
+            }
+        });
 
         return view;
     }
