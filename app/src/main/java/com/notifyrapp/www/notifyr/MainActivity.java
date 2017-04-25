@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         super.onCreate(savedInstanceState);
         // INIT Fabric
         Fabric.with(this,  new Answers(),new Crashlytics());
@@ -252,23 +252,55 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                         fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
                                 android.R.anim.fade_out);
                         if(pos0 != null && currentMenuPage != position) {
-                            getSupportFragmentManager().beginTransaction().remove(pos0).commit();
+
+                            if(position == 0) {
+                                getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                                        android.R.anim.fade_out).remove(pos0).commit();
+                            }
+                            else
+                            {
+                                getSupportFragmentManager().beginTransaction().remove(pos0).commit();
+                            }
                         }
                         if(pos1 != null && currentMenuPage != position) {
-                            fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
-                                android.R.anim.fade_out).remove(pos1).commit();
+                            if(position == 0) {
+                                getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                                        android.R.anim.fade_out).remove(pos1).commit();
+                            }
+                            else
+                            {
+                                getSupportFragmentManager().beginTransaction().remove(pos1).commit();
+                            }
                         }
                         if(pos2 != null && currentMenuPage != position) {
-                            fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
-                                android.R.anim.fade_out).remove(pos2).commit();
+                            if(position == 0) {
+                                getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                                        android.R.anim.fade_out).remove(pos2).commit();
+                            }
+                            else
+                            {
+                                getSupportFragmentManager().beginTransaction().remove(pos2).commit();
+                            }
                         }
                         if(pos3 != null && currentMenuPage != position) {
-                            fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
-                                android.R.anim.fade_out).remove(pos3).commit();
+                            if(position == 0) {
+                                getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                                        android.R.anim.fade_out).remove(pos3).commit();
+                            }
+                            else
+                            {
+                                getSupportFragmentManager().beginTransaction().remove(pos3).commit();
+                            }
                         }
                         if(pos4 != null && currentMenuPage != position) {
-                            fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
-                                android.R.anim.fade_out).remove(pos4).commit();
+                            if(position == 0) {
+                                getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                                        android.R.anim.fade_out).remove(pos4).commit();
+                            }
+                            else
+                            {
+                                getSupportFragmentManager().beginTransaction().remove(pos4).commit();
+                            }
                         }
                         int backStackCount = fragmentManager.getBackStackEntryCount();
                         for(int entry = 0; entry < backStackCount; entry++){

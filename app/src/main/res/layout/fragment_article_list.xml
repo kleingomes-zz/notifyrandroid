@@ -10,6 +10,7 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+
         android:gravity="center|top">
 
        <TextView
@@ -31,6 +32,8 @@
                 android:layout_alignParentTop="true"
                 android:divider="#000000"
                 android:dividerHeight="1dp"
+                android:clipToPadding="false"
+                android:scrollbarStyle="outsideOverlay"
                 />
     <!--    android:scrollbars="none" -->
         </android.support.v4.widget.SwipeRefreshLayout>

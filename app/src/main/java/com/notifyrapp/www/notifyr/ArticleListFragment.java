@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v13.view.ViewCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -88,6 +90,9 @@ public class ArticleListFragment extends Fragment {
 
     public TextView abTitle;
     public AppBarLayout appBarLayout;
+    public TabLayout tabLayout;
+    ;
+
 
     public ArticleListFragment() {
         // Required empty public constructor
@@ -153,10 +158,9 @@ public class ArticleListFragment extends Fragment {
 
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
-        final View view2 = inflater.inflate(R.layout.activity_main, container, false);
         sortViewHeader = View.inflate(getActivity(), R.layout.article_sort, null);
         appBarLayout = (AppBarLayout)act.findViewById(R.id.appbar);
-
+        tabLayout = (TabLayout)act.findViewById(R.id.tabs);
         this.act = act;
         this.ctx = view.getContext();
         Button btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
@@ -407,35 +411,7 @@ public class ArticleListFragment extends Fragment {
             }
         });
 
-
-
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            int mLastFirstVisibleItem = 0;
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {   }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (view.getId() == mListView.getId()) {
-                    final int currentFirstVisibleItem = mListView.getFirstVisiblePosition();
-
-                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
-                        // getSherlockActivity().getSupportActionBar().hide();
-                        //getSupportActionBar().hide();
-                        appBarLayout.setVisibility(View.GONE);
-
-                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
-                        // getSherlockActivity().getSupportActionBar().show();
-                        //getSupportActionBar().show();
-                        appBarLayout.setVisibility(View.VISIBLE);
-
-                    }
-
-                    mLastFirstVisibleItem = currentFirstVisibleItem;
-                }
-            }
-        });
+        ViewCompat.setNestedScrollingEnabled(mListView, true);
 
         return view;
     }
@@ -479,11 +455,15 @@ public class ArticleListFragment extends Fragment {
                     if (sortBy == Business.SortBy.Newest.toString()) {
                         //articleListNewestBuffer = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Popular.toString(), -1);
                         articleListNewestBuffer = (List<Article>) data;
-                        if(pbFooter != null && articles.size() > 0) articleListOnScreen.addAll(articleListNewestBuffer);
+                        if(pbFooter != null && articles.size() > 0) {
+                            articleListOnScreen.addAll(articleListNewestBuffer);
+                        }
                     } else if (sortBy == Business.SortBy.Popular.toString()) {
                         ///articleListPopularBuffer = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Newest.toString(), -1);
                         articleListPopularBuffer = (List<Article>) data;
-                        if(pbFooter != null && articles.size() > 0) articleListOnScreen.addAll(articleListPopularBuffer);
+                        if(pbFooter != null && articles.size() > 0) {
+                            articleListOnScreen.addAll(articleListPopularBuffer);
+                        }
                     }
 
                     if (pbFooter != null && articleListOnScreen.size() <  pageSize) {
