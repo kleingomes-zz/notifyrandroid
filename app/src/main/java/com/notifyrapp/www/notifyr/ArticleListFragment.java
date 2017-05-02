@@ -19,8 +19,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -31,6 +34,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Model.Article;
@@ -78,6 +82,7 @@ public class ArticleListFragment extends Fragment {
     private RadioButton radioButtonBookmark;
     private View sortViewHeader;
     private Boolean showFooterLoader = true;
+
     // The actual articles display on the screen
     private List<Article> articleListOnScreen;
     private RelativeLayout nothingFoundView;
@@ -99,7 +104,7 @@ public class ArticleListFragment extends Fragment {
     }
 
 
-    public static ArticleListFragment newInstance(int position,int itemTypeId, String itemName) {
+    public static ArticleListFragment newInstance(int position, int itemTypeId, String itemName) {
         ArticleListFragment fragment = new ArticleListFragment();
         Bundle args = new Bundle();
         args.putInt("selectedIndex", position);
@@ -110,7 +115,7 @@ public class ArticleListFragment extends Fragment {
         return fragment;
     }
 
-    public static ArticleListFragment newInstance(int itemId,String itemName) {
+    public static ArticleListFragment newInstance(int itemId, String itemName) {
         ArticleListFragment fragment = new ArticleListFragment();
         Bundle args = new Bundle();
         args.putInt("itemId", itemId);
@@ -126,7 +131,7 @@ public class ArticleListFragment extends Fragment {
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             isItemMode = getArguments().getBoolean("isItemMode");
-            if(isItemMode) {
+            if (isItemMode) {
                 itemId = getArguments().getInt("itemId");
                 itemName = getArguments().getString("itemName");
                 itemTypeId = getArguments().getInt("itemTypeId");
@@ -141,9 +146,9 @@ public class ArticleListFragment extends Fragment {
         // Init the Widgets
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
         upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
         articleListOnScreen = new ArrayList<>();
         articleListNewestBuffer = new ArrayList<>();
         articleListBookmarkBuffer = new ArrayList<>();
@@ -154,13 +159,13 @@ public class ArticleListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        MainActivity act = (MainActivity)getActivity();
+        MainActivity act = (MainActivity) getActivity();
 
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_article_list, container, false);
         sortViewHeader = View.inflate(getActivity(), R.layout.article_sort, null);
-        appBarLayout = (AppBarLayout)act.findViewById(R.id.appbar);
-        tabLayout = (TabLayout)act.findViewById(R.id.tabs);
+        appBarLayout = (AppBarLayout) act.findViewById(R.id.appbar);
+        tabLayout = (TabLayout) act.findViewById(R.id.tabs);
         this.act = act;
         this.ctx = view.getContext();
         Button btnEditDoneDelete = (Button) act.findViewById(R.id.btnEditDone);
@@ -168,12 +173,12 @@ public class ArticleListFragment extends Fragment {
         btnEditDoneDelete.setVisibility(View.INVISIBLE);
         btnTrashcanDelete.setVisibility(View.INVISIBLE);
 
-        abTitle =  (TextView)act.findViewById(R.id.abTitle);
+        abTitle = (TextView) act.findViewById(R.id.abTitle);
         nothingFoundView = (RelativeLayout) view.findViewById(R.id.article_not_found);
 
-        if(itemName!= null && !itemName.equals("")) {
+        if (itemName != null && !itemName.equals("")) {
             abTitle.setText(itemName);
-         }
+        }
 
         /*upFab = (FloatingActionButton) view.findViewById(R.id.fab);
         upFab.setOnClickListener(new View.OnClickListener() {
@@ -186,25 +191,30 @@ public class ArticleListFragment extends Fragment {
 
         // Lookup the swipe container view
         mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        radioGroupArticleSort =  (RadioGroup) sortViewHeader.findViewById(R.id.radioGroupArticleSort);
+
+        //tabLayout.setVisibility(view.GONE);
+
+
+        radioGroupArticleSort = (RadioGroup) sortViewHeader.findViewById(R.id.radioGroupArticleSort);
         radioButtonNewest = (RadioButton) sortViewHeader.findViewById(R.id.radioButtonNewest);
         radioButtonPopular = (RadioButton) sortViewHeader.findViewById(R.id.radioButtonPopular);
         radioButtonBookmark = (RadioButton) sortViewHeader.findViewById(R.id.radioButtonBookmarks);
-        if(radioButtonNewest.isChecked())  {
+        if (radioButtonNewest.isChecked()) {
             this.sortBy = Business.SortBy.Newest;
-        }
-        else if(radioButtonPopular.isChecked())  {
+        } else if (radioButtonPopular.isChecked()) {
             this.sortBy = Business.SortBy.Popular;
-        }
-        else  {
+        } else {
             this.sortBy = Business.SortBy.Bookmark;
         }
 
-        if(isItemMode) {
+        if (isItemMode) {
             radioButtonBookmark.setVisibility(View.GONE);
         }
 
         mListView = (ListView) view.findViewById(R.id.article_list_view);
+
+
+
         mListView.setFooterDividersEnabled(false);
         mListView.setHeaderDividersEnabled(false);
         mListView.addHeaderView(sortViewHeader);
@@ -213,12 +223,47 @@ public class ArticleListFragment extends Fragment {
         adapter = new ArticleAdapter(ctx, articleListOnScreen);
         mListView.setAdapter(adapter);
 
+//        mListView.setOnScrollListener(new ListView.OnScrollListener() {
+//            private int mLastFirstVisibleItem;
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                                              /*if (mListView.getId() == view.getId())
+                                              {
+                                                  final int currentFirstVisibleItem = mListView.getFirstVisiblePosition();
+                                                  if (currentFirstVisibleItem > mLastFirstVisibleItem)
+                                              }*/
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                if (mLastFirstVisibleItem < firstVisibleItem)
+//                {
+//                    Toast.makeText(mListView.getContext(),"Scrolling Down", Toast.LENGTH_SHORT);
+//                }
+//                if (mLastFirstVisibleItem > firstVisibleItem)
+//                {
+//                    Toast.makeText(mListView.getContext(),"Scrolling Up", Toast.LENGTH_SHORT);
+//                }
+//                mLastFirstVisibleItem = firstVisibleItem;
+//            }
+
+//                                          @Override
+//                                          public void onScrolled(ListView listview, int dx, int dy) {
+//                                              if (dy > 0) {
+//                                                  tabLayout.setVisibility(view.GONE);
+//                                              } else if (dy < 0) {
+//                                                  tabLayout.setVisibility(view.VISIBLE);
+//                                              }
+//                                          }
+
+
+
+//        });
         // Only get articles if the list is empty
         // This is to prevent api calls when selecting
         // the home tab.
-        if(articleListOnScreen.size() == 0)
-        {
-            getArticles(0,pageSize,sortBy.toString());
+        if (articleListOnScreen.size() == 0) {
+            getArticles(0, pageSize, sortBy.toString());
         }
 
         // Setup refresh listener which triggers new data loading
@@ -230,7 +275,7 @@ public class ArticleListFragment extends Fragment {
                 articleListOnScreen.clear();
                 mInfiniteScrollListener.setCurrentPage(0);
                 currentPage = 0;
-                getArticles(0,pageSize,sortBy.toString());
+                getArticles(0, pageSize, sortBy.toString());
                 showFooterLoader = true;
             }
         });
@@ -240,13 +285,13 @@ public class ArticleListFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        mSwipeContainer.setProgressViewOffset(true ,0,150);
+        mSwipeContainer.setProgressViewOffset(true, 0, 150);
         // Add the scroll listener to know when we hit the bottom
         mInfiniteScrollListener = new InfiniteScrollListener(1) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
 
-                if(totalItemsCount > 10) {
+                if (totalItemsCount > 10) {
                     pbFooter.setVisibility(View.VISIBLE);
                     getArticles((currentPage) * pageSize, pageSize, sortBy.toString());
                 }
@@ -254,10 +299,57 @@ public class ArticleListFragment extends Fragment {
 
             @Override
             public void onUpScrolling() {
+                Toast.makeText(getContext(), "Scrolling Up", Toast.LENGTH_SHORT);
+                tabLayout.setVisibility(view.VISIBLE);
+//                TranslateAnimation animation = new TranslateAnimation(0, 0, 0, tabLayout.getHeight());
+//                animation.setDuration(500);
+//                tabLayout.startAnimation(animation);
+//                animation.setAnimationListener(new Animation.AnimationListener() {
+//                    @Override
+//                    public void onAnimationStart(Animation animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animation animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animation animation) {
+//
+//                    }
+//
+//
+//                });
             }
 
             @Override
             public void onDownScrolling() {
+                Toast.makeText(getContext(),"Scrolling Down", Toast.LENGTH_SHORT);
+                tabLayout.setVisibility(view.GONE);
+//                TranslateAnimation animation = new TranslateAnimation(0,0, tabLayout.getHeight(),0);
+//                animation.setDuration(500);
+//                tabLayout.startAnimation(animation);
+//                animation.setAnimationListener(new Animation.AnimationListener() {
+//                    @Override
+//                    public void onAnimationStart(Animation animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animation animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animation animation) {
+//
+//                    }
+//
+//
+//                });
+
             }
 
         };
@@ -272,8 +364,8 @@ public class ArticleListFragment extends Fragment {
         // Add the onclick listener to open the web view
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-                if(articleListOnScreen != null && articleListOnScreen.size() > 0) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (articleListOnScreen != null && articleListOnScreen.size() > 0) {
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appbar);
@@ -293,22 +385,20 @@ public class ArticleListFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> arg0, final View v,
                                            final int pos, long id) {
                 final Business business = new Business(ctx);
-                final int position  = pos -1;
+                final int position = pos - 1;
                 final Article article = articleListOnScreen.get(position);
                 // bookmark buttons
-                if(sortBy == Business.SortBy.Bookmark)
-                {
+                if (sortBy == Business.SortBy.Bookmark) {
                     BubbleActions.on(v)
                             .addAction("Remove", R.drawable.bubble_delete, new Callback() {
                                 @Override
                                 public void doAction() {
                                     Boolean isSuccess = business.deleteBookmark(article);
-                                    if(isSuccess) {
+                                    if (isSuccess) {
                                         articleListOnScreen.remove(position);
                                         adapter.notifyDataSetChanged();
                                         Toast.makeText(v.getContext(), "Removed Bookmark", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else{
+                                    } else {
                                         Toast.makeText(v.getContext(), "Error Removing Bookmark", Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -316,11 +406,11 @@ public class ArticleListFragment extends Fragment {
                             .addAction("Share", R.drawable.bubble_share, new Callback() {
                                 @Override
                                 public void doAction() {
-                                    Intent i=new Intent(android.content.Intent.ACTION_SEND);
+                                    Intent i = new Intent(android.content.Intent.ACTION_SEND);
                                     i.setType("text/plain");
                                     i.putExtra(android.content.Intent.EXTRA_SUBJECT, article.getTitle());
                                     i.putExtra(android.content.Intent.EXTRA_TEXT, article.getUrl());
-                                    startActivity(Intent.createChooser(i,"Sent From www.notifyrapp.com"));
+                                    startActivity(Intent.createChooser(i, "Sent From www.notifyrapp.com"));
                                     //Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
                                 }
                             })
@@ -331,18 +421,16 @@ public class ArticleListFragment extends Fragment {
                                 }
                             })
                             .show();
-                }
-                else
-                {
+                } else {
                     BubbleActions.on(v)
                             .addAction("Share", R.drawable.bubble_share, new Callback() {
                                 @Override
                                 public void doAction() {
-                                    Intent i=new Intent(android.content.Intent.ACTION_SEND);
+                                    Intent i = new Intent(android.content.Intent.ACTION_SEND);
                                     i.setType("text/plain");
                                     i.putExtra(android.content.Intent.EXTRA_SUBJECT, article.getTitle());
                                     i.putExtra(android.content.Intent.EXTRA_TEXT, article.getUrl());
-                                    startActivity(Intent.createChooser(i,"Sent From www.notifyrapp.com"));
+                                    startActivity(Intent.createChooser(i, "Sent From www.notifyrapp.com"));
                                     //Toast.makeText(v.getContext(), "Share pressed!", Toast.LENGTH_SHORT).show();
                                 }
                             })
@@ -350,11 +438,10 @@ public class ArticleListFragment extends Fragment {
                                 @Override
                                 public void doAction() {
                                     Boolean isSuccess = business.saveBookmark(article);
-                                    if(isSuccess)                                    {
+                                    if (isSuccess) {
                                         Toast.makeText(v.getContext(), "Bookmarked", Toast.LENGTH_SHORT).show();
-                                       ((MainActivity) getActivity()).isBookmarkDirty = true;
-                                    }
-                                    else                                    {
+                                        ((MainActivity) getActivity()).isBookmarkDirty = true;
+                                    } else {
                                         Toast.makeText(v.getContext(), "Error Saving Bookmark!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -377,36 +464,25 @@ public class ArticleListFragment extends Fragment {
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
                 nothingFoundView.setVisibility(View.GONE);
                 articleListOnScreen.clear();
-                if (radioButtonNewest.isChecked())
-                {
-                    if(articleListNewestBuffer.size() == 0)
-                    {
+                if (radioButtonNewest.isChecked()) {
+                    if (articleListNewestBuffer.size() == 0) {
                         getArticles(0, pageSize, Business.SortBy.Newest.toString());
-                    }
-                    else
-                    {
+                    } else {
                         articleListOnScreen.addAll(articleListNewestBuffer);
                         adapter.notifyDataSetChanged();
                     }
-                    sortBy =  Business.SortBy.Newest;
-                }
-                else if (radioButtonPopular.isChecked())
-                {
-                    if(articleListPopularBuffer.size() == 0)
-                    {
+                    sortBy = Business.SortBy.Newest;
+                } else if (radioButtonPopular.isChecked()) {
+                    if (articleListPopularBuffer.size() == 0) {
                         getArticles(0, pageSize, Business.SortBy.Popular.toString());
-                    }
-                    else
-                    {
+                    } else {
                         articleListOnScreen.addAll(articleListPopularBuffer);
                         adapter.notifyDataSetChanged();
                     }
-                    sortBy =  Business.SortBy.Popular;
-                }
-                else if (radioButtonBookmark.isChecked())
-                {
+                    sortBy = Business.SortBy.Popular;
+                } else if (radioButtonBookmark.isChecked()) {
                     getArticles(0, pageSize, Business.SortBy.Bookmark.toString());
-                    sortBy =  Business.SortBy.Bookmark;
+                    sortBy = Business.SortBy.Bookmark;
                 }
             }
         });
@@ -417,22 +493,19 @@ public class ArticleListFragment extends Fragment {
     }
 
 
-    public void getArticles(final int skip, final int take, final String sortBy)
-    {
+    public void getArticles(final int skip, final int take, final String sortBy) {
         final Business business = new Business(ctx);
         // Set the Loader
         if (pbFooter != null && showFooterLoader) pbFooter.setVisibility(View.VISIBLE);
-        if (pbFooter != null && !showFooterLoader)  pbFooter.setVisibility(View.GONE);
+        if (pbFooter != null && !showFooterLoader) pbFooter.setVisibility(View.GONE);
 
-        if(sortBy == Business.SortBy.Bookmark.toString()) {
+        if (sortBy == Business.SortBy.Bookmark.toString()) {
             List<Article> bookmarks = business.getBookmarks(skip, take);
-            if(bookmarks != null && bookmarks.size() > 0) {
+            if (bookmarks != null && bookmarks.size() > 0) {
                 nothingFoundView.setVisibility(View.GONE);
                 articleListOnScreen.addAll(bookmarks);
                 adapter.notifyDataSetChanged();
-            }
-            else
-            {
+            } else {
                 nothingFoundView.setVisibility(View.VISIBLE);
             }
             if (pbFooter != null && articleListOnScreen.size() < pageSize) {
@@ -441,9 +514,8 @@ public class ArticleListFragment extends Fragment {
                 pbFooter.setVisibility(View.VISIBLE);
             }
             mSwipeContainer.setRefreshing(false);
-        }
-        else {
-            business.getArticlesFromServer(skip, pageSize, sortBy, itemTypeId,itemId,isItemMode, new CallbackInterface() {
+        } else {
+            business.getArticlesFromServer(skip, pageSize, sortBy, itemTypeId, itemId, isItemMode, new CallbackInterface() {
 
                 @Override
                 public void onCompleted(Object data) {
@@ -455,32 +527,31 @@ public class ArticleListFragment extends Fragment {
                     if (sortBy == Business.SortBy.Newest.toString()) {
                         //articleListNewestBuffer = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Popular.toString(), -1);
                         articleListNewestBuffer = (List<Article>) data;
-                        if(pbFooter != null && articles.size() > 0) {
+                        if (pbFooter != null && articles.size() > 0) {
                             articleListOnScreen.addAll(articleListNewestBuffer);
                         }
                     } else if (sortBy == Business.SortBy.Popular.toString()) {
                         ///articleListPopularBuffer = business.getUserArticlesFromLocal(skip, take, Business.SortBy.Newest.toString(), -1);
                         articleListPopularBuffer = (List<Article>) data;
-                        if(pbFooter != null && articles.size() > 0) {
+                        if (pbFooter != null && articles.size() > 0) {
                             articleListOnScreen.addAll(articleListPopularBuffer);
                         }
                     }
 
-                    if (pbFooter != null && articleListOnScreen.size() <  pageSize) {
+                    if (pbFooter != null && articleListOnScreen.size() < pageSize) {
                         pbFooter.setVisibility(View.GONE);
                     } else {
                         pbFooter.setVisibility(View.VISIBLE);
                     }
-                    if(pbFooter != null && articles.size() > 0) {
+                    if (pbFooter != null && articles.size() > 0) {
                         adapter.notifyDataSetChanged();
                         currentPage++;
                     }
 
                     /// Show or hide the nothing found view
-                    if(articleListOnScreen.size() == 0) {
+                    if (articleListOnScreen.size() == 0) {
                         nothingFoundView.setVisibility(View.VISIBLE);
-                    }
-                    else {
+                    } else {
                         nothingFoundView.setVisibility(View.GONE);
                     }
 
@@ -492,8 +563,7 @@ public class ArticleListFragment extends Fragment {
         mListView.addHeaderView(sortViewHeader);
     }
 
-    private void clearArticleBuffers()
-    {
+    private void clearArticleBuffers() {
         articleListPopularBuffer.clear();
         articleListBookmarkBuffer.clear();
         articleListNewestBuffer.clear();

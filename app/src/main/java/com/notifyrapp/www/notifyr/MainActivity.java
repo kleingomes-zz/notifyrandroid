@@ -11,6 +11,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
@@ -187,6 +188,12 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        //mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+       // mViewPager.setOnTouchListener();
+        //tabLayout.setVisibility(View.GONE);
+
+
         mViewPager.canScrollHorizontally(2);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         // without this listener the tabs would still get updated when fragments are swiped, but ....  (read the next comment)
