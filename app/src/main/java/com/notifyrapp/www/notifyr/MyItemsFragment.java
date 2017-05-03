@@ -5,69 +5,34 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TableLayout;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.notifyrapp.www.notifyr.Business.Business;
 import com.notifyrapp.www.notifyr.Business.CallbackInterface;
 import com.notifyrapp.www.notifyr.Business.GlobalShared;
 import com.notifyrapp.www.notifyr.Model.Item;
-import com.notifyrapp.www.notifyr.UI.InfiniteScrollListener;
 import com.notifyrapp.www.notifyr.UI.ItemAdapter;
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.notifyrapp.www.notifyr.Business.Business;
-import com.notifyrapp.www.notifyr.Business.DownloadImageTask;
-import com.notifyrapp.www.notifyr.Model.Item;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -95,9 +60,11 @@ public class MyItemsFragment extends Fragment {
     private ListView mListView;
     private List<Item> userItemsList;
     private ItemAdapter itemAdapter;
+    private ItemAdapter newItemAdapter;
     private SwipeRefreshLayout mSwipeContainer;
     private ArrayList<Item> list_items = new ArrayList<>();
     private int count = 0;
+    private int searchFilterCounter = 0;
     public Button btnEditDoneDelete;
     private Button btnTrashcanDelete;
     private CheckBox checkBoxDelete;
@@ -172,6 +139,9 @@ public class MyItemsFragment extends Fragment {
         itemAdapter = new ItemAdapter(ctx, userItemsList,itemsToDelete,(MainActivity)getActivity(),nothingFoundView);
         mListView.setAdapter(itemAdapter);
         View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
+        View filterHeader = inflater.inflate(R.layout.list_item_filter_search_header,null);
+        mListView.setHeaderDividersEnabled(true);
+        mListView.addHeaderView(filterHeader);
         mListView.setFooterDividersEnabled(false);
         mListView.addFooterView(emptyFooter);
         btnEditDoneDelete.setText("Edit");
@@ -200,6 +170,69 @@ public class MyItemsFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         getUserItems();
+
+        //Define the SearchView
+        final SearchView searchView = (SearchView) view.findViewById(R.id.filter_search);
+        searchView.setOnClickListener(new View.OnClickListener() { //makes entire search bar clickable
+            @Override
+            public void onClick(View v) {
+                searchView.setIconified(false);
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ArrayList<Item> tempList = new ArrayList<Item>();
+                int longestName = userItemsList.get(0).getName().length();
+                searchFilterCounter++;
+                for (Item temp: userItemsList )
+                {
+                    if (temp.getName().length() > longestName)
+                    {
+                        longestName = temp.getName().length();
+                    }
+                    if (temp.getName().toLowerCase().contains(newText.toLowerCase())) //if the item name contains the searched name
+                    {
+                        tempList.add(temp);
+                    }
+
+                }
+                newItemAdapter = new ItemAdapter(ctx, tempList,itemsToDelete,(MainActivity)getActivity(),nothingFoundView);
+                mListView.setAdapter(newItemAdapter);
+/*
+                if (searchFilterCounter >= 2 && searchFilterCounter < longestName) //temporarily allowing 2 characters untill search registers
+                {
+
+                    searchFilterCounter =0;
+                }
+*/
+                return true;
+            }
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //mListView.setAdapter(newItemAdapter);
+                return true;
+            }
+        });
+        /*
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mListView.setAdapter(newItemAdapter);
+                newItemAdapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+8*/
+
+
+
+
+
+
+
+
+
         btnEditDoneDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
