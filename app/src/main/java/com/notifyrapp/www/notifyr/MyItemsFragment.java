@@ -113,9 +113,9 @@ public class MyItemsFragment extends Fragment {
         }
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
         upArrow.setColorFilter(getResources().getColor(R.color.lightGray), PorterDuff.Mode.SRC_ATOP);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(upArrow);
         userItemsList = new ArrayList<>();
 
     }
@@ -136,10 +136,10 @@ public class MyItemsFragment extends Fragment {
         btnEditDoneDelete.setVisibility(View.VISIBLE);
         btnTrashcanDelete = (Button) act.findViewById(R.id.btnTrashCanDelete);
         mListView = (ListView) view.findViewById(R.id.items_list_view);
-        itemAdapter = new ItemAdapter(ctx, userItemsList,itemsToDelete,(MainActivity)getActivity(),nothingFoundView);
+        itemAdapter = new ItemAdapter(ctx, userItemsList, itemsToDelete, (MainActivity) getActivity(), nothingFoundView);
         mListView.setAdapter(itemAdapter);
         View emptyFooter = inflater.inflate(R.layout.empty_table_footer, null);
-        View filterHeader = inflater.inflate(R.layout.list_item_filter_search_header,null);
+        View filterHeader = inflater.inflate(R.layout.list_item_filter_search_header, null);
         mListView.setHeaderDividersEnabled(true);
         mListView.addHeaderView(filterHeader);
         mListView.setFooterDividersEnabled(false);
@@ -154,7 +154,7 @@ public class MyItemsFragment extends Fragment {
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(!GlobalShared.getIsInEditMode()) {
+                if (!GlobalShared.getIsInEditMode()) {
                     mListView.setAdapter(itemAdapter);
                     userItemsList.clear();
                     getUserItems();
@@ -173,64 +173,58 @@ public class MyItemsFragment extends Fragment {
 
         //Define the SearchView
         final SearchView searchView = (SearchView) view.findViewById(R.id.filter_search);
-        searchView.setOnClickListener(new View.OnClickListener() { //makes entire search bar clickable
+        final ArrayList<Item> tempList = new ArrayList<>();
+
+        searchView.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                searchView.setIconified(false);
+                searchView.setIconified(false);//makes entire search bar clickable
+                //save the current list of user items into tempList
+                if (userItemsList.size() > 0) {
+                    for (Item element : userItemsList) {
+                        tempList.add(element);
+                    }
+                }
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                ArrayList<Item> tempList = new ArrayList<Item>();
-                int longestName = userItemsList.get(0).getName().length();
-                searchFilterCounter++;
-                for (Item temp: userItemsList )
-                {
-                    if (temp.getName().length() > longestName)
-                    {
-                        longestName = temp.getName().length();
+                if (newText.length() >= 2) {
+                    userItemsList.clear(); //clear the userItemsList
+                    for (Item temp : tempList) { //iterate through temp list
+                        if (temp.getName().toLowerCase().contains(newText.toLowerCase())) //if the item name contains the searched name
+                        {
+                            userItemsList.add(temp);
+                        }
                     }
-                    if (temp.getName().toLowerCase().contains(newText.toLowerCase())) //if the item name contains the searched name
-                    {
-                        tempList.add(temp);
-                    }
-
                 }
-                newItemAdapter = new ItemAdapter(ctx, tempList,itemsToDelete,(MainActivity)getActivity(),nothingFoundView);
-                mListView.setAdapter(newItemAdapter);
-/*
-                if (searchFilterCounter >= 2 && searchFilterCounter < longestName) //temporarily allowing 2 characters untill search registers
-                {
+                itemAdapter.notifyDataSetChanged();
 
-                    searchFilterCounter =0;
-                }
-*/
                 return true;
             }
+
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //mListView.setAdapter(newItemAdapter);
                 return true;
             }
         });
-        /*
+        //when the user leaves the search bar return the original list view
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                mListView.setAdapter(newItemAdapter);
-                newItemAdapter.notifyDataSetChanged();
+                //copy the contents of templist back to userItemsList
+                userItemsList.clear();
+                for (Item tempListElement : tempList) {
+                    userItemsList.add(tempListElement);
+                }
+                itemAdapter.notifyDataSetChanged();
+                tempList.clear();
                 return false;
             }
         });
-8*/
-
-
-
-
-
-
-
 
 
         btnEditDoneDelete.setOnClickListener(new View.OnClickListener() {
@@ -243,10 +237,8 @@ public class MyItemsFragment extends Fragment {
                     GlobalShared.setIsEditMode(true);
                     mSwipeContainer.setEnabled(false);
                     itemAdapter.notifyDataSetChanged();
-                    Toast.makeText(getActivity(), "Please select the items you wish to delete",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
+                    Toast.makeText(getActivity(), "Please select the items you wish to delete", Toast.LENGTH_SHORT).show();
+                } else {
                     btnEditDoneDelete.setText("Edit");
                     btnTrashcanDelete.setVisibility(View.GONE);
                     GlobalShared.setIsEditMode(false);
@@ -270,44 +262,39 @@ public class MyItemsFragment extends Fragment {
                 List<Integer> sortedRowPositions = new ArrayList<>(itemsToDelete.keySet());
                 Collections.sort(sortedRowPositions);
 
-                for (Integer row: sortedRowPositions)
-                {
+                for (Integer row : sortedRowPositions) {
                     // Get the item to delete
                     Item item = userItemsList.get(row - offset);
 
                     // Delete it from the local SQL DB first
                     // If that's a success then remove it from the listview adapter
-                    Boolean deleteSuccess =  business.deleteUserItemLocal(item);
+                    Boolean deleteSuccess = business.deleteUserItemLocal(item);
                     // Now delete from Server
                     business.deleteUserItemFromServer(item.getId(), new CallbackInterface() {
                         @Override
                         public void onCompleted(Object data) {
-                                 // Maybe log something here later
-                            }
+                            // Maybe log something here later
+                        }
                     });
 
-                    if(deleteSuccess) {
+                    if (deleteSuccess) {
                         Log.d("DELETING_ITEM", item.getName() + " ROW: " + item.getItemRowId());
                         userItemsList.remove(row - offset);
                         offset++;
-                    }
-                    else
-                    {
+                    } else {
                         hasErrors = true;
                     }
                 }
 
                 itemsToDelete.clear();
                 itemAdapter.notifyDataSetChanged();
-                if(userItemsList.size() == 0)
-                {
+                if (userItemsList.size() == 0) {
                     nothingFoundView.setVisibility(View.VISIBLE);
                 }
-                if(hasErrors) {
-                    Toast.makeText(getActivity(), "An unknown error occurred while deleting an item.",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(getActivity(), "Item(s) deleted successfully!",Toast.LENGTH_SHORT).show();
+                if (hasErrors) {
+                    Toast.makeText(getActivity(), "An unknown error occurred while deleting an item.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Item(s) deleted successfully!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -320,10 +307,9 @@ public class MyItemsFragment extends Fragment {
     public void getUserItems() {
         final Business business = new Business(ctx);
         List<Item> localItems = business.getUserItemsFromLocal();
-        if(localItems.size() == 0) {
+        if (localItems.size() == 0) {
             nothingFoundView.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             nothingFoundView.setVisibility(View.GONE);
             userItemsList.clear();
             userItemsList.addAll(localItems);
