@@ -34,7 +34,7 @@
 
     <!-- MY INTERESTS -->
     <string name="mi_nothingFoundTopText">You have no interests.</string>
-    <string name="mi_nothingFoundBottomText">Add interests by pressing the + button to start receiving notifications</string>
+    <string name="mi_nothingFoundBottomText">Add interests in the Discover Tab below</string>
 
     <!-- NOTIFICATIONS -->
     <string name="notif_nothingFoundTopText">You have no new notifications.</string>

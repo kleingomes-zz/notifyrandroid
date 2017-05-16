@@ -145,7 +145,6 @@ public class MyItemsFragment extends Fragment {
         mListView.setFooterDividersEnabled(false);
         mListView.addFooterView(emptyFooter);
         btnEditDoneDelete.setText("Edit");
-
         mListView.setClickable(true);
 
 
@@ -174,7 +173,6 @@ public class MyItemsFragment extends Fragment {
         //Define the SearchView
         final SearchView searchView = (SearchView) view.findViewById(R.id.filter_search);
         final ArrayList<Item> tempList = new ArrayList<>();
-
         searchView.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -191,7 +189,7 @@ public class MyItemsFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.length() >= 2) {
+                if (newText.length() >= 1) {
                     userItemsList.clear(); //clear the userItemsList
                     for (Item temp : tempList) { //iterate through temp list
                         if (temp.getName().toLowerCase().contains(newText.toLowerCase())) //if the item name contains the searched name
@@ -200,8 +198,10 @@ public class MyItemsFragment extends Fragment {
                         }
                     }
                 }
+                else {
+                    getUserItems();
+                }
                 itemAdapter.notifyDataSetChanged();
-
                 return true;
             }
 
@@ -217,11 +217,8 @@ public class MyItemsFragment extends Fragment {
             public boolean onClose() {
                 //copy the contents of templist back to userItemsList
                 userItemsList.clear();
-                for (Item tempListElement : tempList) {
-                    userItemsList.add(tempListElement);
-                }
-                itemAdapter.notifyDataSetChanged();
                 tempList.clear();
+                getUserItems();
                 return false;
             }
         });

@@ -25,6 +25,8 @@ import com.notifyrapp.www.notifyr.Model.Item;
 import com.notifyrapp.www.notifyr.Model.UserSetting;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -419,7 +421,7 @@ public class WebApi {
                         //PreferenceManager.getDefaultSharedPreferences(context).edit().putString("userid", userProfile.UserId).commit();
                         callback.onCompleted(jsonObject.getString("UserId"));
                     } else if (notifyrType == NotifyrObjects.Article) {
-
+                        final DateTimeZone dtz = DateTimeZone.getDefault(); //DateTimeZone.forID("Europe/Warsaw")
                         List<Article> articles = new ArrayList<Article>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Article article = new Article();
@@ -429,8 +431,16 @@ public class WebApi {
                             String pubDateStr = !jsonItem.isNull("PublishDate") ? jsonItem.getString("PublishDate") : "2000-01-01T00:00.000";
                             String notifyrDateStr = !jsonItem.isNull("ArticleNotifiedDate") ? jsonItem.getString("ArticleNotifiedDate") : "2000-01-01T00:00.000";
 
-                            DateTime pubDate = ISODateTimeFormat.dateTimeParser().parseDateTime(pubDateStr);
-                            DateTime notifyrDate = ISODateTimeFormat.dateTimeParser().parseDateTime(notifyrDateStr);
+                            LocalDateTime publishDate = new LocalDateTime(pubDateStr, dtz);
+                            LocalDateTime notifyrLocalDate = new LocalDateTime(notifyrDateStr, dtz);
+                            if (dtz.isLocalDateTimeGap(publishDate)){
+                                publishDate = publishDate.plusHours(1);
+                            }
+                            if (dtz.isLocalDateTimeGap(notifyrLocalDate)){
+                                notifyrLocalDate = notifyrLocalDate.plusHours(1);
+                            }
+                            DateTime pubDate = publishDate.toDateTime();
+                            DateTime notifyrDate = notifyrLocalDate.toDateTime();
 
                             article.setScore((!jsonItem.isNull("Score") ? jsonItem.getInt("Score") : -1));
                             article.setSource(!jsonItem.isNull("Source") ? jsonItem.getString("Source") : "");
@@ -439,8 +449,8 @@ public class WebApi {
                             article.setDescription(!jsonItem.isNull("Description") ? jsonItem.getString("Description") : "");
                             article.setUrl(!jsonItem.isNull("URL") ? jsonItem.getString("URL") : "");
                             article.setIurl(!jsonItem.isNull("IURL") ? jsonItem.getString("IURL") : "");
-                            article.setArticleNotifiedDate(pubDate);
-                            article.setPublishDate(notifyrDate);
+                            article.setArticleNotifiedDate(notifyrDate);
+                            article.setPublishDate(pubDate);
                             article.setFavourite(!jsonItem.isNull("IsFavourite") ? jsonItem.getBoolean("IsFavourite") : false);
                             article.setShortLinkUrl(!jsonItem.isNull("ShortLinkUrl") ? jsonItem.getString("ShortLinkUrl") : "");
                             article.setRelatedInterests(!jsonItem.isNull("RelatedInterests") ? jsonItem.getString("RelatedInterests") : "");
