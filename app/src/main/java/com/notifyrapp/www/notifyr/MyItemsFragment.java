@@ -172,13 +172,14 @@ public class MyItemsFragment extends Fragment {
         getUserItems();
 
         //Define the SearchView
-        final SearchView searchView = (SearchView) view.findViewById(R.id.filter_search);
+       /*  final SearchView searchView = (SearchView) view.findViewById(R.id.filter_search);
         searchView.setOnClickListener(new View.OnClickListener() { //makes entire search bar clickable
             @Override
             public void onClick(View v) {
                 searchView.setIconified(false);
             }
         });
+        searchView.setFocusable(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -199,22 +200,16 @@ public class MyItemsFragment extends Fragment {
                 }
                 newItemAdapter = new ItemAdapter(ctx, tempList,itemsToDelete,(MainActivity)getActivity(),nothingFoundView);
                 mListView.setAdapter(newItemAdapter);
-/*
-                if (searchFilterCounter >= 2 && searchFilterCounter < longestName) //temporarily allowing 2 characters untill search registers
-                {
 
-                    searchFilterCounter =0;
-                }
-*/
-                return true;
+                return false;
             }
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //mListView.setAdapter(newItemAdapter);
-                return true;
+                return false;
             }
         });
-        /*
+
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
@@ -222,12 +217,7 @@ public class MyItemsFragment extends Fragment {
                 newItemAdapter.notifyDataSetChanged();
                 return false;
             }
-        });
-8*/
-
-
-
-
+        }); */
 
 
 
