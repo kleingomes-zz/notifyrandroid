@@ -191,7 +191,7 @@ public class WebApi {
 
     //region Articles
     public void getUserArticles(int skip, int take, String sortBy, int itemTypeId, CallbackInterface callback) {
-        String urlPath = "Item/GetAllItemArticles?skip=" + skip + "&take=" + take + "&sortBy=" + sortBy + "&itemTypeId=" + itemTypeId;
+        String urlPath = "Item/GetArticlesForUserItems?skip=" + skip + "&take=" + take + "&sortBy=" + sortBy + "&itemTypeId=" + itemTypeId;
         String url = apiBaseUrl + urlPath;
         if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
             postJSONObjectFromURL.execute(url, context, callback, NotifyrObjects.Article);
@@ -199,7 +199,7 @@ public class WebApi {
     }
 
     public void getUserItemArticles(int skip, int take, String sortBy, int itemId, CallbackInterface callback) {
-        String urlPath = "Item/GetItemArticles?skip=" + skip + "&take=" + take + "&sortBy=" + sortBy + "&itemId=" + itemId;
+        String urlPath = "Item/GetArticlesByItem?skip=" + skip + "&take=" + take + "&sortBy=" + sortBy + "&itemId=" + itemId;
         String url = apiBaseUrl + urlPath;
         if (postJSONObjectFromURL.getStatus().equals(AsyncTask.Status.PENDING)) {
             postJSONObjectFromURL.execute(url, context, callback, NotifyrObjects.Article);
@@ -451,7 +451,7 @@ public class WebApi {
                             article.setIurl(!jsonItem.isNull("IURL") ? jsonItem.getString("IURL") : "");
                             article.setArticleNotifiedDate(notifyrDate);
                             article.setPublishDate(pubDate);
-                            article.setFavourite(!jsonItem.isNull("IsFavourite") ? jsonItem.getBoolean("IsFavourite") : false);
+                            article.setFavourite(!jsonItem.isNull("IsFavourite") ? (jsonItem.getInt("IsFavourite") == 0 ? false : true) : false);
                             article.setShortLinkUrl(!jsonItem.isNull("ShortLinkUrl") ? jsonItem.getString("ShortLinkUrl") : "");
                             article.setRelatedInterests(!jsonItem.isNull("RelatedInterests") ? jsonItem.getString("RelatedInterests") : "");
                             article.setTimeAgo(!jsonItem.isNull("TimeAgo") ? jsonItem.getString("TimeAgo") : "");
